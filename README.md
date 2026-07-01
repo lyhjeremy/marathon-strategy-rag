@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Marathon Strategy RAG" width="100%">
+</p>
+
 # Marathon Strategy RAG
 
 A retrieval-augmented **marathon coach**. Ask a race-strategy question in plain
@@ -25,13 +29,11 @@ Several cards are distilled from my own marathon projects:
 and hills.
 
 ## How it works
-```
-question ─▶ local embedding ─▶ Chroma search over knowledge cards ─▶
-          (all-MiniLM-L6-v2)      (each chunk keeps its title + source)
-                                                    │
-                                                    ▼
-                    cited coaching answer ◀── Claude ◀── top passages as context
-```
+
+<p align="center">
+  <img src="assets/architecture.png" alt="Marathon Strategy RAG pipeline" width="760">
+</p>
+
 Retrieval is fully local and free (`sentence-transformers` + Chroma). Generation
 runs on the **Claude CLI** by default (your Claude subscription, no per-token
 cost); set `ANTHROPIC_API_KEY` to use the API instead.

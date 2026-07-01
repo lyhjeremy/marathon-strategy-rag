@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Marathon Strategy RAG" width="100%">
+</p>
+
 # A Marathon Coach That Cites Its Sources
 
 *Turning my own running analyses into a retrieval-augmented coach.*
@@ -32,6 +36,10 @@ Shipping the corpus in-repo means the whole thing is self-contained and
 reproducible: clone, `pip install`, `python -m src.ingest`, ask.
 
 ## The pipeline
+
+<p align="center">
+  <img src="assets/architecture.png" alt="Marathon Strategy RAG pipeline" width="760">
+</p>
 
 1. **Parse & chunk.** Each card is split into overlapping ~120-word windows that
    respect paragraph boundaries, so a retrieved chunk is coherent on its own. The
