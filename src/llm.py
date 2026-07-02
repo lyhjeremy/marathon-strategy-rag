@@ -89,6 +89,10 @@ class LLM:
                 input=prompt,
                 capture_output=True,
                 text=True,
+                # Force UTF-8 for stdin/stdout; Windows' default cp1252 can't encode
+                # characters like → or non-Latin scripts that show up in prompts.
+                encoding="utf-8",
+                errors="replace",
                 timeout=self.timeout,
             )
         except FileNotFoundError as exc:  # claude not on PATH
