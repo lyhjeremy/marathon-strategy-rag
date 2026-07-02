@@ -1,5 +1,12 @@
 # Core RAG stack — all local, no API key required.
 sentence-transformers>=3.0
 chromadb>=0.5
+
+# LangChain LCEL implementation of the same chain (src/chain_lc.py, --engine lc).
+langchain-core>=0.3
+
+# Evaluation harness figure (python -m src.eval).
+matplotlib>=3.7
+
 # Optional: only needed if you run the API backend instead of the Claude CLI.
 anthropic>=0.40

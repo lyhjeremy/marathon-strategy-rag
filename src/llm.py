@@ -28,13 +28,34 @@ class LLMError(RuntimeError):
     """Raised when the underlying LLM call fails."""
 
 
+def _which_claude() -> str | None:
+    """Locate the Claude CLI. On Windows the npm install ships a ``claude.cmd``
+    shim (there is no ``claude.exe``), which ``CreateProcess`` won't find from a
+    bare name — so probe the concrete shims explicitly."""
+    return (
+        shutil.which("claude.cmd")
+        or shutil.which("claude.exe")
+        or shutil.which("claude")
+    )
+
+
+def _claude_command() -> list[str]:
+    exe = _which_claude()
+    if not exe:
+        raise LLMError("`claude` CLI not found on PATH.")
+    # A .cmd/.bat shim is not a PE image, so it must be run through cmd.exe.
+    if os.name == "nt" and exe.lower().endswith((".cmd", ".bat")):
+        return ["cmd", "/c", exe]
+    return [exe]
+
+
 def _choose_backend() -> str:
     forced = os.environ.get("LLM_BACKEND", "").strip().lower()
     if forced in {"cli", "api"}:
         return forced
     if os.environ.get("ANTHROPIC_API_KEY"):
         return "api"
-    if shutil.which("claude"):
+    if _which_claude():
         return "cli"
     raise LLMError(
         "No LLM backend available. Either install the Claude CLI "
@@ -56,7 +77,7 @@ class LLM:
 
     # --- CLI backend (Claude subscription, no API key) -----------------------
     def _complete_cli(self, prompt: str, system: str | None) -> str:
-        cmd = ["claude", "-p"]
+        cmd = _claude_command() + ["-p"]
         if system:
             cmd += ["--append-system-prompt", system]
         if DEFAULT_CLI_MODEL:

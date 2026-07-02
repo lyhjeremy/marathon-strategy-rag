@@ -38,6 +38,27 @@ Retrieval is fully local and free (`sentence-transformers` + Chroma). Generation
 runs on the **Claude CLI** by default (your Claude subscription, no per-token
 cost); set `ANTHROPIC_API_KEY` to use the API instead.
 
+## Evaluated with an LLM judge
+Grounding is only worth it if it makes answers more trustworthy — so `src/eval.py`
+measures that, RAGAS-style, with an LLM as the judge over a gold question set:
+
+<p align="center">
+  <img src="eval/faithfulness.png" alt="RAG faithfulness evaluation" width="820">
+</p>
+
+| metric | score |
+|---|---|
+| faithfulness — **grounded coach** | **0.98** |
+| faithfulness — bare LLM, no retrieval | 0.76 |
+| answer relevance | 0.95 |
+| context precision | 0.78 |
+| citation validity | 1.00 |
+
+A bare LLM's claims align with the vetted knowledge base only ~76% of the time;
+grounding the *same* model in retrieved passages lifts that to **0.98**, with every
+`[n]` citation pointing at a real retrieved source. That gap is the whole reason to
+do RAG, quantified. Reproduce with `python -m src.eval`.
+
 ## Quick start
 ```bash
 pip install -r requirements.txt
@@ -46,8 +67,18 @@ python -m src.ingest                 # index the bundled knowledge base
 
 python -m src.cli ask "how should I pace the last 10K to avoid hitting the wall?"
 python -m src.cli chat               # interactive coach
+
+python -m src.cli ask "..." --engine lc   # same chain, built with LangChain LCEL
+python -m src.eval                        # score faithfulness with an LLM judge
 ```
 The knowledge base ships **with the repo** (`knowledge/*.md`) — no downloads.
+
+## Two engines: hand-rolled and LangChain
+The default `native` engine wires retrieval → prompt → LLM by hand (`coach.py`).
+Pass `--engine lc` to run the **identical** flow as a LangChain **LCEL** pipeline
+(`chain_lc.py`) — `{context: retrieve|format, query: passthrough} | prompt | llm`
+— demonstrating the framework most production RAG is built on, with the same
+grounded, cited output.
 
 ## Files
 | Path | What it is |
@@ -56,7 +87,9 @@ The knowledge base ships **with the repo** (`knowledge/*.md`) — no downloads.
 | `src/ingest.py` | Parse cards → chunk → local embeddings → Chroma index |
 | `src/embedder.py` | Local sentence-transformers embedder (free, offline) |
 | `src/retriever.py` | Semantic search over the knowledge chunks |
-| `src/coach.py` | The RAG chain: retrieve → grounded, cited coaching answer |
+| `src/coach.py` | The RAG chain (hand-rolled): retrieve → grounded, cited answer |
+| `src/chain_lc.py` | The same chain built with **LangChain LCEL** (`--engine lc`) |
+| `src/eval.py` | LLM-judge evaluation: faithfulness / relevance / citation validity |
 | `src/llm.py` | LLM wrapper — Claude CLI (default) or Anthropic API |
 | `src/cli.py` | `ask` (one-shot) and `chat` (interactive) commands |
 

@@ -24,12 +24,20 @@ def _print(ans) -> None:
     print()
 
 
+def _make_coach(args):
+    if getattr(args, "engine", "native") == "lc":
+        from .chain_lc import LCCoach  # LangChain LCEL implementation
+
+        return LCCoach(k=args.k)
+    return Coach()
+
+
 def cmd_ask(args) -> None:
-    _print(Coach().ask(args.query, k=args.k))
+    _print(_make_coach(args).ask(args.query, k=args.k))
 
 
 def cmd_chat(args) -> None:
-    coach = Coach()
+    coach = _make_coach(args)
     print("🏃 Marathon Coach — ask a race-strategy question (Ctrl-C to quit).")
     try:
         while True:
@@ -50,10 +58,14 @@ def main() -> None:
     a = sub.add_parser("ask", help="One-shot question.")
     a.add_argument("query")
     a.add_argument("-k", type=int, default=5)
+    a.add_argument("--engine", choices=["native", "lc"], default="native",
+                   help="native hand-rolled chain (default) or LangChain LCEL ('lc').")
     a.set_defaults(func=cmd_ask)
 
     c = sub.add_parser("chat", help="Interactive session.")
     c.add_argument("-k", type=int, default=5)
+    c.add_argument("--engine", choices=["native", "lc"], default="native",
+                   help="native hand-rolled chain (default) or LangChain LCEL ('lc').")
     c.set_defaults(func=cmd_chat)
 
     args = ap.parse_args()

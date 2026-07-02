@@ -62,14 +62,41 @@ check the reasoning instead of trusting a black box. And because the knowledge i
 data, not model weights, extending the coach is just dropping in a new markdown
 card and re-indexing.
 
+## Does grounding actually help? Measured
+
+Claims about trustworthiness deserve numbers, so `src/eval.py` scores the coach
+with an LLM-as-judge (RAGAS-style) over a gold question set. The headline is a
+clean before/after: ask the **same model** the **same questions** *without*
+retrieval, and its claims stay faithful to the vetted knowledge base only **76%**
+of the time; ground it in retrieved passages and that jumps to **0.98**.
+
+| metric | grounded coach | bare LLM (no RAG) |
+|---|---|---|
+| faithfulness to the knowledge base | **0.98** | 0.76 |
+
+For the grounded coach, answer relevance scored **0.95**, context precision
+**0.78**, and citation validity **1.00** — every `[n]` resolves to a real
+retrieved passage. That ~22-point faithfulness gap is the whole reason to do RAG,
+made concrete.
+
+## The same chain, in LangChain
+
+`coach.py` wires retrieval → prompt → LLM by hand so the mechanics stay visible.
+`chain_lc.py` expresses the identical flow as a LangChain **LCEL** pipeline —
+`{context: retrieve|format, query: passthrough} | prompt | llm` — so the same
+system also runs on the framework most production RAG is built on (`--engine lc`).
+
 ## Limitations & next steps
 
 - The corpus is deliberately small and curated; it answers strategy questions
   well but isn't a general running encyclopedia.
 - Retrieval is single-shot; a query that spans several topics (heat *and* fueling
   *and* pacing) would benefit from multi-query retrieval or a planning step — a
-  natural bridge to the agentic [Marathon Training Plan Agent](https://github.com/lyhjeremy)
+  natural bridge to the agentic
+  [Marathon Training Plan Agent](https://github.com/lyhjeremy/marathon-training-agent)
   companion project.
-- No re-ranking beyond vector similarity yet; a cross-encoder would sharpen top-k.
+- Retrieval here is plain vector similarity; the sibling
+  [Wine Sommelier RAG](https://github.com/lyhjeremy/wine-sommelier-rag) adds a
+  hybrid BM25 + cross-encoder pipeline with a measured +21% precision gain.
 
 *Code: [github.com/lyhjeremy/marathon-strategy-rag](https://github.com/lyhjeremy/marathon-strategy-rag)*

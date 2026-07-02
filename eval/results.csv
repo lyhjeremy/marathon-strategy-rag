@@ -1,0 +1,8 @@
+question,grounded_faithfulness,ungrounded_faithfulness,answer_relevance,context_precision,citation_validity
+Should I try to negative-split my first marathon?,0.97,0.85,0.98,0.8,1.0
+How much slower will race-day heat around 80°F make me?,0.97,0.4,0.98,0.8,1.0
+How should I pace the final 10K to avoid hitting the wall?,0.98,0.8,0.95,1.0,1.0
+How many grams of carbs per hour should I take during the race?,0.97,0.8,0.85,0.4,1.0
+How should I taper in the last two to three weeks?,0.98,0.85,0.97,0.85,1.0
+Do carbon-plated super-shoes actually make a meaningful difference?,0.98,0.72,0.97,0.6,1.0
+How should I approach a downhill course like Boston?,0.98,0.9,0.98,1.0,1.0
