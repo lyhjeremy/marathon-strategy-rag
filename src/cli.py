@@ -7,8 +7,14 @@
 from __future__ import annotations
 
 import argparse
+import sys
 
 from .coach import Coach
+
+# Windows consoles/pipes default to cp1252, which can't encode the emoji in our
+# output; force UTF-8 so the CLI prints cleanly on every platform.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
 def _print(ans) -> None:
