@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Marathon Strategy RAG — a coach whose numbers trace back to my own analyses</title>
+<meta name="description" content="Ask a race-strategy question and get cited advice grounded in marathon science and my own published studies of 30,000+ Boston finishers. Faithfulness 0.98 grounded against 0.76 bare." />
+<meta name="theme-color" content="#FBF8F1" />
+<meta property="og:title" content="Marathon Strategy RAG" />
+<meta property="og:description" content="Grounding measured, not asserted: faithfulness 0.98 against a 0.76 bare-LLM baseline, citation validity 1.00." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://lyhjeremy.github.io/marathon-strategy-rag/overview/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #FBF8F1;
+    --card: #FFFFFF;
+    --plate: #FFFFFF;
+    --ink: #1a1a2e;
+    --ink2: #3d3d55;
+    --muted: #6B7280;
+    --rule: #E5DCC7;
+    --accent: #0E7490;
+    --accent2: #B45309;
+    --link: #7a1f2b;
+    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    --sans: 'Source Sans 3', -apple-system, system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --shadow: 0 1px 2px rgba(26,26,46,.05), 0 10px 34px rgba(26,26,46,.07);
+    --spine:  92px;
+    --col:    min(100% - 2.6rem, 62rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #14141f;
+      --card: #1c1c2a;
+      --plate: #f7f4ec;
+      --ink: #F2EFE6;
+      --ink2: #C9C4B6;
+      --muted: #918B7D;
+      --rule: #33313f;
+      --accent: #22D3EE;
+      --accent2: #E3BC5E;
+      --link: #E0899A;
+      --shadow: 0 1px 2px rgba(0,0,0,.32), 0 10px 34px rgba(0,0,0,.4);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--serif); font-size: clamp(17px, 0.55rem + 0.6vw, 19.5px);
+    line-height: 1.68; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--link); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  strong { font-weight: 700; color: var(--ink); }
+  code { font-family: var(--mono); font-size: .86em;
+         background: color-mix(in srgb, var(--ink) 7%, transparent);
+         padding: .12em .38em; border-radius: 4px; }
+  .wrap { width: var(--col); margin: 0 auto; }
+
+  .eyebrow { font-family: var(--mono); font-weight: 600; font-size: 11.5px;
+             letter-spacing: .17em; text-transform: uppercase; color: var(--muted);
+             margin: 0 0 14px; }
+
+  .masthead { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; padding: 30px 0 0; }
+  .logo { font-family: var(--sans); font-weight: 800; font-size: 21px;
+          letter-spacing: -.02em; display: flex; align-items: center; gap: 9px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
+  .tagline { font-size: 15px; color: var(--ink2); font-family: var(--sans); }
+
+  .hero { padding: 44px 0 54px; }
+  .kicker { font-family: var(--sans); font-size: clamp(18px, 2.1vw, 23px); font-weight: 600;
+            color: var(--muted); margin: 0 0 8px; letter-spacing: -.01em; }
+  .hero h1 { font-family: var(--sans); font-size: clamp(37px, 6vw, 72px); font-weight: 800;
+             letter-spacing: -.035em; line-height: 1.04; margin: 0; max-width: 17ch; }
+  .hero-sub { margin: 24px 0 0; font-size: 1.06em; color: var(--ink2); max-width: 60ch; }
+
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; align-items: center; }
+  .btn { display: inline-block; padding: 13px 26px; border-radius: 8px;
+         font-family: var(--sans); font-weight: 700; font-size: 16px;
+         text-decoration: none; border: 1px solid var(--ink); transition: transform .15s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .textlink { font-family: var(--sans); font-size: 16px; font-weight: 600; color: var(--ink2);
+              text-decoration: underline; text-underline-offset: 4px;
+              text-decoration-thickness: 1px; }
+  .textlink:hover { color: var(--ink); }
+
+  .claims { display: grid; grid-template-columns: 1fr; gap: 0 52px; margin: 50px 0 0; }
+  @media (min-width: 760px) { .claims { grid-template-columns: 1fr 1fr; } }
+  .claim { padding: 18px 0 20px; border-top: 1px solid var(--rule); }
+  .claim:first-child, .claim:nth-child(2) { border-top: 2px solid var(--ink); }
+  @media (max-width: 759px) { .claim:nth-child(2) { border-top: 1px solid var(--rule); } }
+  .claim .n { font-family: var(--sans); font-weight: 800; font-size: 40px; line-height: 1.05;
+              color: var(--accent); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .claim h3 { margin: 0 0 6px; }
+  .claim p { margin: 9px 0 0; font-size: 15.5px; color: var(--ink2); line-height: 1.5;
+             font-family: var(--sans); }
+
+  .route { position: relative; padding-bottom: 30px; }
+  .route::before { content: ""; position: absolute; left: calc(var(--spine) / 2); top: 8px;
+                   bottom: 80px; width: 2px; background: var(--rule); }
+  .stop { position: relative; padding: 0 0 76px var(--spine); }
+  .stop::before { content: ""; position: absolute; left: calc(var(--spine) / 2 - 7px); top: 7px;
+                  width: 16px; height: 16px; border-radius: 50%;
+                  background: var(--paper); border: 2px solid var(--ink); box-sizing: border-box; }
+  .stop--key::before { background: var(--accent); border-color: var(--accent); }
+  .stop--warn::before { background: var(--accent2); border-color: var(--accent2); }
+  .stop--end::before { background: var(--ink); }
+
+  h2 { font-family: var(--sans); font-size: clamp(27px, 3.7vw, 38px); font-weight: 800;
+       letter-spacing: -.027em; line-height: 1.13; margin: 12px 0 16px; max-width: 19ch; }
+  h3 { font-family: var(--sans); font-size: 17px; font-weight: 700; margin: 0 0 7px;
+       letter-spacing: -.012em; }
+  .stop p { margin: 0 0 17px; max-width: 60ch; color: var(--ink2); }
+
+  .bignum { font-family: var(--sans); font-weight: 800; font-size: clamp(74px, 10vw, 128px);
+            line-height: .86; letter-spacing: -.05em; margin: 6px 0 4px; color: var(--accent);
+            font-variant-numeric: tabular-nums; }
+  .bignum-note { font-family: var(--sans); font-size: 16px; color: var(--muted); margin: 0 0 20px; }
+
+  /* A white-background chart would glow in dark mode; the plate makes it read
+     as a deliberately printed page instead. */
+  figure { margin: 28px 0 0; }
+  .plate { background: var(--plate); border: 1px solid var(--rule); border-radius: 10px;
+           padding: 14px; box-shadow: var(--shadow); overflow: hidden; }
+  .plate img { border-radius: 4px; }
+  .plate--flush { padding: 0; }
+  .shot { border-radius: 10px; border: 1px solid var(--rule); box-shadow: var(--shadow);
+          overflow: hidden; background: var(--card); }
+  /* min() so the cap never exceeds the column on a phone */
+  .shot--narrow { max-width: min(430px, 100%); }
+  figcaption { margin-top: 11px; font-family: var(--sans); font-size: 14.5px;
+               color: var(--muted); line-height: 1.5; }
+  .panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+            gap: 22px; margin-top: 28px; }
+  .panels figure { margin: 0; }
+
+  .pull { margin: 30px 0 0; padding: 20px 25px; border-left: 3px solid var(--accent);
+          background: color-mix(in srgb, var(--accent) 7%, transparent);
+          border-radius: 0 8px 8px 0; }
+  .pull p { margin: 0 0 9px; color: var(--ink); max-width: none; }
+  .pull p:last-of-type { margin: 0; }
+  .pull .who { font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+               text-transform: uppercase; color: var(--muted); display: block; margin-top: 9px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(238px, 1fr));
+          gap: 1px; margin-top: 28px; background: var(--rule);
+          border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+  .cell { background: var(--paper); padding: 22px 20px; }
+  .cell p { font-size: 15px; margin: 0; color: var(--ink2); max-width: none;
+            line-height: 1.55; font-family: var(--sans); }
+
+  /* results tables: scroll inside their own box, never the page */
+  .tablewrap { margin-top: 26px; overflow-x: auto; border: 1px solid var(--rule);
+               border-radius: 10px; background: var(--card); }
+  table { border-collapse: collapse; width: 100%; min-width: 480px;
+          font-family: var(--sans); font-size: 15.5px; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--rule); }
+  th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+       text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  td { color: var(--ink2); font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  .win td { color: var(--ink); font-weight: 700;
+            background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+  /* real terminal output, quoted verbatim */
+  .term { margin-top: 26px; background: #14141f; color: #e6e3da; border-radius: 10px;
+          padding: 18px 20px; overflow-x: auto; box-shadow: var(--shadow);
+          border: 1px solid #2a2a3a; }
+  .term pre { margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1.62;
+              white-space: pre; }
+  .term .c { color: #9aa08f; }
+  .term .g { color: #7fd18f; }
+  .term .y { color: #E3BC5E; }
+
+  .specs { margin-top: 26px; border-top: 1px solid var(--rule); }
+  .spec { display: grid; grid-template-columns: 1fr; gap: 2px;
+          padding: 14px 0; border-bottom: 1px solid var(--rule); }
+  @media (min-width: 700px) { .spec { grid-template-columns: 178px 1fr; gap: 24px; } }
+  .spec dt { font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em;
+             text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .spec dd { margin: 0; font-size: 16px; color: var(--ink2); font-family: var(--sans); }
+
+  .close { padding: 6px 0 80px var(--spine); position: relative; }
+  .close h2 { max-width: 20ch; }
+  footer { border-top: 1px solid var(--rule); padding: 28px 0 60px;
+           font-family: var(--sans); font-size: 14.5px; color: var(--muted); }
+  footer a { color: var(--ink2); }
+  footer p { margin: 0 0 8px; }
+
+  @media (max-width: 640px) {
+    :root { --spine: 38px; }
+    .hero { padding: 36px 0 46px; }
+    .stop { padding-bottom: 58px; }
+    .plate { padding: 9px; }
+    .term { padding: 14px 14px; }
+    .term pre { font-size: 11.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn { transition: none; }
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="logo"><span class="dot" aria-hidden="true"></span>Marathon Strategy RAG</div>
+    <div class="tagline">a coach that cites its sources</div>
+  </header>
+
+  <section class="hero">
+    <p class="kicker">Generic running advice is everywhere, and a bare LLM will invent numbers.</p>
+    <h1>Every figure this coach quotes traces back to a study you can open.</h1>
+
+    <p class="hero-sub">
+      Ask a race-strategy question in plain English — <em>"should I try to
+      negative-split my first marathon?"</em>, <em>"how much slower will 80°F make
+      me?"</em> — and get practical, cited advice from a curated knowledge base.
+      Several of its cards are distilled from <strong>my own published analyses</strong>
+      of 30,000+ Boston finishers, so when it says only 2.5% of runners
+      negative-split, that figure has a repository behind it.
+    </p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="../writeup.md">Read the writeup</a>
+      <a class="textlink" href="https://github.com/lyhjeremy/marathon-strategy-rag">or the code</a>
+    </div>
+
+    <figure style="margin-top:38px">
+      <img width="2480" height="600" class="shot" src="../assets/banner.png"
+        alt="Marathon Strategy RAG banner artwork." />
+    </figure>
+
+    <div class="claims">
+      <div class="claim">
+        <div class="n">0.98</div>
+        <p>faithfulness for the grounded coach, against <strong>0.76</strong> for
+           the same model with retrieval switched off.</p>
+      </div>
+      <div class="claim">
+        <div class="n">1.00</div>
+        <p>citation validity. Every <code>[n]</code> points at a card that exists
+           and says what the answer claims it says.</p>
+      </div>
+      <div class="claim">
+        <div class="n">0.95</div>
+        <p>answer relevance. Grounding did not come at the cost of answering the
+           question asked.</p>
+      </div>
+      <div class="claim">
+        <div class="n">0.78</div>
+        <p>context precision — the weakest number, and the one that says where the
+           work is.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+<div class="route">
+
+  <section class="stop stop--key">
+    <p class="eyebrow">↓ the measurement</p>
+    <h2>Grounding is a claim, so it gets scored</h2>
+    <p>
+      It is easy to build a RAG system and assert that retrieval makes it more
+      trustworthy. <code>src/eval.py</code> measures it RAGAS-style with an LLM
+      judge over a gold question set, comparing the grounded coach against the
+      identical model with no retrieval at all.
+    </p>
+    <p>
+      The gap is the whole argument: <strong>0.98 against 0.76</strong>. The bare
+      model is not catastrophically wrong, which is exactly what makes it
+      dangerous — it is plausible three-quarters of the time and confidently
+      fabricating the rest.
+    </p>
+    <figure>
+      <div class="plate">
+        <img width="1500" height="660" src="../eval/faithfulness.png" loading="lazy"
+          alt="Bar chart comparing faithfulness, answer relevance, context precision and citation validity between the grounded coach and a bare LLM baseline, with the grounded system higher on faithfulness." />
+      </div>
+      <figcaption>Grounded against bare, on the same questions.</figcaption>
+    </figure>
+    <p style="margin-top:8px">
+      <strong>Context precision at 0.78</strong> is the honest weak spot. Retrieval
+      is pulling in cards that are not always the most relevant available, and the
+      generation step is compensating. It is reported alongside the good numbers
+      rather than omitted from the summary.
+    </p>
+  </section>
+
+  <section class="stop">
+    <p class="eyebrow">↓ the knowledge base</p>
+    <h2>Cards with a repository behind them</h2>
+    <p>
+      Most of what makes this coach worth asking is that a handful of its cards are
+      not summarised from the internet. They are distilled from analyses I ran and
+      published, each of which you can open and check:
+    </p>
+    <div class="grid">
+      <div class="cell">
+        <h3><a href="https://lyhjeremy.github.io/marathon-negative-split-myth/">Negative-Split Myth</a></h3>
+        <p>2.5% of 31,912 Boston finishers ran a true negative split. The coach
+           uses this to steer people toward an even split instead.</p>
+      </div>
+      <div class="cell">
+        <h3><a href="https://lyhjeremy.github.io/marathon-pacing-decay/">Hitting the Wall</a></h3>
+        <p>Pace inflects sharply at about 30 km, which is what makes early
+           restraint the actionable advice.</p>
+      </div>
+      <div class="cell">
+        <h3><a href="https://lyhjeremy.github.io/marathon-heat-tax/">The Heat Tax</a></h3>
+        <p>About one minute slower per °F of race-day heat, across fourteen
+           Bostons.</p>
+      </div>
+      <div class="cell">
+        <h3><a href="https://lyhjeremy.github.io/marathon-majors-course-difficulty/">Course Difficulty</a></h3>
+        <p>Boston and New York are the hardest Majors, by 101 and 78 seconds
+           against Berlin.</p>
+      </div>
+      <div class="cell">
+        <h3><a href="https://lyhjeremy.github.io/marathon-shoe-revolution-decomposition/">Super-Shoes</a></h3>
+        <p>About 67 seconds of the modern elite gain is footwear, not 3–5× the
+           frequency the press reports.</p>
+      </div>
+      <div class="cell">
+        <h3>Plus the general cards</h3>
+        <p>Fuelling, tapering, carb-loading, hydration, pacing and hills, from the
+           standard literature.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="plate">
+        <img width="2480" height="940" src="../assets/architecture.png" loading="lazy"
+          alt="Marathon Strategy RAG pipeline diagram: a plain-English question into local embedding and retrieval over knowledge cards, then generation constrained to cite the retrieved cards." />
+      </div>
+      <figcaption>Retrieval is local and free; only generation calls out.</figcaption>
+    </figure>
+  </section>
+
+  <section class="stop stop--warn">
+    <p class="eyebrow">↓ what this cannot tell you</p>
+    <h2>An LLM judge is still an LLM</h2>
+    <p>
+      Faithfulness and relevance here are scored by a model, not by people. LLM
+      judges are known to favour fluent, well-structured answers and to be
+      inconsistent near the boundary. The 0.98 should be read as "the grounded
+      system is substantially more faithful than the bare one," not as a precise
+      quantity.
+    </p>
+    <p>
+      The knowledge base is also deliberately small and curated. That is what makes
+      citation validity reach 1.00, and it also means the coach has a narrow
+      competence. Ask it something outside the cards and the right behaviour is to
+      decline, not to improvise.
+    </p>
+    <p>
+      Several cards are distilled from single-race analyses, so their caveats
+      travel with them. Boston is a qualifying field on a distinctive course, and
+      any advice derived from it inherits that.
+    </p>
+  </section>
+
+  <section class="stop stop--end">
+    <p class="eyebrow">Finish · what it is built on</p>
+    <h2>Where the numbers come from</h2>
+    <dl class="specs">
+      <div class="spec"><dt>Retrieval</dt><dd><code>sentence-transformers</code> + Chroma, fully local and free</dd></div>
+      <div class="spec"><dt>Generation</dt><dd>Claude CLI by default; <code>ANTHROPIC_API_KEY</code> switches to the API</dd></div>
+      <div class="spec"><dt>Evaluation</dt><dd><code>src/eval.py</code>, RAGAS-style with an LLM judge over a gold question set</dd></div>
+      <div class="spec"><dt>Metrics</dt><dd>Faithfulness, answer relevance, context precision, citation validity</dd></div>
+      <div class="spec"><dt>Knowledge</dt><dd>Curated cards, several distilled from my own published marathon analyses</dd></div>
+      <div class="spec"><dt>Downstream</dt><dd>The same findings drive the <code>adjust</code> node in the <a href="https://lyhjeremy.github.io/marathon-training-agent/">Marathon Training Plan Agent</a></dd></div>
+    </dl>
+  </section>
+
+</div>
+</div>
+
+<div class="wrap">
+  <section class="close">
+    <h2>Advice you can trace back to a number</h2>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="../writeup.md">Read the writeup</a>
+      <a class="textlink" href="https://github.com/lyhjeremy/marathon-strategy-rag">or the code</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      Marathon Strategy RAG ·
+      <a href="../">Showcase</a> ·
+      <a href="../writeup.md">Writeup</a> ·
+      <a href="https://github.com/lyhjeremy/marathon-strategy-rag">Source</a> ·
+      MIT © 2026 Jeremy Lee
+    </p>
+    <p>Educational tool, not coaching or medical advice.</p>
+  </footer>
+</div>
+</body>
+</html>

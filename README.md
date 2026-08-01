@@ -11,6 +11,7 @@ knowledge base built from real marathon science **and my own published data
 analyses** of 30,000+ Boston finishers.
 
 > 🌐 **Overview:** https://lyhjeremy.github.io/marathon-strategy-rag/
+> 📖 **Product overview:** https://lyhjeremy.github.io/marathon-strategy-rag/overview/
 
 ## Why
 Generic running advice is everywhere, and a plain LLM will confidently make up
