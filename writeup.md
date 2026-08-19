@@ -8,11 +8,11 @@
 
 ## The idea
 
-Over several projects I've analysed tens of thousands of marathon finishers — how
+Over several projects I've analysed tens of thousands of marathon finishers, how
 rarely anyone negative-splits, where the wall actually hits, what heat costs you,
 which Majors run slowest. Those findings are useful *advice*, but they live in
 separate write-ups. What if a runner could just **ask a question** and get the
-relevant finding back, phrased as coaching — and know it wasn't made up?
+relevant finding back, phrased as coaching, and know it wasn't made up?
 
 That's a textbook case for **RAG**. A general LLM will happily invent a
 plausible-sounding "most runners negative-split by 2%." A RAG system instead
@@ -24,11 +24,11 @@ Rather than an external dataset, this project ships its own corpus: ~14 markdown
 **knowledge cards** in `knowledge/`. Each has a title and a `> Source:` line.
 
 Two kinds:
-- **Grounded in my analyses** — negative-split reality (2.5% of 31,912 Boston
+- **Grounded in my analyses.** Negative-split reality (2.5% of 31,912 Boston
   finishers), the wall (~30 km inflection), the heat tax (~1 min/°F), Majors
   course difficulty, super-shoes (~67 s). Each states the real figure and cites
   the project it came from.
-- **Established science** — carbohydrate fueling, tapering, carb-loading,
+- **Established science.** Carbohydrate fueling, tapering, carb-loading,
   hydration and sodium, even-pacing, the long run, race-week logistics, hill
   pacing.
 
@@ -44,18 +44,18 @@ reproducible: clone, `pip install`, `python -m src.ingest`, ask.
 1. **Parse & chunk.** Each card is split into overlapping ~120-word windows that
    respect paragraph boundaries, so a retrieved chunk is coherent on its own. The
    card's title is prepended to every chunk so it stays self-describing.
-2. **Embed locally.** `all-MiniLM-L6-v2` (sentence-transformers) on the Mac GPU —
+2. **Embed locally.** `all-MiniLM-L6-v2` (sentence-transformers) on the Mac GPU:
    free, offline, no API key.
 3. **Store.** Chroma with cosine similarity; each chunk keeps `title`, `source`
    and `card` as metadata so citations survive retrieval.
 4. **Retrieve & answer.** A question is embedded and matched; the top passages go
    to Claude with a strict coaching system prompt: answer only from the passages,
    cite each fact `[n]`, be practical. Generation runs on the Claude CLI (my
-   subscription — no per-token cost) or the Anthropic API if a key is set.
+   subscription, no per-token cost) or the Anthropic API if a key is set.
 
 ## Why the citations matter
 
-The value isn't just fluent advice — it's *auditable* advice. When the coach says
+The value isn't just fluent advice. It's *auditable* advice. When the coach says
 "aim for an even split, because only 2.5% of runners actually negative-split," the
 `[1]` points to the exact card, which points to the exact analysis. A runner can
 check the reasoning instead of trusting a black box. And because the knowledge is
@@ -75,15 +75,15 @@ of the time; ground it in retrieved passages and that jumps to **0.98**.
 | faithfulness to the knowledge base | **0.98** | 0.76 |
 
 For the grounded coach, answer relevance scored **0.95**, context precision
-**0.78**, and citation validity **1.00** — every `[n]` resolves to a real
+**0.78**, and citation validity **1.00.** Every `[n]` resolves to a real
 retrieved passage. That ~22-point faithfulness gap is the whole reason to do RAG,
 made concrete.
 
 ## The same chain, in LangChain
 
 `coach.py` wires retrieval → prompt → LLM by hand so the mechanics stay visible.
-`chain_lc.py` expresses the identical flow as a LangChain **LCEL** pipeline —
-`{context: retrieve|format, query: passthrough} | prompt | llm` — so the same
+`chain_lc.py` expresses the identical flow as a LangChain **LCEL** pipeline:
+`{context: retrieve|format, query: passthrough} | prompt | llm`, so the same
 system also runs on the framework most production RAG is built on (`--engine lc`).
 
 ## Limitations & next steps
@@ -91,7 +91,7 @@ system also runs on the framework most production RAG is built on (`--engine lc`
 - The corpus is deliberately small and curated; it answers strategy questions
   well but isn't a general running encyclopedia.
 - Retrieval is single-shot; a query that spans several topics (heat *and* fueling
-  *and* pacing) would benefit from multi-query retrieval or a planning step — a
+  *and* pacing) would benefit from multi-query retrieval or a planning step. A
   natural bridge to the agentic
   [Marathon Training Plan Agent](https://github.com/lyhjeremy/marathon-training-agent)
   companion project.
