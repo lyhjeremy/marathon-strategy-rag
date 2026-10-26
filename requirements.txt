@@ -1,4 +1,4 @@
-# Core RAG stack — all local, no API key required.
+# Core RAG stack: all local, no API key required.
 sentence-transformers>=3.0
 chromadb>=0.5
 

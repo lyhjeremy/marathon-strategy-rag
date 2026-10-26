@@ -1,68 +1,44 @@
-<p align="center">
-  <img src="assets/banner.png" alt="Marathon Strategy RAG" width="100%">
-</p>
+# Marathon strategy RAG
 
-# Marathon Strategy RAG
+A retrieval-augmented marathon coach: ask a race-strategy question and get advice that cites the knowledge card behind every fact, several of them distilled from my own marathon data analyses.
+
+[Live site](https://lyhjeremy.github.io/marathon-strategy-rag/) · [Write-up](https://lyhjeremy.github.io/marathon-strategy-rag/overview/) · [Long-form notes](writeup.md)
 
 Design and copy follow [these standards](https://github.com/lyhjeremy/lyhjeremy/blob/main/DESIGN_STANDARDS.md).
 
-A retrieval-augmented **marathon coach**. Ask a race-strategy question in plain
-English. *"should I try to negative-split my first marathon?"*, *"how much
-slower will 80°F make me?"*, and get practical, **cited** advice grounded in a
-knowledge base built from real marathon science **and my own published data
-analyses** of 30,000+ Boston finishers.
+## Results
 
-> **Overview:** https://lyhjeremy.github.io/marathon-strategy-rag/
-> **Product overview:** https://lyhjeremy.github.io/marathon-strategy-rag/overview/
+Seven gold questions, scored by an LLM judge (`src/eval.py`, RAGAS-style). The bare baseline is the same model with retrieval switched off.
 
-## Why
-Generic running advice is everywhere, and a plain LLM will confidently make up
-numbers. This coach only answers from a curated, citable knowledge base, so when
-it says *"only 2.5% of runners actually negative-split, so aim for an even split
-instead,"* that figure traces back to a real analysis, shown as a `[n]` citation.
+| Metric | Grounded coach | Bare model |
+|---|---|---|
+| Faithfulness to the knowledge base | 0.98 | 0.76 |
+| Answer relevance | 0.95 | |
+| Context precision | 0.78 | |
+| Citation validity (computed in code) | 1.00 | |
 
-Several cards are distilled from my own marathon projects:
-- **Negative-Split Myth.** 2.5% of 31,912 Boston finishers ran a true negative split
-- **Hitting the Wall.** Pace inflects sharply at ~30 km
-- **The Heat Tax.** ~1 minute slower per °F of race-day heat
-- **Course Difficulty.** Boston & NYC are the hardest Majors
-- **Super-Shoes.** ~67 s of the modern elite gain is footwear
+The largest single gap is the heat question (0.40 bare, 0.97 grounded), where the answer depends on a figure from my Boston weather analysis. Per-question scores are in [`eval/results.csv`](eval/results.csv).
 
-…alongside general cards on fueling, tapering, carb-loading, hydration, pacing
-and hills.
+<p align="center">
+  <img src="eval/faithfulness.png" alt="Two bar charts. Left: faithfulness to the knowledge base, 0.76 without retrieval and 0.98 with it. Right: the grounded coach's scores, 0.98 faithfulness, 0.95 answer relevance, 0.78 context precision and 1.00 citation validity." width="820">
+</p>
 
 ## How it works
 
-<p align="center">
-  <img src="assets/architecture.png" alt="Marathon Strategy RAG pipeline" width="760">
-</p>
+1. **Knowledge base.** 14 markdown cards in `knowledge/`, each with a `# Title` and a `> Source:` line. Eight cover established training principles (fueling, carb-loading, tapering, hydration, even pacing, long runs, race week, hills). Six summarize my published analyses: [negative splits](https://lyhjeremy.github.io/marathon-negative-split-myth/) (2.5% of 31,912 Boston finishers), [the wall](https://lyhjeremy.github.io/marathon-pacing-decay/) (pace inflects near 30 km), [the heat tax](https://lyhjeremy.github.io/marathon-heat-tax/) (about 1 minute per °F), [Majors course difficulty](https://lyhjeremy.github.io/marathon-majors-course-difficulty/) (Boston +101 s against Berlin), [super-shoes](https://lyhjeremy.github.io/marathon-shoe-revolution-decomposition/) (about 67 s of the elite gain) and [BQ standards fairness](https://lyhjeremy.github.io/boston-marathon-qualifying-fairness/).
+2. **Chunking.** `src/ingest.py` splits each card into about 120-word windows with a 30-word overlap, respecting paragraphs, and prefixes the card title.
+3. **Embedding and storage.** `sentence-transformers/all-MiniLM-L6-v2` (384-dim) runs locally on CPU, CUDA or Apple MPS. Chunks go into Chroma with cosine distance and keep card, title and source as metadata.
+4. **Retrieval.** Dense top-k similarity search (k = 5 by default).
+5. **Generation.** Claude answers under a system prompt that allows only the retrieved passages and requires an `[n]` citation per fact. The default backend is the Claude CLI; setting `ANTHROPIC_API_KEY` switches to the Anthropic API.
+6. **Two implementations.** `src/coach.py` wires the chain by hand. `src/chain_lc.py` builds the same flow as a LangChain LCEL pipeline: `{context: retrieve | format, query: passthrough} | prompt | llm` (`--engine lc`).
+7. **Evaluation.** For each gold question, `src/eval.py` generates a grounded and a bare answer, asks Claude as judge for faithfulness, answer relevance and context precision as strict JSON, and checks citation validity deterministically.
 
-Retrieval is fully local and free (`sentence-transformers` + Chroma). Generation
-runs on the **Claude CLI** by default (your Claude subscription, no per-token
-cost); set `ANTHROPIC_API_KEY` to use the API instead.
+## Stack
 
-## Evaluated with an LLM judge
-Grounding is only worth it if it makes answers more trustworthy, so `src/eval.py`
-measures that, RAGAS-style, with an LLM as the judge over a gold question set:
+Python, sentence-transformers, ChromaDB, LangChain (`langchain-core`), Claude CLI or Anthropic API, matplotlib.
 
-<p align="center">
-  <img src="eval/faithfulness.png" alt="RAG faithfulness evaluation" width="820">
-</p>
+## How to run
 
-| metric | score |
-|---|---|
-| faithfulness, **grounded coach** | **0.98** |
-| faithfulness, bare LLM, no retrieval | 0.76 |
-| answer relevance | 0.95 |
-| context precision | 0.78 |
-| citation validity | 1.00 |
-
-A bare LLM's claims align with the vetted knowledge base only ~76% of the time;
-grounding the *same* model in retrieved passages lifts that to **0.98**, with every
-`[n]` citation pointing at a real retrieved source. That gap is the whole reason to
-do RAG, quantified. Reproduce with `python -m src.eval`.
-
-## Quick start
 ```bash
 pip install -r requirements.txt
 
@@ -74,31 +50,31 @@ python -m src.cli chat               # interactive coach
 python -m src.cli ask "..." --engine lc   # same chain, built with LangChain LCEL
 python -m src.eval                        # score faithfulness with an LLM judge
 ```
-The knowledge base ships **with the repo** (`knowledge/*.md`), no downloads.
 
-## Two engines: hand-rolled and LangChain
-The default `native` engine wires retrieval → prompt → LLM by hand (`coach.py`).
-Pass `--engine lc` to run the **identical** flow as a LangChain **LCEL** pipeline
-(`chain_lc.py`): `{context: retrieve|format, query: passthrough} | prompt | llm`
-demonstrating the framework most production RAG is built on, with the same
-grounded, cited output.
+The knowledge base ships with the repo, so there is nothing to download. To add knowledge, write a new `knowledge/<topic>.md` card with a `# Title` and a `> Source:` line and rerun `python -m src.ingest`.
 
-## Files
+## Repo layout
+
 | Path | What it is |
 |---|---|
 | `knowledge/*.md` | The knowledge base, one citable card per topic |
-| `src/ingest.py` | Parse cards → chunk → local embeddings → Chroma index |
-| `src/embedder.py` | Local sentence-transformers embedder (free, offline) |
-| `src/retriever.py` | Semantic search over the knowledge chunks |
-| `src/coach.py` | The RAG chain (hand-rolled): retrieve → grounded, cited answer |
-| `src/chain_lc.py` | The same chain built with **LangChain LCEL** (`--engine lc`) |
-| `src/eval.py` | LLM-judge evaluation: faithfulness / relevance / citation validity |
-| `src/llm.py` | LLM wrapper, Claude CLI (default) or Anthropic API |
-| `src/cli.py` | `ask` (one-shot) and `chat` (interactive) commands |
+| `src/ingest.py` | Parse cards, chunk, embed locally, write the Chroma index |
+| `src/embedder.py` | Local sentence-transformers embedder |
+| `src/retriever.py` | Semantic search over the chunks |
+| `src/coach.py` | Hand-rolled RAG chain: retrieve, then a grounded, cited answer |
+| `src/chain_lc.py` | The same chain in LangChain LCEL (`--engine lc`) |
+| `src/eval.py` | LLM-judge evaluation and the deterministic citation check |
+| `src/llm.py` | LLM wrapper: Claude CLI (default) or Anthropic API |
+| `src/cli.py` | `ask` (one question) and `chat` (interactive) |
+| `eval/` | `results.csv` and `faithfulness.png` from the last evaluation run |
 
-## Extending it
-Drop a new `knowledge/<topic>.md` card (with a `# Title` and a `> Source:` line),
-re-run `python -m src.ingest`, and the coach can cite it immediately.
+## Limitations
+
+- Seven gold questions, all written to be answerable from the cards. The scores show a clear gap between grounded and bare answers on in-scope questions; they are not a precise measurement.
+- The judge is an LLM from the same family as the generator. Bare faithfulness measures agreement with the retrieved passages, so a true claim that the cards don't contain counts against the bare model.
+- Retrieval is dense-only with a single query and no reranker, which is where the 0.78 context precision comes from. The sibling [wine sommelier RAG](https://github.com/lyhjeremy/wine-sommelier-rag) uses BM25 plus a cross-encoder.
+- Several cards come from single-race Boston analyses, and their caveats carry over.
 
 ## License
-[MIT](LICENSE) © 2026 Jeremy Lee
+
+[MIT](LICENSE) © 2026 Jeremy Lee. Educational tool, not coaching or medical advice.

@@ -1,108 +1,125 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Marathon Strategy RAG: a coach that cites its sources</title>
-<meta name="description" content="A retrieval-augmented marathon coach. Ask a race-strategy question and get practical, cited advice grounded in real marathon science and data analyses of 30,000+ Boston finishers." />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marathon strategy RAG: a marathon coach that cites its sources</title>
+<meta name="description" content="A retrieval-augmented marathon coach: local MiniLM embeddings and Chroma over 14 knowledge cards, Claude for generation, every fact cited. Faithfulness 0.98 grounded against 0.76 without retrieval.">
+<link rel="stylesheet" href="assets/family.css">
 <style>
-@font-face{font-family:"Source Serif 4";src:url("fonts/SourceSerif4-400.woff2")format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"Source Serif 4";src:url("fonts/SourceSerif4-600.woff2")format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:"IBM Plex Sans";src:url("fonts/IBMPlexSans-400.woff2")format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"IBM Plex Sans";src:url("fonts/IBMPlexSans-600.woff2")format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:"IBM Plex Mono";src:url("fonts/IBMPlexMono-400.woff2")format("woff2");font-weight:400;font-display:swap}
-
-  :root{--ink:#12233b;--paper:#F6F8FB;--rule:#D6E0EC;--soft:#5d6b7d;--accent:#F26A21;--blue:#1F6FB2;--navy:#12335c}
-  *{box-sizing:border-box} html,body{margin:0;padding:0}
-  body{background:var(--paper);color:var(--ink);font-family:"Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, serif;line-height:1.7;font-size:18px}
-  .hero{width:100%;background:#0d2340;overflow:hidden}.hero svg{width:100%;height:250px;display:block}
-  .container{max-width:820px;margin:0 auto;padding:38px 24px 80px}
-  .kicker{text-transform:uppercase;letter-spacing:.16em;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:13px;color:var(--accent);font-weight:700;text-align:center;margin-bottom:12px}
-  h1{font-size:40px;line-height:1.16;text-align:center;margin:0 0 14px}
-  .lede{font-size:20px;color:#2b3c52;text-align:center;margin:0 auto 6px;max-width:680px}
-  .byline{color:var(--soft);font-style:italic;text-align:center;margin:18px 0 30px}
-  h2{font-size:26px;margin:50px 0 14px;border-bottom:1px solid var(--rule);padding-bottom:8px}
-  p{margin:0 0 16px} a{color:var(--blue)}
-  .chat{background:#F5F5F0;border:1px solid var(--rule);border-radius: 0;padding:22px;margin:26px 0;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif}
-  .turn{display:flex;gap:12px;margin:12px 0;align-items:flex-start}
-  .who{flex:0 0 58px;font-weight:700;font-size:13px;padding-top:9px}
-  .u .who{color:var(--soft)} .s .who{color:var(--blue)}
-  .bubble{background:#f6f2e8;border-radius: 0;padding:10px 15px;font-size:15.5px;color:#222}
-  .u .bubble{background:#eef1f5} .s .bubble{background:#eaf3fa}
-  .cite{color:var(--accent);font-weight:700}
-  .features{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:26px 0}
-  .card{background:#F5F5F0;border:1px solid var(--rule);border-radius: 0;padding:20px;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif}
-  .card .ico{font-size:24px}.card h3{margin:8px 0 6px;font-size:18px}.card p{font-size:15px;color:#444;margin:0;line-height:1.6}
-  .steps{counter-reset:step;list-style:none;padding:0;margin:24px 0}
-  .steps li{position:relative;padding:12px 0 12px 54px;border-bottom:1px dashed var(--rule);font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:16px}
-  .steps li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:10px;width:34px;height:34px;border-radius: 0;background:var(--blue);color:#F5F5F0;font-weight:700;display:flex;align-items:center;justify-content:center}
-  .note{background:#F5F5F0;border:1px solid var(--rule);border-left:4px solid var(--blue);border-radius: 0;padding:14px 20px;font-size:14.5px;color:#444;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;margin:24px 0}
-  .btnrow{text-align:center;margin:40px 0 8px}
-  .btn{display:inline-block;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:15px;font-weight:600;text-decoration:none;padding:13px 24px;border-radius: 0;margin:6px}
-  .btn-solid{background:var(--blue);color:#F5F5F0}.btn-ghost{border:1px solid var(--blue);color:var(--blue)}
-  .footer{text-align:center;color:var(--soft);font-size:14px;margin-top:54px;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif}
-  @media(max-width:600px){h1{font-size:30px}.features{grid-template-columns:1fr}.hero svg{height:200px}}
+  * { box-sizing: border-box; border-radius: 0; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-head);
+         font-size: 18px; line-height: 1.65; border-top: 6px solid var(--signal-2); }
+  a { color: var(--signal); }
+  :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+  code { font-family: var(--font-mono); font-size: .86em; background: var(--panel); padding: .1em .35em; }
+  .bar-link { display: block; background: var(--ink); color: var(--paper); text-align: center; padding: 11px 18px;
+              font: 600 14.5px/1.45 var(--font-body); text-decoration: none; }
+  .bar-link:hover { text-decoration: underline; }
+  .wrap { width: min(100% - 2.6rem, 60rem); margin: 0 auto; }
+  .course { display: block; width: 100%; height: auto; margin-top: 26px; }
+  .kick { font: 600 13px/1.4 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--signal); margin: 22px 0 0; }
+  h1 { font: 700 clamp(44px, 7.6vw, 92px)/.95 var(--font-display); text-transform: uppercase; margin: 10px 0 0; max-width: 16ch; }
+  .lede { color: var(--ink-2); margin: 22px 0 0; max-width: 60ch; }
+  .byline { font: 400 14.5px/1.5 var(--font-body); color: var(--ink-2); margin: 12px 0 0; }
+  .bib { margin-top: 34px; border: 2px solid var(--ink); background: var(--panel); display: grid; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .bib { grid-template-columns: 1fr 1fr; } }
+  .bib > div { padding: 18px 22px; }
+  @media (min-width: 720px) { .bib > div + div { border-left: 2px dashed var(--edge); } }
+  @media (max-width: 719px) { .bib > div + div { border-top: 2px dashed var(--edge); } }
+  .bib .lab { font: 600 12px/1.4 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+  .bib .big { font: 700 clamp(56px, 9vw, 96px)/1 var(--font-display); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .bib .big .from { color: var(--ink-2); }
+  .bib .big .to { color: var(--signal-2); }
+  .bib p { margin: 6px 0 0; font: 400 15px/1.5 var(--font-body); color: var(--ink-2); }
+  .bib ul { margin: 8px 0 0; padding: 0; list-style: none; font: 400 15.5px/1.5 var(--font-body); }
+  .bib li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px dotted var(--rule); }
+  .bib li b { font: 700 22px/1 var(--font-display); }
+  h2 { font: 700 clamp(28px, 4vw, 42px)/1 var(--font-display); text-transform: uppercase; margin: 62px 0 12px; }
+  p { max-width: 62ch; }
+  .qa { border: 1px solid var(--edge); margin-top: 18px; font-family: var(--font-body); font-size: 16px; }
+  .qa .t { display: grid; grid-template-columns: 74px 1fr; gap: 12px; padding: 14px 18px; }
+  .qa .t + .t { border-top: 1px solid var(--rule); }
+  .qa .who { font: 600 12px/1.9 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+  .qa .cite { font-family: var(--font-mono); font-size: .85em; color: var(--signal); }
+  .cap { font: 400 14.5px/1.5 var(--font-body); color: var(--ink-2); margin-top: 10px; }
+  .steps { margin: 16px 0 0; padding: 0; list-style: none; counter-reset: s; max-width: 62ch; }
+  .steps li { counter-increment: s; position: relative; padding: 10px 0 10px 54px; border-bottom: 1px dashed var(--rule); color: var(--ink-2); }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: 8px; width: 36px; text-align: center;
+                      border: 2px solid var(--ink); font: 700 18px/26px var(--font-display); color: var(--ink); }
+  .btnrow { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 30px; align-items: center; }
+  .btn { display: inline-block; padding: 12px 22px; background: var(--ink); color: var(--paper); text-decoration: none;
+         font: 600 16px/1.2 var(--font-body); border: 1px solid var(--ink); }
+  .btn:hover { background: var(--signal); border-color: var(--signal); }
+  .tl { font: 600 16px/1.2 var(--font-body); color: var(--ink-2); }
+  footer { border-top: 1px solid var(--rule); margin-top: 70px; padding: 22px 0 54px;
+           font: 400 14.5px/1.6 var(--font-body); color: var(--ink-2); }
+  footer a { color: var(--ink-2); }
 </style>
 </head>
 <body>
-<a href="overview/" data-overview-link style="display:block;background:#1C1E1B;color:#EDEDE7;text-align:center;padding:11px 18px;font:600 14.5px/1.45 -apple-system,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none">Read the full writeup&nbsp;&rarr;</a>
+<a class="bar-link" href="overview/" data-overview-link>Read the full writeup&nbsp;&rarr;</a>
 
-<div class="hero">
-  <svg viewBox="0 0 820 250" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A pace chart with a runner, showing the wall at 30km">
-    <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#123457"/><stop offset="1" stop-color="#0b1c33"/></linearGradient></defs>
-    <rect width="820" height="250" fill="url(#bg)"/>
-    <!-- axis -->
-    <line x1="70" y1="200" x2="760" y2="200" stroke="#3a5573" stroke-width="2"/>
-    <!-- pace-decay curve: flat then rising ("the wall") -->
-    <path d="M70 150 L250 150 L430 148 Q560 145 620 120 T760 60" fill="none" stroke="#F26A21" stroke-width="5" stroke-linecap="round"/>
-    <!-- 30km marker -->
-    <line x1="560" y1="70" x2="560" y2="200" stroke="#6f8aa6" stroke-width="2" stroke-dasharray="5 6"/>
-    <text x="560" y="222" fill="#9fb4cc" font-family="Helvetica Neue,Arial,sans-serif" font-size="14" text-anchor="middle">30 km. The wall</text>
-    <!-- runner glyph -->
-    <g transform="translate(150,120)" stroke="#eaf3fa" stroke-width="5" stroke-linecap="round" fill="none">
-      <circle cx="0" cy="-30" r="9" fill="#eaf3fa" stroke="none"/>
-      <path d="M0 -20 L2 2"/><path d="M2 2 L-14 20"/><path d="M2 2 L18 16"/>
-      <path d="M-6 -12 L-22 -4"/><path d="M-6 -12 L14 -18"/>
-    </g>
+<main class="wrap">
+  <svg class="course" viewBox="0 0 820 170" role="img" aria-label="A flat pace line that climbs steeply after a dashed marker at 30 km, the point where many runners hit the wall">
+    <line x1="40" y1="140" x2="780" y2="140" stroke="var(--rule)" stroke-width="2"/>
+    <path d="M40 112 L250 112 L430 110 Q560 107 620 82 T780 22" fill="none" stroke="var(--signal)" stroke-width="5"/>
+    <line x1="560" y1="30" x2="560" y2="140" stroke="var(--signal-2)" stroke-width="3" stroke-dasharray="7 7"/>
+    <text x="560" y="162" fill="var(--ink-2)" font-family="IBM Plex Mono, monospace" font-size="13" text-anchor="middle">30 KM</text>
+    <text x="40" y="162" fill="var(--ink-2)" font-family="IBM Plex Mono, monospace" font-size="13">START</text>
   </svg>
-</div>
-<div class="container">
-  <p class="kicker">Retrieval-augmented, cited, free</p>
-  <h1>Marathon Strategy RAG</h1>
-  <p class="lede">A marathon coach that <strong>cites its sources</strong>. Ask a race-strategy question and get practical advice grounded in real marathon science, and in my own data analyses of 30,000+ Boston finishers.</p>
+
+  <p class="kick">Retrieval-augmented generation · Python · Claude</p>
+  <h1>A marathon coach that cites its sources</h1>
+  <p class="lede">Ask a race-strategy question in plain English. The coach retrieves passages from 14
+  knowledge cards, answers only from them, and cites each fact as <code>[n]</code>. Six cards summarize my
+  own published analyses of Boston and elite marathon data.</p>
   <p class="byline">By Jeremy Lee · 14 marathons, 2:48 PB</p>
 
-  <div class="chat">
-    <div class="turn u"><div class="who">You</div><div class="bubble">Should I try to negative-split my first marathon?</div></div>
-    <div class="turn s"><div class="who">Coach</div><div class="bubble">Probably not as a goal. In 31,912 Boston finishers only <strong>2.5%</strong> actually ran a negative split, and ~94% slowed, median +14% <span class="cite">[1]</span>. Aim for an <em>even</em> effort instead: hold back slightly through halfway so you're not part of the 27% who fall apart after 30 km <span class="cite">[2]</span>.</div></div>
+  <div class="bib">
+    <div>
+      <div class="lab">Faithfulness, bare model to grounded</div>
+      <div class="big"><span class="from">0.76</span> <span aria-hidden="true">&rarr;</span><span class="sr"> to </span> <span class="to">0.98</span></div>
+      <p>Same model, same seven questions, scored by an LLM judge in <code>src/eval.py</code>.</p>
+    </div>
+    <div>
+      <div class="lab">Grounded coach, mean of seven</div>
+      <ul>
+        <li><span>Citation validity (checked in code)</span><b>1.00</b></li>
+        <li><span>Answer relevance</span><b>0.95</b></li>
+        <li><span>Context precision</span><b>0.78</b></li>
+      </ul>
+    </div>
   </div>
 
-  <h2>Why a citing coach?</h2>
-  <p>Running advice is everywhere and a plain chatbot will invent statistics with total confidence. This coach answers <strong>only</strong> from a curated knowledge base and cites every claim with a <span class="cite">[n]</span> that traces back to a real source: established training science, or one of my own published marathon analyses.</p>
-
-  <div class="features">
-    <div class="card"><h3>Grounded in real data</h3><p>Cards distilled from my analyses of the Boston field: negative splits, the wall, the heat tax, course difficulty, super-shoes.</p></div>
-    <div class="card"><h3>Every claim cited</h3><p>Answers carry <span class="cite">[n]</span> citations back to the exact knowledge card: no invented numbers.</p></div>
-    <div class="card"><h3>Free &amp; local</h3><p>Embeddings and search run on your machine with sentence-transformers + Chroma. The knowledge base ships in the repo.</p></div>
-    <div class="card"><h3>Easily extended</h3><p>Add a markdown card, re-index, and the coach can cite it: no retraining.</p></div>
+  <h2>What an answer looks like</h2>
+  <div class="qa">
+    <div class="t"><span class="who">Runner</span><span>Should I try to negative-split my first marathon?</span></div>
+    <div class="t"><span class="who">Coach</span><span>Probably not as a goal. In 31,912 Boston finishers only 2.5% ran a negative split, and about 94% slowed, median +14% <span class="cite">[1]</span>. Aim for an even effort: hold back slightly through halfway so you aren't one of the 27% who slowed by more than 25% late in the race <span class="cite">[2]</span>.</span></div>
   </div>
+  <p class="cap">Illustrative answer assembled from the negative-split and hitting-the-wall cards, showing the citation format. Not a logged transcript.</p>
 
   <h2>How it works</h2>
   <ol class="steps">
-    <li>Your question is embedded locally and matched against the knowledge cards.</li>
-    <li>The most relevant passages are retrieved, each keeping its title and source.</li>
-    <li>Claude answers using only those passages, citing each fact it uses.</li>
-    <li>You see the advice plus the exact cards it was built from.</li>
+    <li>Each card is cut into about 120-word chunks with a 30-word overlap and embedded locally with <code>all-MiniLM-L6-v2</code>.</li>
+    <li>Chunks go into Chroma (cosine distance) with their card, title and source as metadata.</li>
+    <li>A question is embedded and the five nearest chunks come back with their sources.</li>
+    <li>Claude answers from those passages only and cites each fact. The CLI is the default backend; <code>ANTHROPIC_API_KEY</code> switches to the API.</li>
   </ol>
-
-  <div class="note"><strong>Under the hood:</strong> generation runs on the Claude CLI by default (uses your Claude subscription, no per-token cost); set <code>ANTHROPIC_API_KEY</code> to use the API instead. Retrieval is always local and free.</div>
+  <p style="margin-top:18px">The chain is written twice: by hand in <code>coach.py</code>, and as a LangChain LCEL
+  pipeline in <code>chain_lc.py</code>. Context precision of 0.78 is the weak spot; retrieval is dense-only with
+  no reranker. The <a href="overview/">full writeup</a> has the per-question results and the limitations.</p>
 
   <div class="btnrow">
-    <a class="btn btn-solid" href="https://github.com/lyhjeremy/marathon-strategy-rag">Get it on GitHub</a>
-    <a class="btn btn-ghost" href="https://github.com/lyhjeremy/marathon-strategy-rag#quick-start">Read the setup guide</a>
+    <a class="btn" href="https://github.com/lyhjeremy/marathon-strategy-rag">Code on GitHub</a>
+    <a class="tl" href="https://github.com/lyhjeremy/marathon-strategy-rag#how-to-run">Setup and commands</a>
   </div>
+</main>
 
-  <p class="footer">Built with Python · sentence-transformers · Chroma · Claude · © 2026 Jeremy Lee · MIT License</p>
-</div>
+<footer class="wrap">
+  Jeremy Lee · Python, sentence-transformers, Chroma, LangChain, Claude · <a href="overview/">Full writeup</a> ·
+  MIT License · Educational tool, not coaching or medical advice.
+</footer>
 </body>
 </html>
