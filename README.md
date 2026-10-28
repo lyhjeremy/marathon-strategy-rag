@@ -25,13 +25,13 @@ The largest single gap is the heat question (0.40 bare, 0.97 grounded), where th
 
 ## How it works
 
-1. **Knowledge base.** 14 markdown cards in `knowledge/`, each with a `# Title` and a `> Source:` line. Eight cover established training principles (fueling, carb-loading, tapering, hydration, even pacing, long runs, race week, hills). Six summarize my published analyses: [negative splits](https://lyhjeremy.github.io/marathon-negative-split-myth/) (2.5% of 31,912 Boston finishers), [the wall](https://lyhjeremy.github.io/marathon-pacing-decay/) (pace inflects near 30 km), [the heat tax](https://lyhjeremy.github.io/marathon-heat-tax/) (about 1 minute per °F), [Majors course difficulty](https://lyhjeremy.github.io/marathon-majors-course-difficulty/) (Boston +101 s against Berlin), [super-shoes](https://lyhjeremy.github.io/marathon-shoe-revolution-decomposition/) (about 67 s of the elite gain) and [BQ standards fairness](https://lyhjeremy.github.io/boston-marathon-qualifying-fairness/).
-2. **Chunking.** `src/ingest.py` splits each card into about 120-word windows with a 30-word overlap, respecting paragraphs, and prefixes the card title.
-3. **Embedding and storage.** `sentence-transformers/all-MiniLM-L6-v2` (384-dim) runs locally on CPU, CUDA or Apple MPS. Chunks go into Chroma with cosine distance and keep card, title and source as metadata.
-4. **Retrieval.** Dense top-k similarity search (k = 5 by default).
-5. **Generation.** Claude answers under a system prompt that allows only the retrieved passages and requires an `[n]` citation per fact. The default backend is the Claude CLI; setting `ANTHROPIC_API_KEY` switches to the Anthropic API.
-6. **Two implementations.** `src/coach.py` wires the chain by hand. `src/chain_lc.py` builds the same flow as a LangChain LCEL pipeline: `{context: retrieve | format, query: passthrough} | prompt | llm` (`--engine lc`).
-7. **Evaluation.** For each gold question, `src/eval.py` generates a grounded and a bare answer, asks Claude as judge for faithfulness, answer relevance and context precision as strict JSON, and checks citation validity deterministically.
+The knowledge base is 14 markdown cards in `knowledge/`, each with a `# Title` and a `> Source:` line. Eight cover established training principles (fueling, carb-loading, tapering, hydration, even pacing, long runs, race week, hills). The other six summarize my published analyses: [negative splits](https://lyhjeremy.github.io/marathon-negative-split-myth/) (2.5% of 31,912 Boston finishers), [the wall](https://lyhjeremy.github.io/marathon-pacing-decay/) (pace inflects near 30 km), [the heat tax](https://lyhjeremy.github.io/marathon-heat-tax/) (about 1 minute per °F), [Majors course difficulty](https://lyhjeremy.github.io/marathon-majors-course-difficulty/) (Boston +101 s against Berlin), [super-shoes](https://lyhjeremy.github.io/marathon-shoe-revolution-decomposition/) (about 67 s of the elite gain) and [BQ standards fairness](https://lyhjeremy.github.io/boston-marathon-qualifying-fairness/).
+
+`src/ingest.py` splits each card into windows of about 120 words with a 30-word overlap, respecting paragraphs, and prefixes the card title. The chunks are embedded with `sentence-transformers/all-MiniLM-L6-v2` (384-dim), which runs locally on CPU, CUDA or Apple MPS, and stored in Chroma with cosine distance, keeping card, title and source as metadata. Retrieval is a dense top-k similarity search (k = 5 by default).
+
+Claude then answers under a system prompt that allows only the retrieved passages and requires an `[n]` citation per fact. The default backend is the Claude CLI; setting `ANTHROPIC_API_KEY` switches to the Anthropic API. The chain exists twice: `src/coach.py` wires it by hand, and `src/chain_lc.py` builds the same flow as a LangChain LCEL pipeline, `{context: retrieve | format, query: passthrough} | prompt | llm` (`--engine lc`).
+
+For evaluation, `src/eval.py` generates a grounded and a bare answer to each gold question, asks Claude as judge for faithfulness, answer relevance and context precision as strict JSON, and checks citation validity deterministically.
 
 ## Stack
 
@@ -70,8 +70,8 @@ The knowledge base ships with the repo, so there is nothing to download. To add 
 
 ## Limitations
 
-- Seven gold questions, all written to be answerable from the cards. The scores show a clear gap between grounded and bare answers on in-scope questions; they are not a precise measurement.
-- The judge is an LLM from the same family as the generator. Bare faithfulness measures agreement with the retrieved passages, so a true claim that the cards don't contain counts against the bare model.
+- Seven gold questions, all written to be answerable from the cards. The scores show a clear gap between grounded and bare answers on in-scope questions, but seven is too few for a precise measurement.
+- The judge is an LLM from the same family as the generator. Bare faithfulness measures agreement with the retrieved passages, so a correct claim that the cards don't contain still counts against the bare model.
 - Retrieval is dense-only with a single query and no reranker, which is where the 0.78 context precision comes from. The sibling [wine sommelier RAG](https://github.com/lyhjeremy/wine-sommelier-rag) uses BM25 plus a cross-encoder.
 - Several cards come from single-race Boston analyses, and their caveats carry over.
 

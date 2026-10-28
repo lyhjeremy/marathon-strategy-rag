@@ -267,13 +267,13 @@
     <h1>A marathon coach that answers only from cited sources</h1>
 
     <p class="hero-sub">
-      Ask a race-strategy question in plain English, such as <em>"should I try to
-      negative-split my first marathon?"</em>, and the coach retrieves passages
-      from 14 knowledge cards, answers from those passages only, and cites each
-      fact as <code>[n]</code>. Six of the cards summarize my own published
-      marathon analyses, so a number like "2.5% of 31,912 Boston finishers ran a
-      negative split" has a repository behind it. On a seven-question LLM-judge
-      evaluation, grounding lifts faithfulness from 0.76 to 0.98.
+      Ask a race-strategy question in plain English (<em>"should I try to
+      negative-split my first marathon?"</em>) and the coach pulls passages from
+      14 knowledge cards, answers from those passages alone and cites each fact
+      as <code>[n]</code>. Six of the cards summarize marathon analyses I ran and
+      published, so when it says "2.5% of 31,912 Boston finishers ran a negative
+      split" there is a repository you can open to check. On a seven-question
+      LLM-judge evaluation, grounding lifts faithfulness from 0.76 to 0.98.
     </p>
 
     <div class="cta-row">
@@ -288,7 +288,7 @@
       </div>
       <div class="claim">
         <div class="n">1.00</div>
-        <p>Citation validity, checked in code: every <code>[n]</code> points at a passage that was actually retrieved.</p>
+        <p>Citation validity, checked in code: every <code>[n]</code> points at a passage that had been retrieved.</p>
       </div>
       <div class="claim">
         <div class="n">0.95</div>
@@ -349,7 +349,7 @@
     </div>
     <p class="splits-note">Faithfulness scores from <code>eval/results.csv</code>. Citation validity was 1.00 on every question.</p>
     <p style="margin-top:22px">
-      The biggest gap is the heat question: the bare model scored 0.40, the
+      The biggest gap is on heat, where the bare model scored 0.40 and the
       grounded coach 0.97. The heat card carries a specific number from my Boston
       weather analysis, about a minute per &deg;F, which a model without
       retrieval has no way to know. The weakest retrieval is the carbohydrate
@@ -384,7 +384,7 @@
     </dl>
     <p style="margin-top:22px">
       Adding knowledge means writing a new card and rerunning
-      <code>python -m src.ingest</code>. There is no retraining.
+      <code>python -m src.ingest</code>; nothing gets retrained.
     </p>
   </section>
 
@@ -392,15 +392,16 @@
     <p class="eyebrow">Limitations</p>
     <h2>What the numbers don't show</h2>
     <p>
-      Seven questions is a small gold set, and all seven were written to be
-      answerable from the cards. The scores say the grounded coach is clearly more
-      faithful than the bare model on in-scope questions. They are not a precise
-      measurement, and they say nothing about out-of-scope questions.
+      Seven questions is a small gold set, and I wrote all seven to be answerable
+      from the cards. On questions like those the grounded coach is clearly more
+      faithful than the bare model, but seven is too few for a precise
+      measurement, and the set says nothing about questions the cards don't cover.
     </p>
     <p>
-      The judge is also an LLM, and the same model family wrote the answers. Bare
-      faithfulness measures agreement with the retrieved passages, so a true claim
-      that the cards don't contain counts against the bare model.
+      The judge is also an LLM, from the same model family that wrote the
+      answers. Bare faithfulness measures agreement with the retrieved passages,
+      so a correct claim the cards don't contain still counts against the bare
+      model.
     </p>
     <p>
       Retrieval is plain dense similarity with a single query. A question that
