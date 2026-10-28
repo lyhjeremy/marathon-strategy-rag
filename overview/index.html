@@ -451,7 +451,7 @@
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-negative-split-myth/">Negative splits</a></dt><dd>2.5% of 31,912 Boston 2014 finishers ran a negative split; about 94% slowed, median +14%.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-pacing-decay/">The wall</a></dt><dd>Pace inflects at about 30 km; 27% of finishers slowed by more than 25% late in the race.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-heat-tax/">Heat</a></dt><dd>About one minute slower per &deg;F of race-day heat at Boston.</dd></div>
-      <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-majors-course-difficulty/">Courses</a></dt><dd>The card gives Boston +101 s and New York +78 s against Berlin. Those are method estimates on a simulated field, not measurements of the courses; see the limitations.</dd></div>
+      <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-majors-course-difficulty/">Courses</a></dt><dd>Boston +101 s and New York +78 s against Berlin, from a simulated field with planted penalties. The card labels them as simulated; they are not measurements of the courses.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-shoe-revolution-decomposition/">Super-shoes</a></dt><dd>About 67 seconds of the modern elite gain is footwear.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/boston-marathon-qualifying-fairness/">BQ standards</a></dt><dd>Across 22 age and sex brackets there is no average gender gap, but women's brackets vary three to four times more in difficulty.</dd></div>
     </dl>
@@ -477,12 +477,16 @@
       model.
     </p>
     <p>
-      One card is wrong in a way the evaluation can't catch. The course-difficulty card states Boston
-      +101 s and New York +78 s as facts about the real courses, and adds a reason (the Newton hills).
-      The study behind it ran on a simulated field with penalties set in code, so those figures say how
-      well a method recovered a planted answer and nothing about Boston. The card predates that
-      correction, and the downhill question retrieves it. Faithfulness only checks that the answer
-      matches the card, so the score stays high.
+      The course card's numbers are simulated. It gives Boston +101 s and New York +78 s against
+      Berlin, from a study that ran on a simulated field with course penalties planted in code, so the
+      figures show how well a method recovered a planted answer and say nothing about Boston. The card
+      states this in its title and next to every time figure, so each retrieved chunk
+      carries the label. Faithfulness would not catch a wrong figure here: it only checks that the
+      answer matches the card.
+    </p>
+    <p class="vsrc">
+      2026-10-28: the simulated-data label was added to the card after the published evaluation. The
+      numbers are unchanged; the scores and the explorer above use the unlabeled text.
     </p>
     <p>
       Retrieval is plain dense similarity with a single query. A question that
