@@ -256,6 +256,47 @@
 </style>
 </head>
 <body>
+<style>
+  .viz { margin-top: 30px; border: 1px solid var(--edge); background: var(--card); padding: 18px 18px 14px; font-family: var(--sans); }
+  .viz h3 { font: 600 clamp(22px, 2.6vw, 28px)/1.06 var(--display); text-transform: uppercase; letter-spacing: .01em;
+            margin: 0 0 6px; max-width: 34ch; }
+  .viz .sub { font-size: 14.5px; color: var(--muted); margin: 0 0 16px; max-width: 64ch; line-height: 1.5; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+  .ctl button { font: 600 13px/1 var(--mono); letter-spacing: .04em; padding: 9px 11px; min-width: 44px;
+                background: var(--paper); color: var(--ink); border: 1px solid var(--edge); cursor: pointer; }
+  .ctl button:hover { border-color: var(--ink); }
+  .ctl button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .readout { font: 400 14px/1.5 var(--mono); color: var(--ink); min-height: 3em; border-top: 1px solid var(--rule);
+             padding-top: 10px; margin: 10px 0 0; }
+  .vsrc { font-size: 13px; color: var(--muted); margin: 8px 0 0; line-height: 1.45; }
+  .askq { font: 600 clamp(19px, 2.2vw, 23px)/1.25 var(--display); margin: 0 0 12px; color: var(--ink); }
+  .kpick { display: grid; grid-template-columns: minmax(0, 1fr) 3em; gap: 4px 10px; align-items: center;
+           font-size: 14px; color: var(--ink2); max-width: 26rem; margin: 0 0 12px; }
+  .kpick input { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--accent2); }
+  .kpick output { font: 600 15px/1 var(--mono); color: var(--ink); text-align: right; }
+  .hits { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .hits li { display: grid; grid-template-columns: 2rem minmax(0, 1fr) 4.2rem; gap: 4px 12px; padding: 10px 0;
+             border-bottom: 1px solid var(--rule); align-items: start; }
+  .hits li.out .cd, .hits li.out .tx, .hits li.out .sm, .hits li.out .rk { color: var(--muted); font-weight: 400; }
+  .hits li.out .sm i { background: var(--edge); }
+  .hits li.cut { border-top: 2px dashed var(--accent); }
+  .hits .rk { font: 700 22px/1 var(--display); color: var(--accent2); }
+  .hits .cd { font: 600 12px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
+  .hits .tx { grid-column: 2 / 3; font-size: 14px; line-height: 1.45; color: var(--ink2); margin: 3px 0 0; }
+  .hits .sm { grid-row: 1 / span 2; grid-column: 3; text-align: right; font: 400 14px/1.2 var(--mono); color: var(--ink); }
+  .hits .sm i { display: block; height: 6px; margin: 6px 0 0 auto; background: var(--accent2); }
+  .hits .pend { color: var(--muted); font-size: 14px; }
+  .sk { height: 15px; margin: 12px 0; background: var(--rule); }
+  @media (prefers-reduced-motion: no-preference) { .sk { animation: skp 1.2s ease-in-out infinite alternate; } }
+  @keyframes skp { from { opacity: .45; } to { opacity: 1; } }
+  .splits th button { all: unset; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+  .splits th button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .splits th button:hover { color: var(--ink); }
+  .splits th[aria-sort="descending"] button::after { content: " \2193"; }
+  .splits th[aria-sort="ascending"] button::after { content: " \2191"; }
+  @media (max-width: 520px) { .viz { padding: 14px 12px 12px; } .hits li { grid-template-columns: 1.6rem minmax(0, 1fr) 3.6rem; } }
+</style>
+
 <div class="wrap">
   <header class="masthead">
     <div class="logo"><span class="dot" aria-hidden="true"></span>Marathon strategy RAG</div>
@@ -267,13 +308,12 @@
     <h1>A marathon coach that answers only from cited sources</h1>
 
     <p class="hero-sub">
-      Ask a race-strategy question in plain English (<em>"should I try to
-      negative-split my first marathon?"</em>) and the coach pulls passages from
-      14 knowledge cards, answers from those passages alone and cites each fact
-      as <code>[n]</code>. Six of the cards summarize marathon analyses I ran and
-      published, so when it says "2.5% of 31,912 Boston finishers ran a negative
-      split" there is a repository you can open to check. On a seven-question
-      LLM-judge evaluation, grounding lifts faithfulness from 0.76 to 0.98.
+      Ask a race-strategy question in plain English (<em>"should I try to negative-split my first
+      marathon?"</em>) and the coach pulls passages from 14 knowledge cards, answers from those passages
+      alone, and cites each fact as <code>[n]</code>. Six of the cards summarize marathon analyses I ran and
+      published, so when it says "2.5% of 31,912 Boston finishers ran a negative split" there is a
+      repository you can open to check. On a seven-question LLM-judge evaluation, grounding lifts
+      faithfulness from 0.76 to 0.98.
     </p>
 
     <div class="cta-row">
@@ -309,7 +349,7 @@
     <p class="eyebrow">The pipeline</p>
     <h2>Five steps from question to cited answer</h2>
     <ol class="course">
-      <li><b>Chunk.</b> <code>ingest.py</code> splits each card into about 120-word windows with a 30-word overlap, respecting paragraph breaks, and prefixes the card title so every chunk describes itself.</li>
+      <li><b>Chunk.</b> <code>ingest.py</code> splits each card into about 120-word windows with a 30-word overlap, respecting paragraph breaks, and prefixes the card title so every chunk describes itself. The 14 cards make 45 chunks.</li>
       <li><b>Embed.</b> <code>all-MiniLM-L6-v2</code> from sentence-transformers (384 dimensions) runs locally on CPU, CUDA or Apple MPS. No API key.</li>
       <li><b>Store.</b> Chroma with cosine distance. Each chunk keeps its card, title and source line as metadata, so citations survive retrieval.</li>
       <li><b>Retrieve.</b> The question is embedded and the top five chunks (<code>-k</code> to change) come back with their sources.</li>
@@ -330,11 +370,19 @@
       <code>src/eval.py</code> is a small RAGAS-style harness. For each gold
       question it generates a grounded answer and a bare answer from the same
       model with no retrieval, then asks Claude as judge for strict JSON scores.
-      Citation validity is computed in code, without the judge.
+      Citation validity is computed in code, without the judge. Click a column
+      heading to sort.
     </p>
     <div class="tablewrap" role="region" aria-label="Per-question evaluation results" tabindex="0">
-      <table class="splits">
-        <thead><tr><th>No.</th><th>Question</th><th class="num">Bare</th><th class="num">Grounded</th><th class="num">Gain</th><th class="num">Context precision</th></tr></thead>
+      <table class="splits" id="evt">
+        <thead><tr>
+          <th aria-sort="ascending"><button type="button" data-k="0">No.</button></th>
+          <th>Question</th>
+          <th class="num"><button type="button" data-k="2">Bare</button></th>
+          <th class="num"><button type="button" data-k="3">Grounded</button></th>
+          <th class="num"><button type="button" data-k="4">Gain</button></th>
+          <th class="num"><button type="button" data-k="5">Context precision</button></th>
+        </tr></thead>
         <tbody>
           <tr><td class="bib">01</td><td class="q">Should I try to negative-split my first marathon?</td><td class="num">0.85</td><td class="num g">0.97</td><td class="num d">+0.12</td><td class="num">0.80</td></tr>
           <tr><td class="bib">02</td><td class="q">How much slower will race-day heat around 80&deg;F make me?</td><td class="num">0.40</td><td class="num g">0.97</td><td class="num d">+0.57</td><td class="num">0.80</td></tr>
@@ -343,8 +391,10 @@
           <tr><td class="bib">05</td><td class="q">How should I taper in the last two to three weeks?</td><td class="num">0.85</td><td class="num g">0.98</td><td class="num d">+0.13</td><td class="num">0.85</td></tr>
           <tr><td class="bib">06</td><td class="q">Do carbon-plated super-shoes actually make a meaningful difference?</td><td class="num">0.72</td><td class="num g">0.98</td><td class="num d">+0.26</td><td class="num">0.60</td></tr>
           <tr><td class="bib">07</td><td class="q">How should I approach a downhill course like Boston?</td><td class="num">0.90</td><td class="num g">0.98</td><td class="num d">+0.08</td><td class="num">1.00</td></tr>
-          <tr class="tot"><td class="bib"></td><td class="q">Mean of seven</td><td class="num">0.76</td><td class="num g">0.98</td><td class="num d">+0.22</td><td class="num">0.78</td></tr>
         </tbody>
+        <tfoot>
+          <tr class="tot"><td class="bib"></td><td class="q">Mean of seven</td><td class="num">0.76</td><td class="num g">0.98</td><td class="num d">+0.22</td><td class="num">0.78</td></tr>
+        </tfoot>
       </table>
     </div>
     <p class="splits-note">Faithfulness scores from <code>eval/results.csv</code>. Citation validity was 1.00 on every question.</p>
@@ -354,14 +404,37 @@
       weather analysis, about a minute per &deg;F, which a model without
       retrieval has no way to know. The weakest retrieval is the carbohydrate
       question, where only 0.40 of the retrieved passages were judged relevant.
+      The explorer below shows why.
     </p>
-    <figure>
-      <div class="plate">
-        <img width="1500" height="660" src="../eval/faithfulness.png" loading="lazy"
-          alt="Two bar charts. Left: faithfulness to the knowledge base, 0.76 without retrieval and 0.98 with it. Right: the grounded coach's scores, 0.98 faithfulness, 0.95 answer relevance, 0.78 context precision and 1.00 citation validity." />
-      </div>
-      <figcaption>Mean scores as plotted by <code>src/eval.py</code>.</figcaption>
-    </figure>
+  </section>
+
+  <section class="stop">
+    <p class="eyebrow">The retriever, opened up</p>
+    <h2>What comes back for each question</h2>
+    <p>
+      For each gold question, the passages the retriever ranks highest and their cosine similarity.
+      Move <em>k</em> to see what a bigger or smaller context window would have handed the model.
+    </p>
+    <div class="viz" id="rx">
+      <h3 id="rx-title">The retriever's top passages</h3>
+      <p class="sub">Pick a question. Passages above the dashed line are the ones the coach sends to Claude at that <em>k</em>.</p>
+      <div class="ctl" role="group" aria-label="Gold question" id="rx-qs"></div>
+      <p class="askq" id="rx-q"></p>
+      <label class="kpick" for="rx-k"><span>Passages retrieved, <em>k</em> (the coach uses 5)</span><output id="rx-ko">5</output>
+        <input id="rx-k" type="range" min="1" max="8" step="1" value="5" /></label>
+      <ol class="hits" id="rx-list" aria-live="polite"><li><div class="sk" style="width:70%"></div></li><li><div class="sk" style="width:55%"></div></li><li><div class="sk" style="width:62%"></div></li></ol>
+      <p class="readout" id="rx-out"></p>
+      <p class="vsrc">Similarities from <code>eval/retrieval_demo.json</code>, written by <code>scripts/export_retrieval.py</code> with the
+        repo's own chunker and embedder on 28 October 2026. The judge scores are from the evaluation run in <code>eval/results.csv</code>;
+        that run's retrievals were not saved, and this export uses the same chunker, model and ranking.</p>
+    </div>
+    <p style="margin-top:22px">
+      The carbohydrate question shows the failure. It asks about grams per hour <em>during</em> the race,
+      and the top hit is the carb-loading card, which covers the days before it. Three of the top five
+      passages come from that card, because "carbs" dominates the embedding and the dense retriever
+      can't tell race-day fueling from loading. A keyword pass or a reranker that reads the whole
+      question would help here.
+    </p>
   </section>
 
   <section class="stop">
@@ -378,7 +451,7 @@
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-negative-split-myth/">Negative splits</a></dt><dd>2.5% of 31,912 Boston 2014 finishers ran a negative split; about 94% slowed, median +14%.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-pacing-decay/">The wall</a></dt><dd>Pace inflects at about 30 km; 27% of finishers slowed by more than 25% late in the race.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-heat-tax/">Heat</a></dt><dd>About one minute slower per &deg;F of race-day heat at Boston.</dd></div>
-      <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-majors-course-difficulty/">Courses</a></dt><dd>Boston (+101 s) and New York (+78 s) are the slowest Majors against Berlin for an equivalent runner.</dd></div>
+      <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-majors-course-difficulty/">Courses</a></dt><dd>The card gives Boston +101 s and New York +78 s against Berlin. Those are method estimates on a simulated field, not measurements of the courses; see the limitations.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-shoe-revolution-decomposition/">Super-shoes</a></dt><dd>About 67 seconds of the modern elite gain is footwear.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/boston-marathon-qualifying-fairness/">BQ standards</a></dt><dd>Across 22 age and sex brackets there is no average gender gap, but women's brackets vary three to four times more in difficulty.</dd></div>
     </dl>
@@ -402,6 +475,14 @@
       answers. Bare faithfulness measures agreement with the retrieved passages,
       so a correct claim the cards don't contain still counts against the bare
       model.
+    </p>
+    <p>
+      One card is wrong in a way the evaluation can't catch. The course-difficulty card states Boston
+      +101 s and New York +78 s as facts about the real courses, and adds a reason (the Newton hills).
+      The study behind it ran on a simulated field with penalties set in code, so those figures say how
+      well a method recovered a planted answer and nothing about Boston. The card predates that
+      correction, and the downhill question retrieves it. Faithfulness only checks that the answer
+      matches the card, so the score stays high.
     </p>
     <p>
       Retrieval is plain dense similarity with a single query. A question that
@@ -449,5 +530,63 @@
     <p>Educational tool, not coaching or medical advice.</p>
   </footer>
 </div>
+
+<script>
+(function () {
+  /* sortable results table */
+  var t = document.getElementById("evt"), body = t.tBodies[0], ths = [].slice.call(t.tHead.rows[0].cells);
+  ths.forEach(function (th) {
+    var b = th.querySelector("button"); if (!b) return;
+    b.addEventListener("click", function () {
+      var k = +b.dataset.k, cur = th.getAttribute("aria-sort");
+      var dir = cur === "descending" ? "ascending" : (cur === "ascending" ? "descending" : (k === 0 ? "ascending" : "descending"));
+      ths.forEach(function (x) { x.removeAttribute("aria-sort"); });
+      th.setAttribute("aria-sort", dir);
+      var rows = [].slice.call(body.rows);
+      rows.sort(function (a, c) {
+        var x = parseFloat(a.cells[k].textContent), y = parseFloat(c.cells[k].textContent);
+        return dir === "ascending" ? x - y : y - x;
+      });
+      rows.forEach(function (r) { body.appendChild(r); });
+    });
+  });
+
+  /* retrieval explorer: eval/retrieval_demo.json */
+  var CP = [0.8, 0.8, 1.0, 0.4, 0.85, 0.6, 1.0]; /* context_precision, eval/results.csv */
+  var qs = document.getElementById("rx-qs"), list = document.getElementById("rx-list"), kIn = document.getElementById("rx-k"), out = document.getElementById("rx-out");
+  var D = null, qi = 3;
+  function esc(s) { return s.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  function draw() {
+    var k = +kIn.value; document.getElementById("rx-ko").textContent = k;
+    var q = D.questions[qi], order = q.sims.map(function (s, i) { return i; }).sort(function (a, b) { return q.sims[b] - q.sims[a]; }).slice(0, 8);
+    document.getElementById("rx-q").textContent = "“" + q.q + "”";
+    [].slice.call(qs.children).forEach(function (b, i) { b.setAttribute("aria-pressed", i === qi ? "true" : "false"); });
+    var html = "", cards = {};
+    order.forEach(function (ci, r) {
+      var c = D.chunks[ci], s = q.sims[ci], snip = c.text.slice(c.title.length + 2, c.title.length + 200).replace(/\*\*/g, "");
+      if (r < k) cards[c.title] = (cards[c.title] || 0) + 1;
+      html += '<li class="' + (r >= k ? "out" : "") + (r === k ? " cut" : "") + '"><span class="rk">' + (r + 1) + '</span><span class="cd">' + esc(c.title) + '</span>'
+        + '<span class="sm">' + s.toFixed(3) + '<i style="width:' + Math.max(4, s * 100).toFixed(0) + '%"></i></span>'
+        + '<p class="tx">' + esc(snip) + '…</p></li>';
+    });
+    list.innerHTML = html;
+    var parts = Object.keys(cards).map(function (n) { return n + (cards[n] > 1 ? " ×" + cards[n] : ""); });
+    out.textContent = "At k = " + k + " the model gets: " + parts.join("; ") + ". Judge's context precision for this question at k = 5: " + CP[qi].toFixed(2) + ".";
+  }
+  fetch("../eval/retrieval_demo.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
+    D = d;
+    d.questions.forEach(function (q, i) {
+      var b = document.createElement("button"); b.type = "button"; b.textContent = (i < 9 ? "0" : "") + (i + 1);
+      b.setAttribute("aria-label", "Question " + (i + 1) + ": " + q.q);
+      b.addEventListener("click", function () { qi = i; draw(); });
+      qs.appendChild(b);
+    });
+    kIn.addEventListener("input", draw);
+    draw();
+  }).catch(function () {
+    list.innerHTML = '<li><span class="pend">The retrieval file did not load. It is at eval/retrieval_demo.json in the repo.</span></li>';
+  });
+})();
+</script>
 </body>
 </html>

@@ -41,7 +41,9 @@ Citation validity is computed in code: every `[n]` in every grounded answer poin
 
 ## Limitations and next steps
 
-Seven questions is a small gold set, and I wrote all seven to be answerable from the cards; the judge is also an LLM from the same family as the generator. Bare faithfulness is measured against the retrieved passages, which means a correct claim the cards don't contain counts against the bare model.
+Seven questions is a small gold set, and I wrote all seven to be answerable from the cards; the judge is also an LLM from the same family as the generator. The carbohydrate question's 0.40 context precision has a visible cause: three of its top five passages come from the carb-loading card, which covers the days before the race, because the dense retriever matches on "carbs" and not on "during the race".
+
+One card is out of date. `course-difficulty.md` gives Boston +101 s and New York +78 s as properties of the real courses, but the study behind it used a simulated field with penalties set in code. Faithfulness can't catch this, since a grounded answer that repeats the card scores as faithful. Bare faithfulness is measured against the retrieved passages, which means a correct claim the cards don't contain counts against the bare model.
 
 The corpus is small and curated. It handles strategy questions well, and it is no running encyclopedia. Retrieval is a single dense query, so a question that spans heat, fueling and pacing would benefit from multi-query retrieval or a planning step (that line of thought led to the agentic [marathon training agent](https://github.com/lyhjeremy/marathon-training-agent)). There is also no lexical search or reranking. The sibling [wine sommelier RAG](https://github.com/lyhjeremy/wine-sommelier-rag) adds hybrid BM25 and a cross-encoder, with a measured +21% precision gain.
 

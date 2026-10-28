@@ -1,0 +1,628 @@
+{
+ "model": "sentence-transformers/all-MiniLM-L6-v2",
+ "generated": "2026-10-28",
+ "chunks": [
+  {
+   "id": "bq-standards-fairness-0",
+   "card": "bq-standards-fairness",
+   "title": "Are Boston Qualifying Standards Fair?",
+   "text": "Are Boston Qualifying Standards Fair?. Boston Marathon qualifying (BQ) times are set by age and gender bracket. A common question: are these standards fair across groups? The analysis of 22 age-gender brackets gives a nuanced answer. **The findings:** - **No mean-level gender bias.** On average, men's and women's standards are comparably difficult. - But **women's brackets are 3–4× more variable in difficulty** than men's. How hard your BQ is depends heavily on *which* bracket you fall into. - The **W80+ bracket is roughly 57 minutes too strict.** A clear outlier that is far harder to achieve than its counterparts. - The **2026 tightening** of standards addressed **demand** (too many qualifiers for available slots), **not fairness** across brackets."
+  },
+  {
+   "id": "bq-standards-fairness-1",
+   "card": "bq-standards-fairness",
+   "title": "Are Boston Qualifying Standards Fair?",
+   "text": "Are Boston Qualifying Standards Fair?. A clear outlier that is far harder to achieve than its counterparts. - The **2026 tightening** of standards addressed **demand** (too many qualifiers for available slots), **not fairness** across brackets. **What this means for you:** - Don't assume your BQ is \"the same difficulty\" as someone else's in a different age or gender bracket. The spread is real, especially among women's and older-age brackets. - If you're in a bracket that happens to be relatively lenient, you may have an easier path than the raw times suggest; if you're in a strict outlier, recognize the target is genuinely tougher. - Tightening standards changes who gets in, but it does not fix the uneven difficulty *between* brackets."
+  },
+  {
+   "id": "bq-standards-fairness-2",
+   "card": "bq-standards-fairness",
+   "title": "Are Boston Qualifying Standards Fair?",
+   "text": "Are Boston Qualifying Standards Fair?. suggest; if you're in a strict outlier, recognize the target is genuinely tougher. - Tightening standards changes who gets in, but it does not fix the uneven difficulty *between* brackets. **Actionable takeaway:** Know your exact age-and-gender bracket and treat its standard on its own terms. Set your training target to the specific number you must hit, and understand that \"how hard a BQ is\" is bracket-dependent, not universal."
+  },
+  {
+   "id": "carb-fueling-0",
+   "card": "carb-fueling",
+   "title": "In-Race Carbohydrate Fueling",
+   "text": "In-Race Carbohydrate Fueling. Your muscles and brain run on carbohydrate, but your body stores only enough glycogen for roughly 90–120 minutes of hard running. When those stores run low, pace collapses. This is a major cause of \"the wall.\" In-race fueling delays that depletion. **How much to take:** - A common target is **~30–60 g of carbohydrate per hour** for most marathoners. - Well-trained guts using a **mixed glucose:fructose** blend (roughly 2:1) can absorb up to **~90 g/hr**, because glucose and fructose use different intestinal transporters. - Faster runners racing longer generally aim toward the higher end."
+  },
+  {
+   "id": "carb-fueling-1",
+   "card": "carb-fueling",
+   "title": "In-Race Carbohydrate Fueling",
+   "text": "In-Race Carbohydrate Fueling. **mixed glucose:fructose** blend (roughly 2:1) can absorb up to **~90 g/hr**, because glucose and fructose use different intestinal transporters. - Faster runners racing longer generally aim toward the higher end. **Timing:** - **Start early.** Within the first 30–45 minutes, not when you already feel empty. Once you're depleted, it's too late to catch up. - Fuel at **regular intervals** (e.g. every 20–30 minutes) rather than in one large dose. **Practice it:** - The gut is trainable. **Rehearse your exact fueling plan in long runs** at race pace to build tolerance and avoid GI distress. - Test the specific gels, chews, or drinks you'll use on race day, including the on-course sports drink if you'll rely on it."
+  },
+  {
+   "id": "carb-fueling-2",
+   "card": "carb-fueling",
+   "title": "In-Race Carbohydrate Fueling",
+   "text": "In-Race Carbohydrate Fueling. to build tolerance and avoid GI distress. - Test the specific gels, chews, or drinks you'll use on race day, including the on-course sports drink if you'll rely on it. **Actionable takeaway:** Choose a per-hour carb target, front-load the start of your fueling, use a glucose-fructose mix if going high, and never introduce a new product on race day. Fueling is a skill you train, not a race-day improvisation."
+  },
+  {
+   "id": "carb-loading-0",
+   "card": "carb-loading",
+   "title": "Carb-Loading Before Race Day",
+   "text": "Carb-Loading Before Race Day. Carb-loading maximizes your muscle and liver glycogen stores before the marathon, giving you more fuel in the tank before depletion sets in. **The classic approach:** - In the **1–3 days before the race**, raise carbohydrate intake substantially, commonly around **8–12 g of carbohydrate per kg of body weight per day**. - Emphasize easily digested carbs: rice, pasta, bread, potatoes, oats, fruit, and sports drinks. - Modern practice does **not** require the old \"depletion phase\" first; simply elevating carbs for a couple of days while tapering is effective and gentler."
+  },
+  {
+   "id": "carb-loading-1",
+   "card": "carb-loading",
+   "title": "Carb-Loading Before Race Day",
+   "text": "Carb-Loading Before Race Day. oats, fruit, and sports drinks. - Modern practice does **not** require the old \"depletion phase\" first; simply elevating carbs for a couple of days while tapering is effective and gentler. **Practical tips:** - **Lower fiber** in the final day or two (go for white rice/bread over heavy whole grains) to reduce GI bulk and race-morning bathroom issues. - Don't just eat more of everything: **shift the ratio toward carbs** and hold protein/fat modest, rather than piling on a giant fatty feast. - Expect a small weight gain (1–2 kg): glycogen binds water. This is normal and beneficial for hydration."
+  },
+  {
+   "id": "carb-loading-2",
+   "card": "carb-loading",
+   "title": "Carb-Loading Before Race Day",
+   "text": "Carb-Loading Before Race Day. and hold protein/fat modest, rather than piling on a giant fatty feast. - Expect a small weight gain (1–2 kg): glycogen binds water. This is normal and beneficial for hydration. **What it is not:** - It won't compensate for undertraining or a missing in-race fueling plan. Carb-loading fills the tank; in-race carbs keep topping it up. **Actionable takeaway:** Over the final 1–3 days, increase carbohydrate intake, reduce fiber, keep portions manageable, and stick to familiar foods. The goal is full glycogen stores and a settled gut, not a dramatic last supper."
+  },
+  {
+   "id": "course-difficulty-0",
+   "card": "course-difficulty",
+   "title": "How Hard Is the Course? A Majors Difficulty Index",
+   "text": "How Hard Is the Course? A Majors Difficulty Index. Not all marathons are equally fast. A Course Difficulty Index across the six World Marathon Majors quantifies how much slower an equivalent runner will finish on each course, using **Berlin = 1.000** as the flat, fast baseline. **The findings:** - **Boston is the hardest (+101 seconds)** relative to Berlin for an equivalent runner. - **New York City is next (+78 seconds).** - **Berlin, Chicago, London, and Tokyo cluster tightly.** Within about **35 seconds** of each other."
+  },
+  {
+   "id": "course-difficulty-1",
+   "card": "course-difficulty",
+   "title": "How Hard Is the Course? A Majors Difficulty Index",
+   "text": "How Hard Is the Course? A Majors Difficulty Index. relative to Berlin for an equivalent runner. - **New York City is next (+78 seconds).** - **Berlin, Chicago, London, and Tokyo cluster tightly.** Within about **35 seconds** of each other. **Why Boston is slow despite being net downhill:** - The Newton hills arrive around **30 km**, exactly where fatigue and glycogen depletion peak. - Late-race climbing does far more damage than the same hills would early, so the net elevation drop doesn't translate into a fast time."
+  },
+  {
+   "id": "course-difficulty-2",
+   "card": "course-difficulty",
+   "title": "How Hard Is the Course? A Majors Difficulty Index",
+   "text": "How Hard Is the Course? A Majors Difficulty Index. where fatigue and glycogen depletion peak. - Late-race climbing does far more damage than the same hills would early, so the net elevation drop doesn't translate into a fast time. **What this means for you:** - **Chasing a PR or a Boston qualifier?** Choose **Berlin, Chicago, or London**, flat, well-organized, and fast. - **Racing Boston or NYC?** Expect a slower time and pace accordingly. Do not transfer a goal set on a flat course to a hard one. - Factor course profile into your goal-setting the same way you factor in weather and fitness."
+  },
+  {
+   "id": "course-difficulty-3",
+   "card": "course-difficulty",
+   "title": "How Hard Is the Course? A Majors Difficulty Index",
+   "text": "How Hard Is the Course? A Majors Difficulty Index. Do not transfer a goal set on a flat course to a hard one. - Factor course profile into your goal-setting the same way you factor in weather and fitness. **Actionable takeaway:** Pick your race to match your goal. If the clock matters, target a flat major; if the experience or the challenge matters, embrace Boston or NYC and adjust your time expectations by a minute or more."
+  },
+  {
+   "id": "downhill-and-uphill-pacing-0",
+   "card": "downhill-and-uphill-pacing",
+   "title": "Downhill and Uphill Pacing",
+   "text": "Downhill and Uphill Pacing. On hilly and rolling courses, chasing a constant *pace* wastes energy. The right approach is to run by **constant effort**, letting pace vary with the terrain. **Uphills:** - **Hold effort steady, let pace slow.** Fighting to maintain flat-ground pace uphill spikes heart rate and burns fuel disproportionately. - Shorten your stride, keep cadence up, and stay relaxed. You'll lose a little time going up and can gently recover it over the top."
+  },
+  {
+   "id": "downhill-and-uphill-pacing-1",
+   "card": "downhill-and-uphill-pacing",
+   "title": "Downhill and Uphill Pacing",
+   "text": "Downhill and Uphill Pacing. rate and burns fuel disproportionately. - Shorten your stride, keep cadence up, and stay relaxed. You'll lose a little time going up and can gently recover it over the top. **Downhills:** - Ease off the effort and let gravity add some speed, but **don't hammer descents.** Downhill running is **eccentric loading** that causes muscle damage, especially to the **quads**. - Accumulated quad damage from early downhills shows up as trashed legs late in the race. A defining challenge of **Boston**, whose net-downhill first half can wreck quads before the Newton hills at ~30 km. - Control your stride, avoid overstriding and braking, and keep turnover quick."
+  },
+  {
+   "id": "downhill-and-uphill-pacing-2",
+   "card": "downhill-and-uphill-pacing",
+   "title": "Downhill and Uphill Pacing",
+   "text": "Downhill and Uphill Pacing. defining challenge of **Boston**, whose net-downhill first half can wreck quads before the Newton hills at ~30 km. - Control your stride, avoid overstriding and braking, and keep turnover quick. **Rolling courses:** - Think in terms of **average effort**, not mile-by-mile pace. Expect splits to fluctuate and don't panic on the slow uphill miles. - **Train specifically for downhills** if your race has them: downhill reps build eccentric resistance so your quads survive the back half. **Actionable takeaway:** Run hills by effort, not pace. Give back a little time uphill, resist the urge to bomb downhills, and, for courses like Boston, train your quads on descents so late-race hills don't find you with dead legs."
+  },
+  {
+   "id": "even-pacing-strategy-0",
+   "card": "even-pacing-strategy",
+   "title": "Even Pacing Strategy",
+   "text": "Even Pacing Strategy. For the vast majority of marathoners, **even pacing.** Holding a steady effort and pace throughout, produces the best result. A slightly negative split (finishing marginally faster) is the ideal ceiling, but even splitting is the practical target. **Why even pacing wins:** - Running too fast early burns glycogen and generates fatigue disproportionately, which you repay with a steep slowdown in the final 10–12 km. - **Banking time early is a trap.** Time gained by going out fast is almost always lost, with interest, late in the race. - A steady pace keeps energy expenditure efficient and delays the wall."
+  },
+  {
+   "id": "even-pacing-strategy-1",
+   "card": "even-pacing-strategy",
+   "title": "Even Pacing Strategy",
+   "text": "Even Pacing Strategy. a trap.** Time gained by going out fast is almost always lost, with interest, late in the race. - A steady pace keeps energy expenditure efficient and delays the wall. **How to set your goal pace:** - Base it on **recent race results and long-run/tempo paces**, not hope. A recent half marathon is a strong predictor. - Adjust for **conditions** (heat, wind) and **course** (hills, elevation profile). Don't apply a flat-course goal to a hard course or a hot day. - Pick a pace you're confident you can hold for the *whole* distance, then run the first few miles a touch slower."
+  },
+  {
+   "id": "even-pacing-strategy-2",
+   "card": "even-pacing-strategy",
+   "title": "Even Pacing Strategy",
+   "text": "Even Pacing Strategy. to a hard course or a hot day. - Pick a pace you're confident you can hold for the *whole* distance, then run the first few miles a touch slower. **Executing it:** - Deliberately hold back in the opening 5–10 km when adrenaline makes goal pace feel easy. - Check splits, but race by effort as fatigue builds. - Aim to reach halfway feeling controlled, with pace still in reserve. **Actionable takeaway:** Set a realistic, condition-adjusted goal pace and run it evenly. Discipline in the first third, resisting the urge to bank time, is the strongest predictor of a strong finish."
+  },
+  {
+   "id": "heat-tax-0",
+   "card": "heat-tax",
+   "title": "The Heat Tax: How Temperature Slows Your Marathon",
+   "text": "The Heat Tax: How Temperature Slows Your Marathon. Heat is one of the most powerful and predictable forces acting on marathon times, and it is easy to underestimate on race morning. **What 14 years of Boston data reveal (weather-paired):** - Per-year median finish time versus race-day midday temperature correlates at **r=0.86.** A very strong relationship. - The slope is approximately **1 minute slower per °F** of midday temperature. - Going from **50°F to 80°F** adds roughly **31 minutes** to the median finish time."
+  },
+  {
+   "id": "heat-tax-1",
+   "card": "heat-tax",
+   "title": "The Heat Tax: How Temperature Slows Your Marathon",
+   "text": "The Heat Tax: How Temperature Slows Your Marathon. strong relationship. - The slope is approximately **1 minute slower per °F** of midday temperature. - Going from **50°F to 80°F** adds roughly **31 minutes** to the median finish time. **Why heat costs so much:** - Your body diverts blood flow to the skin for cooling, leaving less for working muscles. - Core temperature rises, heart rate drifts upward at the same pace, and dehydration compounds the effect. - The penalty grows nonlinearly as temperatures climb into the 70s and 80s °F."
+  },
+  {
+   "id": "heat-tax-2",
+   "card": "heat-tax",
+   "title": "The Heat Tax: How Temperature Slows Your Marathon",
+   "text": "The Heat Tax: How Temperature Slows Your Marathon. Core temperature rises, heart rate drifts upward at the same pace, and dehydration compounds the effect. - The penalty grows nonlinearly as temperatures climb into the 70s and 80s °F. **What this means for you:** - **Adjust your goal pace upward on hot days.** A cool-weather PR goal is simply the wrong target when it is 75–80°F. - Check the forecast in the final days and set a realistic \"hot-day\" pace band. - Start more conservatively, prioritize hydration and cooling (ice, sponges, shade), and accept a slower time rather than blowing up."
+  },
+  {
+   "id": "heat-tax-3",
+   "card": "heat-tax",
+   "title": "The Heat Tax: How Temperature Slows Your Marathon",
+   "text": "The Heat Tax: How Temperature Slows Your Marathon. the final days and set a realistic \"hot-day\" pace band. - Start more conservatively, prioritize hydration and cooling (ice, sponges, shade), and accept a slower time rather than blowing up. **Actionable takeaway:** Don't chase a cool-weather goal in the heat. Use roughly a **1 minute per °F** rule of thumb above comfortable conditions to reset expectations, then race the day you're given."
+  },
+  {
+   "id": "hitting-the-wall-0",
+   "card": "hitting-the-wall",
+   "title": "Hitting the Wall: Where the Marathon Is Really Decided",
+   "text": "Hitting the Wall: Where the Marathon Is Really Decided. \"The wall\" is not a myth or a metaphor. It is a measurable inflection point in pace, and the data pinpoint where it happens. **What the Boston data show (31,655 finishers):** - Pace stays roughly flat through about **20 km**. - From **~30 km** onward, pace climbs steeply. A clear, population-wide inflection. - Median late-race (35–40 km) slowdown is **15%**. - **27%** of finishers slowed by more than **25%** in the closing kilometers. **The effect scales with finish time:** - Sub-3:00 runners stay nearly flat to the finish. - Runners at 4:30+ commonly slow **30% or more** late in the race."
+  },
+  {
+   "id": "hitting-the-wall-1",
+   "card": "hitting-the-wall",
+   "title": "Hitting the Wall: Where the Marathon Is Really Decided",
+   "text": "Hitting the Wall: Where the Marathon Is Really Decided. closing kilometers. **The effect scales with finish time:** - Sub-3:00 runners stay nearly flat to the finish. - Runners at 4:30+ commonly slow **30% or more** late in the race. **Why it happens:** Glycogen stores deplete, fatigue accumulates, and any pace overspending from the early miles comes due all at once in the 30–42 km segment."
+  },
+  {
+   "id": "hitting-the-wall-2",
+   "card": "hitting-the-wall",
+   "title": "Hitting the Wall: Where the Marathon Is Really Decided",
+   "text": "Hitting the Wall: Where the Marathon Is Really Decided. late in the race. **Why it happens:** Glycogen stores deplete, fatigue accumulates, and any pace overspending from the early miles comes due all at once in the 30–42 km segment. **What this means for you:** - The race is won or lost in the final **30–42 km**, not the first 30. - **Bank fitness and fuel, not time.** Time banked early by running fast is almost always lost with interest after 30 km. - Structure your training and fueling specifically for the back third: long runs that rehearse fatigue, and a fueling plan that keeps glycogen topped up before depletion sets in."
+  },
+  {
+   "id": "hitting-the-wall-3",
+   "card": "hitting-the-wall",
+   "title": "Hitting the Wall: Where the Marathon Is Really Decided",
+   "text": "Hitting the Wall: Where the Marathon Is Really Decided. km. - Structure your training and fueling specifically for the back third: long runs that rehearse fatigue, and a fueling plan that keeps glycogen topped up before depletion sets in. **Actionable takeaway:** Treat 30 km as the true start of your race. Run the first 30 km conservatively enough that you still have pace in reserve when everyone around you is decelerating."
+  },
+  {
+   "id": "hydration-and-sodium-0",
+   "card": "hydration-and-sodium",
+   "title": "Hydration and Sodium",
+   "text": "Hydration and Sodium. Staying appropriately hydrated helps maintain pace and thermoregulation, but both under- and over-drinking carry real risks. **Drink to thirst:** - For most runners, **drinking to thirst** is a safe and effective guide. Thirst is a reliable signal; you do not need to force fluids on a rigid schedule. - Fluid needs rise sharply in heat and for larger, faster, or heavier-sweating runners. **Sodium and electrolytes:** - Sweat contains sodium. On longer, hotter efforts, replacing some **sodium/electrolytes** (via sports drinks or salt tablets) helps maintain fluid balance and can reduce cramping for heavy or salty sweaters. - Plain water alone over many hours, especially with overdrinking, can dilute blood sodium."
+  },
+  {
+   "id": "hydration-and-sodium-1",
+   "card": "hydration-and-sodium",
+   "title": "Hydration and Sodium",
+   "text": "Hydration and Sodium. or salt tablets) helps maintain fluid balance and can reduce cramping for heavy or salty sweaters. - Plain water alone over many hours, especially with overdrinking, can dilute blood sodium. **The hyponatremia risk:** - **Hyponatremia.** Dangerously low blood sodium, comes from **overdrinking**, not underdrinking. It can be serious or fatal. - Warning signs include nausea, headache, confusion, and bloating/weight *gain* during the race. - Avoid it by not drinking far beyond thirst and by including sodium on long, hot efforts. **Heat considerations:** - In heat, prioritize both fluids and electrolytes, and add external cooling (ice, sponges). You cannot fully \"drink away\" heat stress."
+  },
+  {
+   "id": "hydration-and-sodium-2",
+   "card": "hydration-and-sodium",
+   "title": "Hydration and Sodium",
+   "text": "Hydration and Sodium. by including sodium on long, hot efforts. **Heat considerations:** - In heat, prioritize both fluids and electrolytes, and add external cooling (ice, sponges). You cannot fully \"drink away\" heat stress. **Actionable takeaway:** Drink to thirst, include sodium on long or hot races, and never force large volumes of plain water. If you're gaining weight or feel bloated and foggy, drink less, not more."
+  },
+  {
+   "id": "long-run-training-0",
+   "card": "long-run-training",
+   "title": "The Long Run",
+   "text": "The Long Run. The long run is the cornerstone of marathon training. It builds the aerobic engine and the fatigue resistance that carry you through the final, hardest miles. **What it develops:** - **Aerobic base:** more capillaries, mitochondria, and improved fat oxidation, so you spare glycogen at a given pace. - **Fatigue resistance:** teaching your legs and mind to keep working when tired. - **Fueling practice:** a real-world lab for rehearsing gels, drinks, and gut tolerance. - **Musculoskeletal durability:** conditioning tendons, joints, and muscles to time on feet."
+  },
+  {
+   "id": "long-run-training-1",
+   "card": "long-run-training",
+   "title": "The Long Run",
+   "text": "The Long Run. to keep working when tired. - **Fueling practice:** a real-world lab for rehearsing gels, drinks, and gut tolerance. - **Musculoskeletal durability:** conditioning tendons, joints, and muscles to time on feet. **Typical progression:** - Build long-run distance **gradually**, often adding modestly week to week with periodic **step-back (recovery) weeks** to absorb the load. - Many plans peak the long run somewhere around **32 km (20 miles)** or a time cap (e.g. 2.5–3 hours) a few weeks before race day. - Most long runs are run at an **easy, conversational pace**; some plans add segments at goal marathon pace to rehearse race effort."
+  },
+  {
+   "id": "long-run-training-2",
+   "card": "long-run-training",
+   "title": "The Long Run",
+   "text": "The Long Run. hours) a few weeks before race day. - Most long runs are run at an **easy, conversational pace**; some plans add segments at goal marathon pace to rehearse race effort. **Guidelines:** - Prioritize consistency over any single heroic run. The cumulative effect matters most. - Don't let the long run become so long or fast that it compromises the rest of the week's training or recovery. - Practice race-day logistics: fueling timing, hydration, shoes, and pacing. **Actionable takeaway:** Build your long run steadily with step-back weeks, keep most of it easy, use it to rehearse fueling and race-pace segments, and let consistency, not one huge effort, build your marathon endurance."
+  },
+  {
+   "id": "negative-split-reality-0",
+   "card": "negative-split-reality",
+   "title": "The Reality of Negative Splits",
+   "text": "The Reality of Negative Splits. A negative split, running the second half of the marathon faster than the first. Is widely praised as the ideal race strategy. But the data show it is extraordinarily rare in practice. **What the Boston 2014 data reveal (31,912 finishers):** - Only **2.5%** ran a true negative split. - About **94%** slowed in the second half. - The **median slowdown was +14%** (second half 14% slower than the first). **Slowdown scales with ability:** - Sub-3:00 runners slowed only about **+5%**. - Runners over 4:00 slowed roughly **+22%**. - Women paced slightly more evenly than men (**~13.4% vs ~14.8%** slowdown)."
+  },
+  {
+   "id": "negative-split-reality-1",
+   "card": "negative-split-reality",
+   "title": "The Reality of Negative Splits",
+   "text": "The Reality of Negative Splits. **Slowdown scales with ability:** - Sub-3:00 runners slowed only about **+5%**. - Runners over 4:00 slowed roughly **+22%**. - Women paced slightly more evenly than men (**~13.4% vs ~14.8%** slowdown). **What this means for you:** - The near-universal error is **going out too fast**. Positive splits dominate because runners bank time early and pay for it late. - Do not chase a heroic negative split. For almost everyone, the realistic and optimal target is an **even split.** Running the two halves at close to the same pace. - The faster and more experienced you are, the more evenly you will naturally pace. If you are a mid-pack or first-time marathoner, assume your instinct to push early is a trap."
+  },
+  {
+   "id": "negative-split-reality-2",
+   "card": "negative-split-reality",
+   "title": "The Reality of Negative Splits",
+   "text": "The Reality of Negative Splits. faster and more experienced you are, the more evenly you will naturally pace. If you are a mid-pack or first-time marathoner, assume your instinct to push early is a trap. **Actionable takeaway:** Set a goal pace you can hold evenly, and deliberately run the first 5–10 km slightly slower than goal to bank fitness, not time. Discipline in the opening miles is the single biggest lever most amateurs have."
+  },
+  {
+   "id": "race-week-and-morning-0",
+   "card": "race-week-and-morning",
+   "title": "Race Week and Race Morning",
+   "text": "Race Week and Race Morning. The training is done; race week is about arriving fresh, calm, and prepared. The golden rule: **nothing new on race day.** **Race week:** - Prioritize **sleep** across the whole week. The night *before* often brings pre-race nerves, so bank rest earlier. - Follow your taper: low volume, a little sharpness. - Sort **logistics** in advance: travel, bib pickup, start corral, gear, weather forecast, and a pacing plan adjusted for conditions and course. - Carb-load and lower fiber in the final 1–3 days."
+  },
+  {
+   "id": "race-week-and-morning-1",
+   "card": "race-week-and-morning",
+   "title": "Race Week and Race Morning",
+   "text": "Race Week and Race Morning. **logistics** in advance: travel, bib pickup, start corral, gear, weather forecast, and a pacing plan adjusted for conditions and course. - Carb-load and lower fiber in the final 1–3 days. **Race morning:** - **Pre-race meal:** eat a familiar, mostly-carb, low-fiber meal about **2–4 hours before** the start (e.g. oatmeal, toast, banana, sports drink). Give yourself time to digest and use the bathroom. - Hydrate moderately; top up with a little sports drink, but don't overdrink. - **Warm up** appropriately: for most amateurs a light jog and dynamic drills; faster racers do a fuller warm-up. Don't exhaust yourself before the gun. - Lay out and test everything the night before: shoes, socks, apparel, chafing prevention, gels, and any anti-chafe or sun protection."
+  },
+  {
+   "id": "race-week-and-morning-2",
+   "card": "race-week-and-morning",
+   "title": "Race Week and Race Morning",
+   "text": "Race Week and Race Morning. a fuller warm-up. Don't exhaust yourself before the gun. - Lay out and test everything the night before: shoes, socks, apparel, chafing prevention, gels, and any anti-chafe or sun protection. **The cardinal rule:** - **No new shoes, foods, gels, clothing, or strategies on race day.** Everything should have been rehearsed in training and long runs. **Actionable takeaway:** Sleep well across the week, dial in logistics early, eat a familiar carb-based meal 2–4 hours out, warm up modestly, and introduce absolutely nothing new. Preparation removes variables so you can focus on running."
+  },
+  {
+   "id": "super-shoes-0",
+   "card": "super-shoes",
+   "title": "Super Shoes: How Much Do Carbon Plates Really Help?",
+   "text": "Super Shoes: How Much Do Carbon Plates Really Help?. Carbon-plated \"super shoes\" arrived around 2017 and have been credited with a wave of record-breaking marathon times. But how much of that improvement is actually the shoes? **What the decomposition shows:** - Super shoes account for roughly **67 seconds** of the post-2017 elite gains. - The 95% confidence interval is **36–99 seconds**. - That's about **0.9% of a 2:05 marathon.** Real and population-wide, but smaller than the headlines suggest. - Other factors, especially **increasing depth of talent** in the elite field, also drove the improvement."
+  },
+  {
+   "id": "super-shoes-1",
+   "card": "super-shoes",
+   "title": "Super Shoes: How Much Do Carbon Plates Really Help?",
+   "text": "Super Shoes: How Much Do Carbon Plates Really Help?. **0.9% of a 2:05 marathon.** Real and population-wide, but smaller than the headlines suggest. - Other factors, especially **increasing depth of talent** in the elite field, also drove the improvement. **What this means for you:** - The benefit is **real but modest.** Think tenths of a percent to about 1%, not a transformation. - For an amateur, that might translate to a small handful of minutes over a marathon, roughly scaling with your finish time. - Benefits vary by individual; some runners respond more than others, and fit and comfort still matter."
+  },
+  {
+   "id": "super-shoes-2",
+   "card": "super-shoes",
+   "title": "Super Shoes: How Much Do Carbon Plates Really Help?",
+   "text": "Super Shoes: How Much Do Carbon Plates Really Help?. small handful of minutes over a marathon, roughly scaling with your finish time. - Benefits vary by individual; some runners respond more than others, and fit and comfort still matter. **Practical guidance:** - Super shoes are **worth it for racing** if you want every legitimate advantage, but they are not magic and won't rescue undertrained fitness or poor pacing. - They wear out faster and cost more, so many runners save them for goal races and hard workouts. - Train enough in them beforehand to adapt; don't debut a new pair on race day. **Actionable takeaway:** Buy super shoes for a small, real racing edge, then earn the rest with training, fueling, and pacing."
+  },
+  {
+   "id": "tapering-0",
+   "card": "tapering",
+   "title": "Tapering Before the Marathon",
+   "text": "Tapering Before the Marathon. The taper is the deliberate reduction of training in the final weeks so you arrive at the start line fresh, repaired, and fully adapted, without losing the fitness you built. **The core approach:** - Reduce **total volume by roughly 40–60%** over the final **2–3 weeks**, with the largest cut in race week. - **Keep some intensity.** Maintain short segments at or near goal pace or with strides so your legs stay sharp and you don't feel flat. - The key lever is **volume down, intensity mostly preserved.** This is what avoids detraining."
+  },
+  {
+   "id": "tapering-1",
+   "card": "tapering",
+   "title": "Tapering Before the Marathon",
+   "text": "Tapering Before the Marathon. goal pace or with strides so your legs stay sharp and you don't feel flat. - The key lever is **volume down, intensity mostly preserved.** This is what avoids detraining. **Why it works:** - Reduced training load lets muscle glycogen replenish, micro-damage repair, and accumulated fatigue dissipate. - Fitness gains from hard training weeks are largely \"banked\". You don't lose meaningful aerobic capacity in 2–3 weeks of reduced volume. **Common mistakes:** - **Over-tapering** (doing almost nothing) leaves you sluggish and anxious. - **Under-tapering** (training hard too close to race day) leaves you tired on the start line. - Trying to cram fitness in the final weeks. The work is already done; you can't improve it now, only ruin your freshness."
+  },
+  {
+   "id": "tapering-2",
+   "card": "tapering",
+   "title": "Tapering Before the Marathon",
+   "text": "Tapering Before the Marathon. leaves you tired on the start line. - Trying to cram fitness in the final weeks. The work is already done; you can't improve it now, only ruin your freshness. **Actionable takeaway:** Over the last 2–3 weeks, cut mileage substantially but keep a few crisp, race-pace efforts. Expect some restlessness and phantom aches. That's normal taper, not lost fitness. Trust the training you've already banked."
+  }
+ ],
+ "questions": [
+  {
+   "q": "Should I try to negative-split my first marathon?",
+   "sims": [
+    0.3271,
+    0.1995,
+    0.1959,
+    0.455,
+    0.4254,
+    0.308,
+    0.4905,
+    0.3828,
+    0.3484,
+    0.3924,
+    0.3653,
+    0.375,
+    0.2407,
+    0.334,
+    0.4404,
+    0.4317,
+    0.6062,
+    0.5185,
+    0.431,
+    0.4103,
+    0.4023,
+    0.5233,
+    0.5541,
+    0.4427,
+    0.4988,
+    0.5346,
+    0.4926,
+    0.4104,
+    0.3875,
+    0.2214,
+    0.457,
+    0.4064,
+    0.49,
+    0.7262,
+    0.7347,
+    0.7605,
+    0.3492,
+    0.4076,
+    0.4817,
+    0.3054,
+    0.4355,
+    0.3404,
+    0.5507,
+    0.5178,
+    0.6011
+   ]
+  },
+  {
+   "q": "How much slower will race-day heat around 80°F make me?",
+   "sims": [
+    0.2514,
+    0.118,
+    0.1097,
+    0.4113,
+    0.3322,
+    0.3142,
+    0.3371,
+    0.3521,
+    0.3405,
+    0.3616,
+    0.362,
+    0.4033,
+    0.2323,
+    0.2935,
+    0.3175,
+    0.2641,
+    0.3853,
+    0.4399,
+    0.3508,
+    0.686,
+    0.7019,
+    0.6285,
+    0.6117,
+    0.4035,
+    0.3898,
+    0.3713,
+    0.3178,
+    0.2755,
+    0.3396,
+    0.3372,
+    0.2932,
+    0.3316,
+    0.3449,
+    0.3489,
+    0.3401,
+    0.3187,
+    0.3903,
+    0.4459,
+    0.411,
+    0.2806,
+    0.3563,
+    0.2792,
+    0.2873,
+    0.2628,
+    0.2945
+   ]
+  },
+  {
+   "q": "How should I pace the final 10K to avoid hitting the wall?",
+   "sims": [
+    0.1237,
+    0.1445,
+    0.1535,
+    0.4071,
+    0.2806,
+    0.2056,
+    0.2596,
+    0.2603,
+    0.2184,
+    0.2543,
+    0.3071,
+    0.3384,
+    0.2918,
+    0.4507,
+    0.3653,
+    0.3448,
+    0.5497,
+    0.5166,
+    0.5854,
+    0.1495,
+    0.1837,
+    0.2479,
+    0.302,
+    0.5069,
+    0.3851,
+    0.3497,
+    0.4857,
+    0.1992,
+    0.1422,
+    0.1417,
+    0.2881,
+    0.3339,
+    0.4088,
+    0.235,
+    0.3832,
+    0.402,
+    0.2948,
+    0.3214,
+    0.363,
+    0.1657,
+    0.222,
+    0.1789,
+    0.3351,
+    0.3558,
+    0.3679
+   ]
+  },
+  {
+   "q": "How many grams of carbs per hour should I take during the race?",
+   "sims": [
+    0.234,
+    0.1152,
+    0.1441,
+    0.5147,
+    0.5634,
+    0.5836,
+    0.6288,
+    0.569,
+    0.603,
+    0.256,
+    0.2821,
+    0.3289,
+    0.2422,
+    0.1854,
+    0.2279,
+    0.2042,
+    0.3047,
+    0.2952,
+    0.2641,
+    0.2265,
+    0.2123,
+    0.2288,
+    0.3021,
+    0.2377,
+    0.3153,
+    0.3741,
+    0.3009,
+    0.2908,
+    0.341,
+    0.223,
+    0.294,
+    0.3201,
+    0.3163,
+    0.2271,
+    0.2801,
+    0.2737,
+    0.44,
+    0.5348,
+    0.4403,
+    0.1963,
+    0.2411,
+    0.2181,
+    0.2711,
+    0.232,
+    0.2552
+   ]
+  },
+  {
+   "q": "How should I taper in the last two to three weeks?",
+   "sims": [
+    0.0534,
+    0.1228,
+    0.1189,
+    0.0991,
+    0.1632,
+    0.1445,
+    0.2894,
+    0.3154,
+    0.1864,
+    0.047,
+    0.1246,
+    0.214,
+    0.1441,
+    0.1963,
+    0.1786,
+    0.187,
+    0.2496,
+    0.2493,
+    0.2741,
+    0.0263,
+    0.0754,
+    0.1951,
+    0.2138,
+    0.1185,
+    0.1526,
+    0.2254,
+    0.1966,
+    0.1297,
+    0.1369,
+    0.138,
+    0.1842,
+    0.2517,
+    0.3065,
+    0.0884,
+    0.2198,
+    0.2227,
+    0.3157,
+    0.2659,
+    0.2918,
+    0.0555,
+    0.0878,
+    0.0884,
+    0.5545,
+    0.4914,
+    0.5494
+   ]
+  },
+  {
+   "q": "Do carbon-plated super-shoes actually make a meaningful difference?",
+   "sims": [
+    0.1615,
+    0.1336,
+    0.0962,
+    0.1277,
+    0.1155,
+    0.1409,
+    0.1333,
+    0.0725,
+    0.1309,
+    0.1139,
+    0.0901,
+    0.0675,
+    -0.0033,
+    0.0297,
+    0.1273,
+    0.0754,
+    0.0747,
+    -0.0222,
+    0.0102,
+    0.1233,
+    0.1463,
+    0.0888,
+    0.0758,
+    0.1098,
+    0.122,
+    0.0729,
+    0.0215,
+    0.1594,
+    0.1383,
+    0.0429,
+    0.1912,
+    0.0987,
+    0.0771,
+    0.1875,
+    0.1126,
+    0.1062,
+    0.0522,
+    0.0977,
+    0.1065,
+    0.7419,
+    0.6297,
+    0.7493,
+    0.1268,
+    0.0926,
+    0.0468
+   ]
+  },
+  {
+   "q": "How should I approach a downhill course like Boston?",
+   "sims": [
+    0.2493,
+    0.2505,
+    0.3169,
+    0.1688,
+    0.2575,
+    0.193,
+    0.2175,
+    0.2174,
+    0.154,
+    0.3516,
+    0.6561,
+    0.5865,
+    0.4289,
+    0.4391,
+    0.6491,
+    0.7336,
+    0.3296,
+    0.353,
+    0.3531,
+    0.3057,
+    0.1936,
+    0.279,
+    0.2959,
+    0.319,
+    0.2036,
+    0.2377,
+    0.3074,
+    0.1816,
+    0.1593,
+    0.16,
+    0.2398,
+    0.2183,
+    0.2877,
+    0.342,
+    0.2921,
+    0.3245,
+    0.2,
+    0.2639,
+    0.271,
+    0.1527,
+    0.2171,
+    0.2294,
+    0.2406,
+    0.248,
+    0.2495
+   ]
+  }
+ ]
+}

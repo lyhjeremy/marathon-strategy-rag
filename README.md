@@ -17,7 +17,7 @@ Seven gold questions, scored by an LLM judge (`src/eval.py`, RAGAS-style). The b
 | Context precision | 0.78 | |
 | Citation validity (computed in code) | 1.00 | |
 
-The largest single gap is the heat question (0.40 bare, 0.97 grounded), where the answer depends on a figure from my Boston weather analysis. Per-question scores are in [`eval/results.csv`](eval/results.csv).
+The largest single gap is the heat question (0.40 bare, 0.97 grounded), where the answer depends on a figure from my Boston weather analysis. Per-question scores are in [`eval/results.csv`](eval/results.csv). `scripts/export_retrieval.py` records which passages the retriever ranks highest for each gold question (`eval/retrieval_demo.json`); the [write-up page](https://lyhjeremy.github.io/marathon-strategy-rag/overview/) shows them, and they explain the carbohydrate question's low context precision: three of its top five passages come from the carb-loading card, which is about the days before the race.
 
 <p align="center">
   <img src="eval/faithfulness.png" alt="Two bar charts. Left: faithfulness to the knowledge base, 0.76 without retrieval and 0.98 with it. Right: the grounded coach's scores, 0.98 faithfulness, 0.95 answer relevance, 0.78 context precision and 1.00 citation validity." width="820">
@@ -66,7 +66,8 @@ The knowledge base ships with the repo, so there is nothing to download. To add 
 | `src/eval.py` | LLM-judge evaluation and the deterministic citation check |
 | `src/llm.py` | LLM wrapper: Claude CLI (default) or Anthropic API |
 | `src/cli.py` | `ask` (one question) and `chat` (interactive) |
-| `eval/` | `results.csv` and `faithfulness.png` from the last evaluation run |
+| `eval/` | `results.csv` and `faithfulness.png` from the last evaluation run, plus `retrieval_demo.json` |
+| `scripts/export_retrieval.py` | Writes the per-question retrieval rankings shown on the write-up page |
 
 ## Limitations
 
@@ -74,6 +75,7 @@ The knowledge base ships with the repo, so there is nothing to download. To add 
 - The judge is an LLM from the same family as the generator. Bare faithfulness measures agreement with the retrieved passages, so a correct claim that the cards don't contain still counts against the bare model.
 - Retrieval is dense-only with a single query and no reranker, which is where the 0.78 context precision comes from. The sibling [wine sommelier RAG](https://github.com/lyhjeremy/wine-sommelier-rag) uses BM25 plus a cross-encoder.
 - Several cards come from single-race Boston analyses, and their caveats carry over.
+- `knowledge/course-difficulty.md` states Boston +101 s and New York +78 s as facts about the real courses. The [course-difficulty study](https://lyhjeremy.github.io/marathon-majors-course-difficulty/) behind it ran on a simulated field with penalties set in code, so those figures describe a method test, not the courses. The card predates that correction and hasn't been rewritten, because changing it would leave the published evaluation describing a different corpus. The downhill gold question retrieves it, and faithfulness can't flag it because the answer agrees with the card.
 
 ## License
 
