@@ -1,0 +1,1560 @@
+{
+ "summary": {
+  "generated": "2026-10-28",
+  "freeze": {
+   "frozen_at_commit": "eb413bf63d1ab4a8c582b1188ab51f81292a66fd",
+   "date": "2026-10-28",
+   "sha256": "dcbf9ef212c98add40ae01216174d7b6ff4c9d2e35e1d2a4e0ea6e391fa7a7de",
+   "questions": 43,
+   "numeric_questions": 26,
+   "numeric_targets": 42,
+   "note": "Frozen before any system (retriever, RAG, bare model or tool coach) was run on these questions. src/eval.py refuses to run if gold.jsonl no longer matches this hash."
+  },
+  "models": [
+   "claude-sonnet-5-5"
+  ],
+  "systems": {
+   "bare": {
+    "answers": 43,
+    "numeric_targets": 42,
+    "numeric_accuracy": 0.333,
+    "numeric_questions_all_correct": 0.269,
+    "final_line_missing": 0,
+    "faithfulness": 0.328,
+    "faithfulness_strategy": 0.318,
+    "faithfulness_numeric": 0.335,
+    "answer_relevance": 0.835,
+    "context_precision": null,
+    "citation_validity": null,
+    "answers_without_citations": 43,
+    "unsourced_fire_rate": 1.0,
+    "unsourced_numbers_share": 0.765,
+    "mean_llm_calls": 1.0,
+    "mean_tool_steps": 0.0,
+    "median_latency_s": 6.6,
+    "mean_latency_s": 6.9,
+    "judge_missing": 0
+   },
+   "rag": {
+    "answers": 43,
+    "numeric_targets": 42,
+    "numeric_accuracy": 0.5,
+    "numeric_questions_all_correct": 0.5,
+    "final_line_missing": 0,
+    "faithfulness": 0.879,
+    "faithfulness_strategy": 0.911,
+    "faithfulness_numeric": 0.857,
+    "answer_relevance": 0.869,
+    "context_precision": 0.7,
+    "citation_validity": 1.0,
+    "answers_without_citations": 0,
+    "unsourced_fire_rate": 0.651,
+    "unsourced_numbers_share": 0.191,
+    "mean_llm_calls": 1.0,
+    "mean_tool_steps": 0.0,
+    "median_latency_s": 7.4,
+    "mean_latency_s": 11.8,
+    "judge_missing": 0
+   },
+   "coach": {
+    "answers": 43,
+    "numeric_targets": 42,
+    "numeric_accuracy": 1.0,
+    "numeric_questions_all_correct": 1.0,
+    "final_line_missing": 0,
+    "faithfulness": 0.899,
+    "faithfulness_strategy": 0.942,
+    "faithfulness_numeric": 0.871,
+    "answer_relevance": 0.928,
+    "context_precision": 0.837,
+    "citation_validity": 1.0,
+    "answers_without_citations": 1,
+    "unsourced_fire_rate": 0.07,
+    "unsourced_numbers_share": 0.005,
+    "mean_llm_calls": 2.279,
+    "mean_tool_steps": 1.279,
+    "median_latency_s": 7.2,
+    "mean_latency_s": 8.0,
+    "judge_missing": 0,
+    "repairs": 0,
+    "parse_failures": 0,
+    "hit_step_cap": 0
+   }
+  },
+  "numeric_by_family": {
+   "predict_finish": {
+    "bare": 0.5,
+    "rag": 0.5,
+    "coach": 1.0
+   },
+   "heat_effect": {
+    "bare": 0.0,
+    "rag": 0.222,
+    "coach": 1.0
+   },
+   "pace_table": {
+    "bare": 0.571,
+    "rag": 0.571,
+    "coach": 1.0
+   },
+   "chained": {
+    "bare": 0.0,
+    "rag": 0.0,
+    "coach": 1.0
+   },
+   "card arithmetic": {
+    "bare": 0.375,
+    "rag": 1.0,
+    "coach": 1.0
+   }
+  },
+  "questions": 43
+ },
+ "retrieval": {
+  "generated": "2026-10-28",
+  "questions": 43,
+  "chunks": 46,
+  "modes": {
+   "dense": {
+    "hit1": 0.837,
+    "recall3": 0.981,
+    "mrr": 0.911,
+    "chunk_prec5": 0.642,
+    "ms_per_query": 23.4
+   },
+   "bm25": {
+    "hit1": 0.884,
+    "recall3": 0.915,
+    "mrr": 0.929,
+    "chunk_prec5": 0.577,
+    "ms_per_query": 0.1,
+    "mrr_diff_vs_dense": 0.018,
+    "mrr_diff_ci95": [
+     -0.062,
+     0.094
+    ]
+   },
+   "hybrid": {
+    "hit1": 0.814,
+    "recall3": 0.969,
+    "mrr": 0.899,
+    "chunk_prec5": 0.66,
+    "ms_per_query": 7.7,
+    "mrr_diff_vs_dense": -0.012,
+    "mrr_diff_ci95": [
+     -0.054,
+     0.027
+    ]
+   },
+   "dense+rerank": {
+    "hit1": 0.837,
+    "recall3": 0.981,
+    "mrr": 0.907,
+    "chunk_prec5": 0.642,
+    "ms_per_query": 114.7,
+    "mrr_diff_vs_dense": -0.004,
+    "mrr_diff_ci95": [
+     -0.07,
+     0.058
+    ]
+   },
+   "hybrid+rerank": {
+    "hit1": 0.837,
+    "recall3": 0.969,
+    "mrr": 0.907,
+    "chunk_prec5": 0.642,
+    "ms_per_query": 102.1,
+    "mrr_diff_vs_dense": -0.004,
+    "mrr_diff_ci95": [
+     -0.062,
+     0.058
+    ]
+   }
+  },
+  "mrr_by_question_type": {
+   "dense": {
+    "numeric": 0.897,
+    "strategy": 0.931
+   },
+   "bm25": {
+    "numeric": 0.921,
+    "strategy": 0.941
+   },
+   "hybrid": {
+    "numeric": 0.891,
+    "strategy": 0.912
+   },
+   "dense+rerank": {
+    "numeric": 0.865,
+    "strategy": 0.971
+   },
+   "hybrid+rerank": {
+    "numeric": 0.865,
+    "strategy": 0.971
+   }
+  }
+ },
+ "questions": [
+  {
+   "id": "n01",
+   "type": "numeric",
+   "q": "I went through halfway in 1:42 and 10 km in 47:30. What finish should I expect, and how likely am I to hit the wall?",
+   "bare": {
+    "faith": 0.25,
+    "unsourced": 29,
+    "lat": 8.32,
+    "ok": 1,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.85,
+    "unsourced": 0,
+    "lat": 13.39,
+    "ok": 2,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.8,
+    "unsourced": 5,
+    "lat": 20.87,
+    "ok": 1,
+    "n": 2
+   }
+  },
+  {
+   "id": "n02",
+   "type": "numeric",
+   "q": "My splits were 25:10 at 5 km, 50:05 at 10 km, 1:15:20 at 15 km and 1:40:40 at 20 km. I'm a 45-year-old woman. What's my projected finish time, and what's the 80% range around it?",
+   "bare": {
+    "faith": 0.4,
+    "unsourced": 23,
+    "lat": 9.39,
+    "ok": 3,
+    "n": 3
+   },
+   "coach": {
+    "faith": 0.8,
+    "unsourced": 0,
+    "lat": 8.76,
+    "ok": 3,
+    "n": 3
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 12,
+    "lat": 17.66,
+    "ok": 3,
+    "n": 3
+   }
+  },
+  {
+   "id": "n03",
+   "type": "numeric",
+   "q": "Man, 32. I hit the half in 1:38:30 and 30 km in 2:21:00. What finish time should I expect?",
+   "bare": {
+    "faith": 0.45,
+    "unsourced": 20,
+    "lat": 7.48,
+    "ok": 0,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.8,
+    "unsourced": 0,
+    "lat": 9.44,
+    "ok": 1,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 6,
+    "lat": 14.64,
+    "ok": 0,
+    "n": 1
+   }
+  },
+  {
+   "id": "n04",
+   "type": "numeric",
+   "q": "I'm at 35 km in 3:05:00. Halfway was 1:58:00 and 30 km was 2:44:00. What's my most likely finish, and what is the chance I hit the wall?",
+   "bare": {
+    "faith": 0.5,
+    "unsourced": 27,
+    "lat": 12.51,
+    "ok": 0,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 10.53,
+    "ok": 2,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 11,
+    "lat": 18.86,
+    "ok": 0,
+    "n": 2
+   }
+  },
+  {
+   "id": "n05",
+   "type": "numeric",
+   "q": "I went out in 22:00 for the first 5 km and reached 10 km in 44:30. What finish does that point to, and how likely am I to hit the wall?",
+   "bare": {
+    "faith": 0.35,
+    "unsourced": 18,
+    "lat": 6.98,
+    "ok": 1,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 4,
+    "lat": 16.67,
+    "ok": 0,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.75,
+    "unsourced": 1,
+    "lat": 11.37,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "n06",
+   "type": "numeric",
+   "q": "I'm a 60-year-old man. 10 km in 58:00, halfway in 2:03:00. What's my projected finish?",
+   "bare": {
+    "faith": 0.35,
+    "unsourced": 20,
+    "lat": 6.74,
+    "ok": 0,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.85,
+    "unsourced": 0,
+    "lat": 8.28,
+    "ok": 1,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.9,
+    "unsourced": 9,
+    "lat": 12.67,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "n07",
+   "type": "numeric",
+   "q": "Through 20 km in 1:55:00 and 25 km in 2:25:30. What finish should I expect, and what's my wall risk?",
+   "bare": {
+    "faith": 0.5,
+    "unsourced": 36,
+    "lat": 10.75,
+    "ok": 1,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.8,
+    "unsourced": 12,
+    "lat": 14.54,
+    "ok": 1,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.82,
+    "unsourced": 1,
+    "lat": 12.68,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "n08",
+   "type": "numeric",
+   "q": "Woman, 28. I passed 35 km in 2:55:00 and 40 km in 3:22:00. What's the predicted finish time?",
+   "bare": {
+    "faith": 0.5,
+    "unsourced": 17,
+    "lat": 6.46,
+    "ok": 1,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 9,
+    "lat": 12.01,
+    "ok": 1,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.7,
+    "unsourced": 0,
+    "lat": 9.69,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "h01",
+   "type": "numeric",
+   "q": "How much slower should a 3:30 marathoner expect to run at 75°F with a 60°F dew point?",
+   "bare": {
+    "faith": 0.1,
+    "unsourced": 28,
+    "lat": 5.41,
+    "ok": 0,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 7,
+    "lat": 9.58,
+    "ok": 0,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.9,
+    "unsourced": 0,
+    "lat": 6.67,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "h02",
+   "type": "numeric",
+   "q": "I'm a 4:15 marathoner. The forecast is 68°F, dew point 55°F, with a 10 mph headwind. How many minutes will the conditions cost me?",
+   "bare": {
+    "faith": 0.1,
+    "unsourced": 12,
+    "lat": 10.18,
+    "ok": 0,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.8,
+    "unsourced": 5,
+    "lat": 10.95,
+    "ok": 1,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.8,
+    "unsourced": 0,
+    "lat": 7.18,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "h03",
+   "type": "numeric",
+   "q": "For a 2:55 runner at 80°F with a 65°F dew point, how many minutes will the heat cost, and what is the range?",
+   "bare": {
+    "faith": 0.05,
+    "unsourced": 20,
+    "lat": 7.74,
+    "ok": 0,
+    "n": 3
+   },
+   "coach": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 6.6,
+    "ok": 3,
+    "n": 3
+   },
+   "rag": {
+    "faith": 0.9,
+    "unsourced": 7,
+    "lat": 12.1,
+    "ok": 0,
+    "n": 3
+   }
+  },
+  {
+   "id": "h04",
+   "type": "numeric",
+   "q": "The forecast is 58°F with a 40°F dew point. I usually run 3:45 in good conditions. How much will the weather cost me?",
+   "bare": {
+    "faith": 0.1,
+    "unsourced": 8,
+    "lat": 6.61,
+    "ok": 0,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.72,
+    "unsourced": 5,
+    "lat": 7.37,
+    "ok": 0,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.85,
+    "unsourced": 0,
+    "lat": 6.88,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "h05",
+   "type": "numeric",
+   "q": "I'm on course for a 5:00 finish in cool weather, but it will be 85°F with a 70°F dew point. What slowdown should I expect?",
+   "bare": {
+    "faith": 0.1,
+    "unsourced": 18,
+    "lat": 7.7,
+    "ok": 0,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.8,
+    "unsourced": 0,
+    "lat": 7.07,
+    "ok": 1,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 5,
+    "lat": 8.98,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "h06",
+   "type": "numeric",
+   "q": "My goal is 3:10. Race day looks like 72°F, a 62°F dew point and a 15 mph headwind. How much slower should I expect to be, and what finish time should I plan on?",
+   "bare": {
+    "faith": 0.1,
+    "unsourced": 19,
+    "lat": 9.05,
+    "ok": 0,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.8,
+    "unsourced": 8,
+    "lat": 10.4,
+    "ok": 0,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.85,
+    "unsourced": 0,
+    "lat": 7.47,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "p01",
+   "type": "numeric",
+   "q": "What even pace per kilometer do I need for a 3:30 marathon, and what should my halfway split be?",
+   "bare": {
+    "faith": 0.5,
+    "unsourced": 23,
+    "lat": 4.75,
+    "ok": 2,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 7.02,
+    "ok": 2,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.93,
+    "unsourced": 3,
+    "lat": 9.81,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "p02",
+   "type": "numeric",
+   "q": "I want to run 4:00 but expect to fade in the second half like a typical runner at my level. What first-half and second-half times should I plan for?",
+   "bare": {
+    "faith": 0.25,
+    "unsourced": 28,
+    "lat": 8.47,
+    "ok": 0,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.9,
+    "unsourced": 4,
+    "lat": 11.2,
+    "ok": 0,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.87,
+    "unsourced": 0,
+    "lat": 7.46,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "p03",
+   "type": "numeric",
+   "q": "If I pace a 2:59:59 marathon perfectly evenly, what should my elapsed time be at 30 km?",
+   "bare": {
+    "faith": 0.6,
+    "unsourced": 11,
+    "lat": 4.24,
+    "ok": 1,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.96,
+    "unsourced": 0,
+    "lat": 5.39,
+    "ok": 1,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 6,
+    "lat": 9.81,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "p04",
+   "type": "numeric",
+   "q": "My goal is 4:30, and I want to allow for the typical second-half fade at that level. What pace per kilometer should I run in the first half?",
+   "bare": {
+    "faith": 0.25,
+    "unsourced": 16,
+    "lat": 6.0,
+    "ok": 0,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.9,
+    "unsourced": 10,
+    "lat": 9.36,
+    "ok": 0,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 6.18,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "p05",
+   "type": "numeric",
+   "q": "What pace per mile do I need to run an even 3:45 marathon?",
+   "bare": {
+    "faith": 0.5,
+    "unsourced": 19,
+    "lat": 4.52,
+    "ok": 1,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 6.2,
+    "ok": 1,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.88,
+    "unsourced": 10,
+    "lat": 7.78,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "c01",
+   "type": "numeric",
+   "q": "My goal is 3:20 in cool weather, but the forecast is 76°F with a 64°F dew point. What finish time should I adjust to, and what even pace per kilometer runs that time?",
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 16,
+    "lat": 7.36,
+    "ok": 0,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 8,
+    "lat": 10.49,
+    "ok": 0,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 9.76,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "c02",
+   "type": "numeric",
+   "q": "I hit halfway in 1:50 and 10 km in 52:00. What even pace per kilometer for the rest of the race would match the finish time the model predicts for me?",
+   "bare": {
+    "faith": 0.4,
+    "unsourced": 19,
+    "lat": 8.92,
+    "ok": 0,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.8,
+    "unsourced": 6,
+    "lat": 11.81,
+    "ok": 0,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.92,
+    "unsourced": 1,
+    "lat": 12.54,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "k01",
+   "type": "numeric",
+   "q": "I weigh 65 kg. Using the standard carb-loading guideline, how many grams of carbohydrate per day should I eat in the final days before the race (low and high end)?",
+   "bare": {
+    "faith": 0.72,
+    "unsourced": 14,
+    "lat": 3.59,
+    "ok": 2,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 6,
+    "lat": 5.86,
+    "ok": 2,
+    "n": 2
+   },
+   "coach": {
+    "faith": 1.0,
+    "unsourced": 0,
+    "lat": 10.04,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "k02",
+   "type": "numeric",
+   "q": "At the usual per-hour carbohydrate target for marathoners, how many grams of carbs in total should I take over a 4-hour race (low and high end)?",
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 16,
+    "lat": 3.81,
+    "ok": 0,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.9,
+    "unsourced": 1,
+    "lat": 5.55,
+    "ok": 2,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.85,
+    "unsourced": 0,
+    "lat": 10.95,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "k03",
+   "type": "numeric",
+   "q": "If super shoes are worth the same share of finish time for me as for elites, how many minutes would they save on a 3:45 marathon?",
+   "bare": {
+    "faith": 0.15,
+    "unsourced": 10,
+    "lat": 6.7,
+    "ok": 0,
+    "n": 1
+   },
+   "rag": {
+    "faith": 0.9,
+    "unsourced": 2,
+    "lat": 7.31,
+    "ok": 1,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 11.83,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "k04",
+   "type": "numeric",
+   "q": "Using the one-minute-per-degree heat rule of thumb, how much slower would I be at 72°F than at 55°F?",
+   "rag": {
+    "faith": 0.93,
+    "unsourced": 5,
+    "lat": 4.98,
+    "ok": 1,
+    "n": 1
+   },
+   "bare": {
+    "faith": 0.7,
+    "unsourced": 5,
+    "lat": 6.04,
+    "ok": 1,
+    "n": 1
+   },
+   "coach": {
+    "faith": 0.85,
+    "unsourced": 0,
+    "lat": 7.76,
+    "ok": 1,
+    "n": 1
+   }
+  },
+  {
+   "id": "k05",
+   "type": "numeric",
+   "q": "I peaked at 80 km per week. Following the standard taper cut, what weekly volume should I drop to (low and high end)?",
+   "bare": {
+    "faith": 0.2,
+    "unsourced": 28,
+    "lat": 4.3,
+    "ok": 0,
+    "n": 2
+   },
+   "rag": {
+    "faith": 0.93,
+    "unsourced": 7,
+    "lat": 5.81,
+    "ok": 2,
+    "n": 2
+   },
+   "coach": {
+    "faith": 0.85,
+    "unsourced": 0,
+    "lat": 10.69,
+    "ok": 2,
+    "n": 2
+   }
+  },
+  {
+   "id": "s01",
+   "type": "strategy",
+   "q": "Should I try to negative-split my first marathon?",
+   "bare": {
+    "faith": 0.4,
+    "unsourced": 16,
+    "lat": 6.33
+   },
+   "coach": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 6.39
+   },
+   "rag": {
+    "faith": 0.88,
+    "unsourced": 0,
+    "lat": 6.65
+   }
+  },
+  {
+   "id": "s02",
+   "type": "strategy",
+   "q": "How much slower will race-day heat around 80°F make me?",
+   "coach": {
+    "faith": 1.0,
+    "unsourced": 0,
+    "lat": 3.06
+   },
+   "bare": {
+    "faith": 0.1,
+    "unsourced": 31,
+    "lat": 6.55
+   },
+   "rag": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 5.44
+   }
+  },
+  {
+   "id": "s03",
+   "type": "strategy",
+   "q": "How should I pace the final 10K to avoid hitting the wall?",
+   "bare": {
+    "faith": 0.25,
+    "unsourced": 27,
+    "lat": 7.49
+   },
+   "rag": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 6.37
+   },
+   "coach": {
+    "faith": 0.97,
+    "unsourced": 0,
+    "lat": 8.66
+   }
+  },
+  {
+   "id": "s04",
+   "type": "strategy",
+   "q": "How many grams of carbs per hour should I take during the race?",
+   "bare": {
+    "faith": 0.4,
+    "unsourced": 29,
+    "lat": 5.49
+   },
+   "coach": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 6.28
+   },
+   "rag": {
+    "faith": 0.92,
+    "unsourced": 0,
+    "lat": 128.02
+   }
+  },
+  {
+   "id": "s05",
+   "type": "strategy",
+   "q": "How should I taper in the last two to three weeks?",
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 37,
+    "lat": 7.15
+   },
+   "rag": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 6.55
+   },
+   "coach": {
+    "faith": 0.97,
+    "unsourced": 0,
+    "lat": 7.02
+   }
+  },
+  {
+   "id": "s06",
+   "type": "strategy",
+   "q": "Do carbon-plated super-shoes actually make a meaningful difference?",
+   "bare": {
+    "faith": 0.2,
+    "unsourced": 16,
+    "lat": 7.38
+   },
+   "rag": {
+    "faith": 0.92,
+    "unsourced": 0,
+    "lat": 5.65
+   },
+   "coach": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 6.25
+   }
+  },
+  {
+   "id": "s07",
+   "type": "strategy",
+   "q": "How should I approach a downhill course like Boston?",
+   "rag": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 5.56
+   },
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 19,
+    "lat": 7.53
+   },
+   "coach": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 7.04
+   }
+  },
+  {
+   "id": "s08",
+   "type": "strategy",
+   "q": "What should I eat on race morning, and how long before the start?",
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 22,
+    "lat": 5.65
+   },
+   "rag": {
+    "faith": 0.9,
+    "unsourced": 1,
+    "lat": 5.67
+   },
+   "coach": {
+    "faith": 0.97,
+    "unsourced": 0,
+    "lat": 5.83
+   }
+  },
+  {
+   "id": "s09",
+   "type": "strategy",
+   "q": "How do I stay hydrated in a hot marathon without overdrinking?",
+   "bare": {
+    "faith": 0.4,
+    "unsourced": 16,
+    "lat": 6.6
+   },
+   "rag": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 7.1
+   },
+   "coach": {
+    "faith": 0.92,
+    "unsourced": 0,
+    "lat": 8.47
+   }
+  },
+  {
+   "id": "s10",
+   "type": "strategy",
+   "q": "Are Boston qualifying standards equally hard for every age and gender group?",
+   "rag": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 5.04
+   },
+   "bare": {
+    "faith": 0.1,
+    "unsourced": 19,
+    "lat": 7.54
+   },
+   "coach": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 6.64
+   }
+  },
+  {
+   "id": "s11",
+   "type": "strategy",
+   "q": "Which World Marathon Major should I pick if I'm chasing a PR?",
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 1,
+    "lat": 6.0
+   },
+   "rag": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 6.39
+   },
+   "coach": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 6.14
+   }
+  },
+  {
+   "id": "s12",
+   "type": "strategy",
+   "q": "How long should my longest training run be, and how fast?",
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 36,
+    "lat": 5.64
+   },
+   "rag": {
+    "faith": 0.9,
+    "unsourced": 0,
+    "lat": 6.09
+   },
+   "coach": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 5.59
+   }
+  },
+  {
+   "id": "s13",
+   "type": "strategy",
+   "q": "Do I need a depletion phase before carb-loading?",
+   "rag": {
+    "faith": 0.95,
+    "unsourced": 3,
+    "lat": 4.9
+   },
+   "bare": {
+    "faith": 0.5,
+    "unsourced": 24,
+    "lat": 6.62
+   },
+   "coach": {
+    "faith": 1.0,
+    "unsourced": 0,
+    "lat": 5.88
+   }
+  },
+  {
+   "id": "s14",
+   "type": "strategy",
+   "q": "Should I run hills at constant pace or constant effort?",
+   "rag": {
+    "faith": 0.95,
+    "unsourced": 0,
+    "lat": 5.04
+   },
+   "bare": {
+    "faith": 0.5,
+    "unsourced": 6,
+    "lat": 5.93
+   },
+   "coach": {
+    "faith": 0.96,
+    "unsourced": 0,
+    "lat": 7.61
+   }
+  },
+  {
+   "id": "s15",
+   "type": "strategy",
+   "q": "I felt great at 25 km and want to speed up. Is that a good idea?",
+   "bare": {
+    "faith": 0.45,
+    "unsourced": 14,
+    "lat": 6.03
+   },
+   "rag": {
+    "faith": 0.85,
+    "unsourced": 0,
+    "lat": 5.87
+   },
+   "coach": {
+    "faith": 0.8,
+    "unsourced": 0,
+    "lat": 8.29
+   }
+  },
+  {
+   "id": "s16",
+   "type": "strategy",
+   "q": "How should I set a realistic goal pace for my marathon?",
+   "rag": {
+    "faith": 0.92,
+    "unsourced": 0,
+    "lat": 6.26
+   },
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 37,
+    "lat": 8.36
+   },
+   "coach": {
+    "faith": 0.93,
+    "unsourced": 0,
+    "lat": 6.56
+   }
+  },
+  {
+   "id": "s17",
+   "type": "strategy",
+   "q": "What are the warning signs of hyponatremia during a race?",
+   "bare": {
+    "faith": 0.3,
+    "unsourced": 5,
+    "lat": 5.87
+   },
+   "rag": {
+    "faith": 0.75,
+    "unsourced": 0,
+    "lat": 4.98
+   },
+   "coach": {
+    "faith": 0.88,
+    "unsourced": 0,
+    "lat": 6.14
+   }
+  }
+ ],
+ "traces": [
+  {
+   "id": "n01",
+   "date": "2026-10-28",
+   "model": "claude-sonnet-5-5",
+   "question": "I went through halfway in 1:42 and 10 km in 47:30. What finish should I expect, and how likely am I to hit the wall?",
+   "steps": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "10": 47.5,
+       "21": 102
+      }
+     },
+     "label": "[T1]",
+     "result": {
+      "median_min": 213.54,
+      "lo80_min": 207.48,
+      "hi80_min": 226.75,
+      "lo95_min": 204.1,
+      "hi95_min": 239.48,
+      "wall_risk": 0.1645,
+      "pace_type": "Steady fade",
+      "n_train": 176059,
+      "model_version": "2026-10-28.1",
+      "caveat": "Fitted on Boston splits; has no weather input. On the 2024 holdout its 80% interval at 35 km covered 74% of runners, so late-race intervals run narrow."
+     }
+    },
+    {
+     "tool": "calculator",
+     "args": {
+      "expression": "213.54 - 180"
+     },
+     "label": "[T2]",
+     "result": {
+      "expression": "213.54 - 180",
+      "result": 33.54
+     }
+    }
+   ],
+   "answer": "Expect to finish around 213.5 minutes (about 3:33-3:34), based on your 47.5 min at 10 km and 102 min at halfway [T1]. The model describes your pattern as a \"Steady fade\" [T1].\n\nThe 80% range is 207.48 to 226.75 minutes, and the 95% range is 204.1 to 239.48 minutes [T1]. The upper end is much further from the median than the lower end, so the risk is mostly of slowing down, not of speeding up.\n\nYour chance of hitting the wall (35-40 km pace more than 25% slower than your 10-20 km pace) is about 16% (0.1645) [T1]. That is a minority risk, but not a negligible one.\n\nHow far to trust this: the model was fitted on Boston splits and has no weather input, so heat or wind would push you slower than it says. On the 2024 holdout, its 80% interval at 35 km covered only 74% of runners, so the ranges are somewhat too narrow [T1]. Treat the ranges as a bit optimistic, especially the upper bound.\n\nWhat to do:\n1. Keep the second half controlled instead of chasing the clock early, since that is what separates a steady fade from a wall.\n2. Keep taking fuel and fluids on schedule, and check the weather. If it is warm, expect to land toward the slower end of the range.\n\nFINAL: finish_min=213.54; wall_risk_pct=16.45",
+   "latency_s": 13.39,
+   "llm_calls": 3,
+   "unsourced": [],
+   "numeric": [
+    {
+     "key": "finish_min",
+     "expected": 213.54,
+     "tol": 4.818,
+     "got": 213.54,
+     "ok": true,
+     "abs_err": 0.0
+    },
+    {
+     "key": "wall_risk_pct",
+     "expected": 16.45,
+     "tol": 5.0,
+     "got": 16.45,
+     "ok": true,
+     "abs_err": 0.0
+    }
+   ],
+   "others": {
+    "bare": {
+     "numeric": [
+      {
+       "key": "finish_min",
+       "expected": 213.54,
+       "tol": 4.818,
+       "got": 210.0,
+       "ok": true,
+       "abs_err": 3.54
+      },
+      {
+       "key": "wall_risk_pct",
+       "expected": 16.45,
+       "tol": 5.0,
+       "got": 35.0,
+       "ok": false,
+       "abs_err": 18.55
+      }
+     ],
+     "unsourced": [
+      "3:30",
+      "3:26",
+      "3:35",
+      "3:24",
+      "4:50",
+      "4:45",
+      "4:54",
+      "3:28",
+      "3:31",
+      "4:50",
+      "4:55",
+      "3:25",
+      "3:27",
+      "4:52",
+      "4:55",
+      "3",
+      "6",
+      "30",
+      "35",
+      "60",
+      "32",
+      "20",
+      "32",
+      "20",
+      "25",
+      "32",
+      "5",
+      "210",
+      "35"
+     ]
+    },
+    "rag": {
+     "numeric": [
+      {
+       "key": "finish_min",
+       "expected": 213.54,
+       "tol": 4.818,
+       "got": 210.0,
+       "ok": true,
+       "abs_err": 3.54
+      },
+      {
+       "key": "wall_risk_pct",
+       "expected": 16.45,
+       "tol": 5.0,
+       "got": 27.0,
+       "ok": false,
+       "abs_err": 10.55
+      }
+     ],
+     "unsourced": [
+      "204",
+      "12",
+      "6",
+      "210",
+      "210"
+     ]
+    }
+   }
+  },
+  {
+   "id": "c01",
+   "date": "2026-10-28",
+   "model": "claude-sonnet-5-5",
+   "question": "My goal is 3:20 in cool weather, but the forecast is 76°F with a 64°F dew point. What finish time should I adjust to, and what even pace per kilometer runs that time?",
+   "steps": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 200,
+      "temp_f": 76,
+      "dewpoint_f": 64
+     },
+     "label": "[T1]",
+     "result": {
+      "expected_slowdown_min": 16.13,
+      "lo_min": 4.53,
+      "hi_min": 19.33,
+      "percentile_used": 22.8,
+      "baseline_temp_f": 55.0,
+      "model_version": "heat-2026.10.1",
+      "adjusted_finish_min": 216.13,
+      "caveat": "Fitted on Boston results vs. race-day temperature (baseline 55F or cooler). Dew point is accepted but not used: it did not beat dry-bulb temperature in cross-validation. On its 2015-2019 holdout the model did not beat a flat no-weather guess (2.26% vs 2.15% error), so treat the slowdown as a rough guide."
+     }
+    },
+    {
+     "tool": "calculator",
+     "args": {
+      "expression": "216.13*60/42.195"
+     },
+     "label": "[T2]",
+     "result": {
+      "expression": "216.13*60/42.195",
+      "result": 307.3303
+     }
+    }
+   ],
+   "answer": "Adjust your 3:20 (200 min) goal to about 216 minutes (roughly 3:36), per the heat model: expected slowdown 16.13 min, giving an adjusted finish of 216.13 min [T1]. The model's range for the slowdown is 4.53 to 19.33 min [T1], so the adjusted finish could plausibly be anywhere from about 205 to 219 minutes.\n\nEven pace for 216.13 min over 42.195 km is about 307.33 sec/km, roughly 5:07 per km [T2].\n\nHow much to trust this: the model was fitted on Boston results against dry-bulb temperature with a 55F baseline, and the dew point you gave (64F) was not used, because it did not improve accuracy in cross-validation [T1]. On its 2015-2019 holdout it did not beat a flat no-weather guess (2.26% vs 2.15% error), so treat the slowdown as a rough guide, not a precise prediction [T1]. Humid conditions may well be harder than the model shows.\n\nActions: 1) Start near 5:07/km, or a touch slower, instead of your cool-weather goal pace, and only speed up late if you feel fine. 2) Treat the 216-minute figure as a planning target, and be ready to slow further if the day feels harder than the pace suggests.\n\nFINAL: adjusted_finish_min=216.13; pace_sec_per_km=307.33",
+   "latency_s": 9.76,
+   "llm_calls": 3,
+   "unsourced": [],
+   "numeric": [
+    {
+     "key": "adjusted_finish_min",
+     "expected": 216.13,
+     "tol": 3.7,
+     "got": 216.13,
+     "ok": true,
+     "abs_err": 0.0
+    },
+    {
+     "key": "pace_sec_per_km",
+     "expected": 307.3,
+     "tol": 5.261,
+     "got": 307.33,
+     "ok": true,
+     "abs_err": 0.03
+    }
+   ],
+   "others": {
+    "bare": {
+     "numeric": [
+      {
+       "key": "adjusted_finish_min",
+       "expected": 216.13,
+       "tol": 3.7,
+       "got": 206.0,
+       "ok": false,
+       "abs_err": 10.13
+      },
+      {
+       "key": "pace_sec_per_km",
+       "expected": 307.3,
+       "tol": 5.261,
+       "got": 293.0,
+       "ok": false,
+       "abs_err": 14.3
+      }
+     ],
+     "unsourced": [
+      "4:53",
+      "4:45",
+      "4:55",
+      "4:58",
+      "206",
+      "140",
+      "131",
+      "140",
+      "206",
+      "206",
+      "292.9",
+      "10",
+      "5",
+      "10",
+      "206",
+      "293"
+     ]
+    },
+    "rag": {
+     "numeric": [
+      {
+       "key": "adjusted_finish_min",
+       "expected": 216.13,
+       "tol": 3.7,
+       "got": 226.0,
+       "ok": false,
+       "abs_err": 9.87
+      },
+      {
+       "key": "pace_sec_per_km",
+       "expected": 307.3,
+       "tol": 5.261,
+       "got": 321.4,
+       "ok": false,
+       "abs_err": 14.1
+      }
+     ],
+     "unsourced": [
+      "226",
+      "226",
+      "226",
+      "13,560",
+      "321",
+      "284",
+      "226",
+      "321.4"
+     ]
+    }
+   }
+  },
+  {
+   "id": "s15",
+   "date": "2026-10-28",
+   "model": "claude-sonnet-5-5",
+   "question": "I felt great at 25 km and want to speed up. Is that a good idea?",
+   "steps": [
+    {
+     "tool": "retrieve_cards",
+     "args": {
+      "query": "feeling good mid-race, speeding up after 25 km, negative split, surging, the wall",
+      "k": 5
+     },
+     "label": "[T1]",
+     "result": {
+      "passages": [
+       {
+        "card": "even-pacing-strategy",
+        "text": "Even Pacing Strategy. to a hard course or a hot day. - Pick a pace you're confident you can hold for the *whole* distance, then run the first few miles a touch slower. **Executing it:** - Deliberately hold back in the op..."
+       },
+       {
+        "card": "hitting-the-wall",
+        "text": "Hitting the Wall: Where the Marathon Is Really Decided. \"The wall\" is not a myth or a metaphor. It is a measurable inflection point in pace, and the data pinpoint where it happens. **What the Boston data show (31,655 fin..."
+       },
+       {
+        "card": "hitting-the-wall",
+        "text": "Hitting the Wall: Where the Marathon Is Really Decided. km. - Structure your training and fueling specifically for the back third: long runs that rehearse fatigue, and a fueling plan that keeps glycogen topped up before ..."
+       },
+       {
+        "card": "negative-split-reality",
+        "text": "The Reality of Negative Splits. faster and more experienced you are, the more evenly you will naturally pace. If you are a mid-pack or first-time marathoner, assume your instinct to push early is a trap. **Actionable tak..."
+       },
+       {
+        "card": "negative-split-reality",
+        "text": "The Reality of Negative Splits. **Slowdown scales with ability:** - Sub-3:00 runners slowed only about **+5%**. - Runners over 4:00 slowed roughly **+22%**. - Women paced slightly more evenly than men (**~13.4% vs ~14.8%..."
+       }
+      ]
+     }
+    }
+   ],
+   "answer": "Probably not yet. Feeling great at 25 km is normal, and it doesn't mean you have pace in reserve. In the Boston data, pace stays roughly flat through about 20 km, then climbs steeply from about 30 km onward [2]. The median slowdown over 35-40 km is 15%, and 27% of finishers slow by more than 25% in the closing kilometers [2]. The cards also say the near-universal error is going out too fast, and that the realistic, optimal target for almost everyone is an even split, not a heroic negative split [5]. Mid-pack and first-time marathoners should assume the instinct to push early is a trap [5].\n\nWhat to do:\n1. Hold your current pace through 30 km. The cards say to treat 30 km as the true start of your race and to run the first 30 km conservatively enough to keep pace in reserve while others slow [3]. Keep fueling so glycogen doesn't deplete [3].\n2. Past 30 km, if you still feel strong, pick up the effort gradually and judge it by how you feel, not just by your watch. Check splits, but race by effort as fatigue builds [1].\n\nI haven't run a finish or wall-risk projection, because you didn't give me your splits. If you send your cumulative times at 10, 20/21 and 25 km (plus age and gender if you like), I can estimate your finish and wall risk. Any model estimate like that comes with limited accuracy, so I'd treat it as a rough guide.",
+   "latency_s": 8.29,
+   "llm_calls": 2,
+   "unsourced": [],
+   "numeric": null,
+   "others": {
+    "bare": {
+     "numeric": null,
+     "unsourced": [
+      "30",
+      "35",
+      "32",
+      "32",
+      "32",
+      "5",
+      "10",
+      "5",
+      "35",
+      "1",
+      "2",
+      "32",
+      "5",
+      "7"
+     ]
+    },
+    "rag": {
+     "numeric": null,
+     "unsourced": []
+    }
+   }
+  }
+ ]
+}

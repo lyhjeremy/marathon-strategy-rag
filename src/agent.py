@@ -49,6 +49,7 @@ Rules:
 - Every number in your final answer must appear in a tool result, a passage you cite, or the runner's question. If you need a sum, difference, product or conversion, call calculator first. Do not round to new values in your head; quote the tool's numbers (rounding to whole minutes or seconds is fine).
 - Cite passages as [1], [2] (the numbers shown next to them) and tool results as [T1], [T2]. Cite every number.
 - Some course-difficulty figures come from a simulation; if you use them, say they are simulated.
+- predict_finish and heat_effect results carry a caveat from the models' holdout checks. When you use one, say briefly how much to trust it; never present a model estimate as more certain than its caveat allows.
 - Keep the answer focused: the numbers the runner asked for, what they mean, and one or two concrete actions. If a tool returns an error, fix the arguments or say what you could not compute.
 - You may make at most {max_steps} tool calls."""
 
@@ -141,6 +142,31 @@ class AgentResult:
             "hit_step_cap", "latency_s", "model", "check")}
 
 
+def cited_numbers(answer: str) -> set[int]:
+    return {int(n) for grp in re.findall(r"\[([\d,\s]+)\]", answer) for n in re.findall(r"\d+", grp)}
+
+
+def coach_evidence(steps: list, passages: list, answer: str) -> list:
+    """What a coach answer may take numbers from: non-retrieval tool results, the
+    passages it cites, and the tool descriptions it was given."""
+    ev = [s["result"] for s in steps if s["tool"] != "retrieve_cards"]
+    cited = cited_numbers(answer)
+    ev += [p["text"] for i, p in enumerate(passages, 1) if i in cited]
+    ev += [t["description"] for t in TOOL_SPECS]
+    return ev
+
+
+def passages_from_steps(steps: list) -> list:
+    """Rebuild the global [n] passage list from a saved trace."""
+    out = []
+    for s in steps:
+        if s["tool"] == "retrieve_cards":
+            for p in s["result"].get("passages", []):
+                if not any((q["card"], q["text"]) == (p["card"], p["text"]) for q in out):
+                    out.append(p)
+    return out
+
+
 class ToolCoach:
     def __init__(self, max_steps: int = 6, llm: LLM | None = None):
         self.max_steps = max_steps
@@ -224,9 +250,7 @@ class ToolCoach:
                 res.answer = "(stopped: too many model calls)"
                 break
         res.latency_s = round(time.perf_counter() - t0, 2)
-        evidence = [r for s, r in zip(res.steps, res.tool_results) if s["tool"] != "retrieve_cards"]
-        evidence += [p["text"] for p in res.cited_passages()]
-        res.check = numcheck.check(res.answer, question, evidence)
+        res.check = numcheck.check(res.answer, question, coach_evidence(res.steps, res.passages, res.answer))
         return res
 
 

@@ -1,0 +1,111 @@
+{
+ "generated": "2026-10-28",
+ "freeze": {
+  "frozen_at_commit": "eb413bf63d1ab4a8c582b1188ab51f81292a66fd",
+  "date": "2026-10-28",
+  "sha256": "dcbf9ef212c98add40ae01216174d7b6ff4c9d2e35e1d2a4e0ea6e391fa7a7de",
+  "questions": 43,
+  "numeric_questions": 26,
+  "numeric_targets": 42,
+  "note": "Frozen before any system (retriever, RAG, bare model or tool coach) was run on these questions. src/eval.py refuses to run if gold.jsonl no longer matches this hash."
+ },
+ "models": [
+  "claude-sonnet-5-5"
+ ],
+ "systems": {
+  "bare": {
+   "answers": 43,
+   "numeric_targets": 42,
+   "numeric_accuracy": 0.333,
+   "numeric_questions_all_correct": 0.269,
+   "final_line_missing": 0,
+   "faithfulness": 0.328,
+   "faithfulness_strategy": 0.318,
+   "faithfulness_numeric": 0.335,
+   "answer_relevance": 0.835,
+   "context_precision": null,
+   "citation_validity": null,
+   "answers_without_citations": 43,
+   "unsourced_fire_rate": 1.0,
+   "unsourced_numbers_share": 0.765,
+   "mean_llm_calls": 1.0,
+   "mean_tool_steps": 0.0,
+   "median_latency_s": 6.6,
+   "mean_latency_s": 6.9,
+   "judge_missing": 0
+  },
+  "rag": {
+   "answers": 43,
+   "numeric_targets": 42,
+   "numeric_accuracy": 0.5,
+   "numeric_questions_all_correct": 0.5,
+   "final_line_missing": 0,
+   "faithfulness": 0.879,
+   "faithfulness_strategy": 0.911,
+   "faithfulness_numeric": 0.857,
+   "answer_relevance": 0.869,
+   "context_precision": 0.7,
+   "citation_validity": 1.0,
+   "answers_without_citations": 0,
+   "unsourced_fire_rate": 0.651,
+   "unsourced_numbers_share": 0.191,
+   "mean_llm_calls": 1.0,
+   "mean_tool_steps": 0.0,
+   "median_latency_s": 7.4,
+   "mean_latency_s": 11.8,
+   "judge_missing": 0
+  },
+  "coach": {
+   "answers": 43,
+   "numeric_targets": 42,
+   "numeric_accuracy": 1.0,
+   "numeric_questions_all_correct": 1.0,
+   "final_line_missing": 0,
+   "faithfulness": 0.899,
+   "faithfulness_strategy": 0.942,
+   "faithfulness_numeric": 0.871,
+   "answer_relevance": 0.928,
+   "context_precision": 0.837,
+   "citation_validity": 1.0,
+   "answers_without_citations": 1,
+   "unsourced_fire_rate": 0.07,
+   "unsourced_numbers_share": 0.005,
+   "mean_llm_calls": 2.279,
+   "mean_tool_steps": 1.279,
+   "median_latency_s": 7.2,
+   "mean_latency_s": 8.0,
+   "judge_missing": 0,
+   "repairs": 0,
+   "parse_failures": 0,
+   "hit_step_cap": 0
+  }
+ },
+ "numeric_by_family": {
+  "predict_finish": {
+   "bare": 0.5,
+   "rag": 0.5,
+   "coach": 1.0
+  },
+  "heat_effect": {
+   "bare": 0.0,
+   "rag": 0.222,
+   "coach": 1.0
+  },
+  "pace_table": {
+   "bare": 0.571,
+   "rag": 0.571,
+   "coach": 1.0
+  },
+  "chained": {
+   "bare": 0.0,
+   "rag": 0.0,
+   "coach": 1.0
+  },
+  "card arithmetic": {
+   "bare": 0.375,
+   "rag": 1.0,
+   "coach": 1.0
+  }
+ },
+ "questions": 43
+}

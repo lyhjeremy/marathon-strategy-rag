@@ -14,6 +14,9 @@ Matching rules, kept loose enough that ordinary rounding passes:
   (seconds); "47:30" is also 47.5 minutes. Source times get the same treatment.
 * Source values also match after x100 / /100 (fraction and percent) and x60 / /60
   (minutes and seconds, hours and minutes).
+* Digits inside a tool result's field names count as sources ("lo95_min" backs
+  "the 95% range"), and so do the tool descriptions the coach was given (they
+  define the wall as 35-40 km pace more than 25% slower than 10-20 km pace).
 * Citation markers ([2], [T1]), list numbering and a few fixed race distances
   (42.195 km, 26.2 mi, 21.1 km, 13.1 mi) are ignored.
 
@@ -28,7 +31,7 @@ import json
 import re
 
 _CITE = re.compile(r"\[(?:T?\d+)(?:\s*[,;]\s*T?\d+)*\]")
-_LISTNUM = re.compile(r"(?m)^\s*\d+[.)]\s")
+_LISTNUM = re.compile(r"(?m)^\s*(?:\*\*)?\d+[.)](?=\s|\*\*)")  # "1. " and "**1.**"
 _TIME = re.compile(r"(?<![\d:])(\d{1,2}):(\d{2})(?::(\d{2}))?(?![\d:])")
 _NUM = re.compile(r"(?<![\w.])(\d[\d,]*(?:\.\d+)?)")
 _FINAL_KEYS = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\s*=")
@@ -70,6 +73,8 @@ def source_values(*texts) -> set[float]:
     for t in texts:
         if not isinstance(t, str):
             t = json.dumps(t, ensure_ascii=False)
+            # digits inside field names count too: "lo95_min" is a 95% bound
+            t += " " + " ".join(re.findall(r'(?<=[A-Za-z_])(\d+)(?=[A-Za-z_]*":)', t))
         for _, cands, _ in extract(t):
             for v in cands:
                 vals.update({v, v * 100, v / 100, v * 60, v / 60})

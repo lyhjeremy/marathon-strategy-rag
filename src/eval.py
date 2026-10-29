@@ -235,8 +235,35 @@ def _mean(xs):
     return round(sum(xs) / len(xs), 3) if xs else None
 
 
+def recheck(rows: list[dict]) -> None:
+    """Re-run the unsourced-number check on saved answers with the current rules.
+
+    The first records of the October run were checked before tool descriptions and
+    field-name digits counted as sources; recomputing here keeps every row on the
+    same rules. The rag passages are re-retrieved (dense search is deterministic).
+    """
+    from .agent import coach_evidence, passages_from_steps
+    from .retriever import Retriever
+
+    retr, gold = None, {g["id"]: g for g in load_gold()}
+    for r in rows:
+        if r["system"] == "bare":
+            ev = []
+        elif r["system"] == "rag":
+            retr = retr or Retriever()
+            ps = retr.search(gold[r["id"]]["question"], k=5)
+            cited = {int(n) for grp in re.findall(r"\[([\d,\s]+)\]", r["answer"])
+                     for n in re.findall(r"\d+", grp)}
+            ev = [p.text for i, p in enumerate(ps, 1) if i in cited]
+        else:
+            ev = coach_evidence(r["trace"], passages_from_steps(r["trace"]), r["answer"])
+        r["check_at_run"] = r["check"]
+        r["check"] = numcheck.check(r["answer"], r["question"], ev)
+
+
 def summarize() -> dict:
     rows = _load_run()
+    recheck(rows)
     gold = {g["id"]: g for g in load_gold()}
     out = {"generated": date.today().isoformat(), "freeze": verify_freeze(),
            "models": sorted({r.get("model") or "" for r in rows}), "systems": {}}

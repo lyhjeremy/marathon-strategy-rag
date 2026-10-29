@@ -3,14 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Marathon strategy RAG: a cited coach, evaluated with an LLM judge</title>
-<meta name="description" content="A retrieval-augmented marathon coach over 14 knowledge cards (MiniLM embeddings, Chroma, Claude). On a seven-question LLM-judge evaluation, grounding lifts faithfulness from 0.76 to 0.98 with citation validity 1.00." />
+<title>Marathon strategy coach: retrieval plus tools, tested on a frozen gold set</title>
+<meta name="description" content="A marathon coach that calls a finish-time model, a heat model and a pace table as tools, compared with a plain RAG coach and a bare model on 43 frozen questions. Numeric answers within tolerance: 100% for the tool coach, 50% for RAG, 33% bare." />
 <meta name="theme-color" content="#ECEBE6" />
-<meta property="og:title" content="Marathon strategy RAG" />
-<meta property="og:description" content="Faithfulness 0.98 grounded against 0.76 bare, citation validity 1.00, context precision 0.78: a RAG coach with its evaluation published per question." />
+<meta property="og:title" content="Marathon strategy coach, October 2026" />
+<meta property="og:description" content="Tool coach 100%, RAG 50%, bare model 33% on 42 numeric targets from a frozen gold set; hybrid retrieval and reranking made no measurable difference on 14 cards." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://lyhjeremy.github.io/marathon-strategy-rag/overview/" />
-<link href="" rel="stylesheet" />
 <style>
   :root {
     --paper: #ECEBE6;
@@ -243,9 +242,9 @@
   .course li + li { border-top: 1px dashed var(--rule); padding-top: 14px; }
   .course li + li::before { top: 16px; }
   .course b { font-family: var(--sans); color: var(--ink); }
-  .splits { min-width: 640px; }
+  .splits { min-width: 560px; }
   .splits th, .splits td { padding: 9px 12px; vertical-align: top; }
-  .splits td.num, .splits th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .splits td.num, .splits th.num { text-align: right; font-family: var(--mono); font-size: 14.5px; white-space: nowrap; }
   .splits .bib { font: 700 18px/1.2 var(--display); color: var(--muted); width: 44px; }
   .splits .q { color: var(--ink); }
   .splits .g { font: 700 22px/1 var(--display); color: var(--accent2); }
@@ -268,52 +267,51 @@
   .ctl button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .readout { font: 400 14px/1.5 var(--mono); color: var(--ink); min-height: 3em; border-top: 1px solid var(--rule);
              padding-top: 10px; margin: 10px 0 0; }
-  .vsrc { font-size: 13px; color: var(--muted); margin: 8px 0 0; line-height: 1.45; }
-  .askq { font: 600 clamp(19px, 2.2vw, 23px)/1.25 var(--display); margin: 0 0 12px; color: var(--ink); }
-  .kpick { display: grid; grid-template-columns: minmax(0, 1fr) 3em; gap: 4px 10px; align-items: center;
-           font-size: 14px; color: var(--ink2); max-width: 26rem; margin: 0 0 12px; }
-  .kpick input { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--accent2); }
-  .kpick output { font: 600 15px/1 var(--mono); color: var(--ink); text-align: right; }
-  .hits { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
-  .hits li { display: grid; grid-template-columns: 2rem minmax(0, 1fr) 4.2rem; gap: 4px 12px; padding: 10px 0;
-             border-bottom: 1px solid var(--rule); align-items: start; }
-  .hits li.out .cd, .hits li.out .tx, .hits li.out .sm, .hits li.out .rk { color: var(--muted); font-weight: 400; }
-  .hits li.out .sm i { background: var(--edge); }
-  .hits li.cut { border-top: 2px dashed var(--accent); }
-  .hits .rk { font: 700 22px/1 var(--display); color: var(--accent2); }
-  .hits .cd { font: 600 12px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
-  .hits .tx { grid-column: 2 / 3; font-size: 14px; line-height: 1.45; color: var(--ink2); margin: 3px 0 0; }
-  .hits .sm { grid-row: 1 / span 2; grid-column: 3; text-align: right; font: 400 14px/1.2 var(--mono); color: var(--ink); }
-  .hits .sm i { display: block; height: 6px; margin: 6px 0 0 auto; background: var(--accent2); }
-  .hits .pend { color: var(--muted); font-size: 14px; }
+  .vsrc { font-size: 13px; color: var(--muted); margin: 8px 0 0; line-height: 1.45; font-family: var(--sans); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13.5px; color: var(--ink2); margin: 0 0 10px; }
+  .legend span::before { content: ""; display: inline-block; width: 14px; height: 10px; margin-right: 6px; vertical-align: 0; background: var(--sw); }
+  .chart svg { display: block; width: 100%; height: auto; }
+  .chart g.grp:focus { outline: none; }
+  .chart g.grp:focus rect.hit, .chart g.grp:hover rect.hit { stroke: var(--accent); stroke-width: 2; }
   .sk { height: 15px; margin: 12px 0; background: var(--rule); }
   @media (prefers-reduced-motion: no-preference) { .sk { animation: skp 1.2s ease-in-out infinite alternate; } }
   @keyframes skp { from { opacity: .45; } to { opacity: 1; } }
-  .splits th button { all: unset; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
-  .splits th button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .splits th button:hover { color: var(--ink); }
-  .splits th[aria-sort="descending"] button::after { content: " \2193"; }
-  .splits th[aria-sort="ascending"] button::after { content: " \2191"; }
-  @media (max-width: 520px) { .viz { padding: 14px 12px 12px; } .hits li { grid-template-columns: 1.6rem minmax(0, 1fr) 3.6rem; } }
+  .trace { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .trace > li { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .trace .st { font: 700 22px/1 var(--display); color: var(--accent2); }
+  .trace .tl { font: 600 13px/1.3 var(--mono); letter-spacing: .04em; color: var(--ink); }
+  .trace .tl code { background: none; padding: 0; color: var(--muted); font-weight: 400; }
+  .trace pre, .ans { grid-column: 2; margin: 6px 0 0; font: 400 12.5px/1.45 var(--mono); color: var(--ink2);
+                     background: var(--paper); border: 1px solid var(--rule); padding: 8px 10px; overflow-x: auto;
+                     white-space: pre-wrap; word-break: break-word; max-height: 15em; }
+  .ans { grid-column: 1 / -1; font: 400 14.5px/1.55 var(--sans); color: var(--ink); max-height: none; }
+  .trace li.fin .st { color: var(--accent); }
+  .mtab td.sys, .mtab th.sys { text-align: right; }
+  .qfilter { margin-top: 18px; }
+  pre.cfg { margin: 14px 0 0; font: 400 13px/1.5 var(--mono); background: var(--card); border: 1px solid var(--rule);
+            padding: 12px 14px; overflow-x: auto; color: var(--ink); }
+  .cfgcap { font-family: var(--sans); font-size: 13.5px; color: var(--muted); margin: 6px 0 0; }
+  @media (max-width: 520px) { .viz { padding: 14px 12px 12px; } .trace > li { grid-template-columns: 2.2rem minmax(0, 1fr); } }
 </style>
 
 <div class="wrap">
   <header class="masthead">
-    <div class="logo"><span class="dot" aria-hidden="true"></span>Marathon strategy RAG</div>
-    <div class="tagline">MiniLM embeddings, Chroma, Claude, LLM-judge eval</div>
+    <div class="logo"><span class="dot" aria-hidden="true"></span>Marathon strategy coach</div>
+    <div class="tagline">Tool calls, retrieval, MCP, a frozen gold set</div>
   </header>
 
   <section class="hero">
-    <p class="kicker">Retrieval-augmented generation, measured</p>
-    <h1>A marathon coach that answers only from cited sources</h1>
+    <p class="kicker">October 2026 upgrade</p>
+    <h1>A marathon coach that runs the numbers before it answers</h1>
 
     <p class="hero-sub">
-      Ask a race-strategy question in plain English (<em>"should I try to negative-split my first
-      marathon?"</em>) and the coach pulls passages from 14 knowledge cards, answers from those passages
-      alone, and cites each fact as <code>[n]</code>. Six of the cards summarize marathon analyses I ran and
-      published, so when it says "2.5% of 31,912 Boston finishers ran a negative split" there is a
-      repository you can open to check. On a seven-question LLM-judge evaluation, grounding lifts
-      faithfulness from 0.76 to 0.98.
+      The July version of this coach retrieved passages from 14 knowledge cards and answered with
+      <code>[n]</code> citations. It could quote "about a minute per &deg;F" but could not tell a 3:30
+      runner what 75&deg;F costs, or what a 1:42 half means for the finish. The October version
+      can call tools: a finish-time and wall-risk model fitted on Boston splits, a heat model fitted
+      on Boston results against race-day weather, and a pace table. I froze 43 test questions
+      before running anything, then put the same questions to three systems: the model on its own,
+      the July RAG coach, and the tool coach.
     </p>
 
     <div class="cta-row">
@@ -323,20 +321,20 @@
 
     <div class="claims">
       <div class="claim">
-        <div class="n">0.98</div>
-        <p>Faithfulness of the grounded coach, against 0.76 for the same model with retrieval switched off.</p>
+        <div class="n">100%</div>
+        <p>Share of 42 numeric targets the tool coach got within tolerance, against 50% for the RAG coach and 33% for the bare model.</p>
       </div>
       <div class="claim">
-        <div class="n">1.00</div>
-        <p>Citation validity, checked in code: every <code>[n]</code> points at a passage that had been retrieved.</p>
+        <div class="n">7%</div>
+        <p>Share of tool-coach answers with at least one number that has no source, against 65% for RAG. A check in code, not the judge.</p>
       </div>
       <div class="claim">
-        <div class="n">0.95</div>
-        <p>Answer relevance. The grounded answers still address the question asked.</p>
+        <div class="n">0.90</div>
+        <p>Judge's faithfulness for the tool coach, against 0.88 for RAG and 0.33 for the bare model.</p>
       </div>
       <div class="claim">
-        <div class="n">0.78</div>
-        <p>Context precision, the weakest score: about one in five retrieved passages is off-topic.</p>
+        <div class="n">7.2 s</div>
+        <p>Median time per tool-coach answer (2.3 model calls on average), against 7.4 s for one RAG call.</p>
       </div>
     </div>
   </section>
@@ -345,96 +343,151 @@
 <div class="wrap">
 <div class="route">
 
-  <section class="stop">
-    <p class="eyebrow">The pipeline</p>
-    <h2>Five steps from question to cited answer</h2>
-    <ol class="course">
-      <li><b>Chunk.</b> <code>ingest.py</code> splits each card into about 120-word windows with a 30-word overlap, respecting paragraph breaks, and prefixes the card title so every chunk describes itself. The 14 cards make 45 chunks.</li>
-      <li><b>Embed.</b> <code>all-MiniLM-L6-v2</code> from sentence-transformers (384 dimensions) runs locally on CPU, CUDA or Apple MPS. No API key.</li>
-      <li><b>Store.</b> Chroma with cosine distance. Each chunk keeps its card, title and source line as metadata, so citations survive retrieval.</li>
-      <li><b>Retrieve.</b> The question is embedded and the top five chunks (<code>-k</code> to change) come back with their sources.</li>
-      <li><b>Generate.</b> Claude answers under a system prompt that allows only the retrieved passages and requires a <code>[n]</code> for each fact. It runs on the Claude CLI by default or the Anthropic API when <code>ANTHROPIC_API_KEY</code> is set.</li>
-    </ol>
-    <p style="margin-top:22px">
-      The same chain exists twice. <code>coach.py</code> wires it by hand so the
-      mechanics stay visible; <code>chain_lc.py</code> builds it as a LangChain
-      LCEL pipeline, <code>{context: retrieve | format, query: passthrough} | prompt | llm</code>,
-      selected with <code>--engine lc</code>.
-    </p>
-  </section>
-
   <section class="stop stop--key">
-    <p class="eyebrow">The evaluation</p>
-    <h2>Grounded against bare, question by question</h2>
+    <p class="eyebrow">The comparison</p>
+    <h2>Three systems, one frozen question set</h2>
     <p>
-      <code>src/eval.py</code> is a small RAGAS-style harness. For each gold
-      question it generates a grounded answer and a bare answer from the same
-      model with no retrieval, then asks Claude as judge for strict JSON scores.
-      Citation validity is computed in code, without the judge. Click a column
-      heading to sort.
+      Of the 43 questions, 26 ask for numbers (42 scored values in all) and 17 are strategy questions,
+      including the seven from July. Each numeric question stores the tool calls that answer it, and
+      <code>src/gold.py</code> computes the expected value and its tolerance from the models' own
+      output, so nothing is typed by hand. A finish time counts as correct within a quarter of the
+      model's 80% interval (at least a minute); a heat slowdown within a quarter of its range (at
+      least 30 seconds); a wall-risk percentage within 5 points; a pace within 2 seconds. The set was
+      committed at <code>eb413bf</code> before any system saw it, and the eval refuses to run if the
+      file's hash changes. Every system got the same question text and the same model,
+      claude-sonnet-5-5, through the Claude CLI.
     </p>
-    <div class="tablewrap" role="region" aria-label="Per-question evaluation results" tabindex="0">
-      <table class="splits" id="evt">
-        <thead><tr>
-          <th aria-sort="ascending"><button type="button" data-k="0">No.</button></th>
-          <th>Question</th>
-          <th class="num"><button type="button" data-k="2">Bare</button></th>
-          <th class="num"><button type="button" data-k="3">Grounded</button></th>
-          <th class="num"><button type="button" data-k="4">Gain</button></th>
-          <th class="num"><button type="button" data-k="5">Context precision</button></th>
-        </tr></thead>
-        <tbody>
-          <tr><td class="bib">01</td><td class="q">Should I try to negative-split my first marathon?</td><td class="num">0.85</td><td class="num g">0.97</td><td class="num d">+0.12</td><td class="num">0.80</td></tr>
-          <tr><td class="bib">02</td><td class="q">How much slower will race-day heat around 80&deg;F make me?</td><td class="num">0.40</td><td class="num g">0.97</td><td class="num d">+0.57</td><td class="num">0.80</td></tr>
-          <tr><td class="bib">03</td><td class="q">How should I pace the final 10K to avoid hitting the wall?</td><td class="num">0.80</td><td class="num g">0.98</td><td class="num d">+0.18</td><td class="num">1.00</td></tr>
-          <tr><td class="bib">04</td><td class="q">How many grams of carbs per hour should I take during the race?</td><td class="num">0.80</td><td class="num g">0.97</td><td class="num d">+0.17</td><td class="num">0.40</td></tr>
-          <tr><td class="bib">05</td><td class="q">How should I taper in the last two to three weeks?</td><td class="num">0.85</td><td class="num g">0.98</td><td class="num d">+0.13</td><td class="num">0.85</td></tr>
-          <tr><td class="bib">06</td><td class="q">Do carbon-plated super-shoes actually make a meaningful difference?</td><td class="num">0.72</td><td class="num g">0.98</td><td class="num d">+0.26</td><td class="num">0.60</td></tr>
-          <tr><td class="bib">07</td><td class="q">How should I approach a downhill course like Boston?</td><td class="num">0.90</td><td class="num g">0.98</td><td class="num d">+0.08</td><td class="num">1.00</td></tr>
-        </tbody>
-        <tfoot>
-          <tr class="tot"><td class="bib"></td><td class="q">Mean of seven</td><td class="num">0.76</td><td class="num g">0.98</td><td class="num d">+0.22</td><td class="num">0.78</td></tr>
-        </tfoot>
+    <div class="viz chart" id="cx">
+      <h3>Numeric answers within tolerance</h3>
+      <p class="sub">Share of scored values each system got right, by the kind of question. Focus or hover a group for counts.</p>
+      <div class="legend"><span style="--sw:var(--muted)">Bare model</span><span style="--sw:var(--accent2)">RAG coach</span><span style="--sw:var(--accent)">Tool coach</span></div>
+      <div id="cx-svg"><div class="sk" style="width:80%"></div><div class="sk" style="width:65%"></div><div class="sk" style="width:72%"></div></div>
+      <p class="readout" id="cx-out" aria-live="polite"></p>
+      <p class="vsrc">From <code>eval/web.json</code>, written by <code>scripts/export_web.py</code> from the eval run of 28 October 2026 (<code>eval/runs/run_2026-10.jsonl</code>).</p>
+    </div>
+    <div class="tablewrap" role="region" aria-label="All metrics by system" tabindex="0">
+      <table class="splits mtab" id="mt">
+        <thead><tr><th>Metric</th><th class="num">Bare</th><th class="num">RAG</th><th class="num">Tool coach</th></tr></thead>
+        <tbody><tr><td colspan="4"><div class="sk" style="width:60%"></div></td></tr></tbody>
       </table>
     </div>
-    <p class="splits-note">Faithfulness scores from <code>eval/results.csv</code>. Citation validity was 1.00 on every question.</p>
+    <p class="splits-note">Faithfulness, relevance and context precision come from an LLM judge (the same model). The bare answer is judged against the passages the RAG coach retrieved for that question, as in July. Citation validity and the unsourced-number check are computed in code.</p>
     <p style="margin-top:22px">
-      The biggest gap is on heat, where the bare model scored 0.40 and the
-      grounded coach 0.97. The heat card carries a specific number from my Boston
-      weather analysis, about a minute per &deg;F, which a model without
-      retrieval has no way to know. The weakest retrieval is the carbohydrate
-      question, where only 0.40 of the retrieved passages were judged relevant.
-      The explorer below shows why.
+      The tool coach got all 42 values. That figure is closer to circular than it looks: the expected
+      values come from the same models the coach calls, so the numeric score measures whether a system
+      reproduces the models, and a perfect score means the loop picked the right tool, passed the
+      right arguments and copied the result back on all 26 questions. It did, with no JSON repairs and
+      no step-cap stops. Whether the models themselves are right is a separate question, covered under
+      the limitations.
+    </p>
+    <p>
+      Without tools, the RAG coach got 21 of 42 and the bare model 14. Retrieval settles the
+      card-arithmetic questions (RAG 8 of 8, bare 3 of 8) and does little for the rest. On heat the RAG
+      coach applied the July card's minute-per-degree rule, which for a 3:30 runner at 75&deg;F gives
+      about 25 minutes against the model's 16.9. On finish times both baselines landed inside the
+      tolerance half the time, since doubling the half split is a fair guess, but they missed every
+      wall-risk figure: the bare model guessed between 25% and 65% where the model said 0% to 19%.
+    </p>
+    <p>
+      The number check separates the systems more clearly than the judge does. In 28 of 43 RAG answers
+      at least one number had no source, mostly the model's own arithmetic ("a 1:42 half is about
+      4:50/km", "about 204 minutes"). The tool coach did this 3 times: once it turned 17.7% into "a
+      1-in-6 chance", and twice it gave "30 km" advice without citing the card that says so. On
+      faithfulness the two coaches are close (0.90 against 0.88). One coach answer failed outright:
+      asked "how much slower will race-day heat around 80&deg;F make me?", it asked for the runner's
+      finish time instead of answering. The judge scored that answer 0.30 for relevance and 1.00 for
+      faithfulness, because an answer with no claims has nothing unsupported in it.
+    </p>
+    <p>
+      The tool coach made 2.3 model calls per answer and needed no more time than RAG (median 7.2 s
+      against 7.4 s; means 8.0 s and 11.8 s). Each of its calls carried a short prompt and returned a
+      short reply, a JSON action, where the single RAG call carries five passages and writes the whole
+      answer. Latencies are wall-clock with four answers running at once.
     </p>
   </section>
 
   <section class="stop">
-    <p class="eyebrow">The retriever, opened up</p>
-    <h2>What comes back for each question</h2>
+    <p class="eyebrow">Recorded runs</p>
+    <h2>What the tool coach did, step by step</h2>
     <p>
-      For each gold question, the passages the retriever ranks highest and their cosine similarity.
-      Move <em>k</em> to see what a bigger or smaller context window would have handed the model.
+      Three of the coach's answers from the evaluation run, exactly as recorded: each tool it called,
+      with the arguments it chose, what came back, and the final answer. Long passages are cut short
+      here; the full records are in the repo.
     </p>
-    <div class="viz" id="rx">
-      <h3 id="rx-title">The retriever's top passages</h3>
-      <p class="sub">Pick a question. Passages above the dashed line are the ones the coach sends to Claude at that <em>k</em>.</p>
-      <div class="ctl" role="group" aria-label="Gold question" id="rx-qs"></div>
-      <p class="askq" id="rx-q"></p>
-      <label class="kpick" for="rx-k"><span>Passages retrieved, <em>k</em> (the coach uses 5)</span><output id="rx-ko">5</output>
-        <input id="rx-k" type="range" min="1" max="8" step="1" value="5" /></label>
-      <ol class="hits" id="rx-list" aria-live="polite"><li><div class="sk" style="width:70%"></div></li><li><div class="sk" style="width:55%"></div></li><li><div class="sk" style="width:62%"></div></li></ol>
-      <p class="readout" id="rx-out"></p>
-      <p class="vsrc">Similarities from <code>eval/retrieval_demo.json</code>, written by <code>scripts/export_retrieval.py</code> with the
-        repo's own chunker and embedder on 28 October 2026. The judge scores are from the evaluation run in <code>eval/results.csv</code>;
-        that run's retrievals were not saved, and this export uses the same chunker, model and ranking.</p>
+    <div class="viz" id="tx">
+      <div class="ctl" role="group" aria-label="Recorded question" id="tx-qs"></div>
+      <p class="askq" id="tx-q" style="font:600 clamp(19px,2.2vw,23px)/1.25 var(--display);margin:0 0 12px"></p>
+      <ol class="trace" id="tx-list" aria-live="polite"><li><div class="sk" style="width:70%"></div></li></ol>
+      <p class="readout" id="tx-out"></p>
     </div>
-    <p style="margin-top:22px">
-      The carbohydrate question shows the failure. It asks about grams per hour <em>during</em> the race,
-      and the top hit is the carb-loading card, which covers the days before it. Three of the top five
-      passages come from that card, because "carbs" dominates the embedding and the dense retriever
-      can't tell race-day fueling from loading. A keyword pass or a reranker that reads the whole
-      question would help here.
+  </section>
+
+  <section class="stop">
+    <p class="eyebrow">How the loop works</p>
+    <h2>Plan, call, read, repeat</h2>
+    <p>
+      The Claude CLI takes text in and gives text out, with no function-calling interface, so
+      <code>src/agent.py</code> runs the loop itself.
     </p>
+    <ol class="course">
+      <li><b>Ask for one action.</b> The model sees the question, the tool list and every earlier step, and must reply with one JSON object: a tool call or a final answer.</li>
+      <li><b>Run the tool.</b> <code>predict_finish</code> and <code>heat_effect</code> are the models from the <a href="https://lyhjeremy.github.io/marathon-pacing-decay/">pacing</a> and <a href="https://lyhjeremy.github.io/marathon-heat-tax/">heat</a> projects, vendored with their source commits. <code>pace_table</code> does even or fade splits, with fade sizes read from the negative-split card. <code>retrieve_cards</code> searches the cards. A <code>calculator</code> covers sums so the model does not do arithmetic in its head.</li>
+      <li><b>Feed the result back.</b> Passages are numbered <code>[1]</code>, <code>[2]</code> and tool results <code>[T1]</code>, <code>[T2]</code>, so the answer can cite both.</li>
+      <li><b>Repair or stop.</b> A reply that is not valid JSON gets one retry with the parse error quoted back. After six tool calls the model must answer with what it has.</li>
+      <li><b>Check the numbers.</b> A deterministic post-check pulls every number out of the answer and looks for it in the question, the tool results and the passages the answer cites, allowing for rounding and for clock times written as minutes or seconds. Anything unmatched is flagged.</li>
+    </ol>
+    <p style="margin-top:22px">
+      The model results carry their own caveats, copied from the holdout checks in the source
+      projects, and the coach is told to pass them on. The pace model has no weather input, and on its
+      2024 holdout its 80% interval at 35 km covered 74% of runners. The heat model did not beat a
+      flat no-weather guess on its 2015&ndash;2019 holdout (2.26% error against 2.15%), and it ignores
+      dew point, which did not beat dry-bulb temperature in cross-validation.
+    </p>
+  </section>
+
+  <section class="stop">
+    <p class="eyebrow">Retrieval</p>
+    <h2>Hybrid search and reranking, measured: no gain on 14 cards</h2>
+    <p>
+      The July page guessed that BM25 plus a cross-encoder would help, as it did for the
+      <a href="https://lyhjeremy.github.io/wine-sommelier-rag/">wine sommelier RAG</a>. On the frozen
+      questions, scored by which cards each question needs, it did not. Dense search already finds a
+      relevant card in its top three for nearly every question, and no mode's mean reciprocal rank
+      differs from dense by more than its bootstrap noise. The coach keeps dense search, which is also
+      the fastest of the embedding-based modes.
+    </p>
+    <div class="tablewrap" role="region" aria-label="Retrieval modes compared" tabindex="0">
+      <table class="splits" id="rt">
+        <thead><tr><th>Mode</th><th class="num">Hit@1</th><th class="num">Recall@3</th><th class="num">MRR</th><th class="num">MRR vs dense, 95% CI</th><th class="num">ms per query</th></tr></thead>
+        <tbody><tr><td colspan="6"><div class="sk" style="width:60%"></div></td></tr></tbody>
+      </table>
+    </div>
+    <p class="splits-note">From <code>eval/retrieval_compare.json</code> (<code>src/retrieval_eval.py</code>): 43 questions, 46 chunks, card-level relevance labels written with the gold set. Reranking uses <code>cross-encoder/ms-marco-MiniLM-L-6-v2</code> on a fused shortlist of 20.</p>
+  </section>
+
+  <section class="stop">
+    <p class="eyebrow">MCP server</p>
+    <h2>The same tools, from Claude Desktop or Claude Code</h2>
+    <p>
+      <code>src/mcp_server.py</code> exposes <code>retrieve_cards</code>, <code>predict_finish</code>,
+      <code>heat_effect</code> and <code>pace_table</code> over stdio with the official
+      <code>mcp</code> Python SDK. In a recorded round trip (<code>eval/mcp_roundtrip.json</code>), Claude
+      Code was asked for a 3:40 even pace, called <code>pace_table</code> and quoted 8:23 per mile and a
+      1:50:00 half from the result.
+    </p>
+<pre class="cfg">claude mcp add marathon-coach -- \
+  ~/venvs/marathon-strategy-rag/bin/python \
+  /path/to/marathon-strategy-rag/src/mcp_server.py</pre>
+    <p class="cfgcap">Claude Code. Use the Python that has the repo's requirements installed.</p>
+<pre class="cfg">{
+  "mcpServers": {
+    "marathon-coach": {
+      "command": "/Users/you/venvs/marathon-strategy-rag/bin/python",
+      "args": ["/path/to/marathon-strategy-rag/src/mcp_server.py"]
+    }
+  }
+}</pre>
+    <p class="cfgcap">Claude Desktop, in <code>claude_desktop_config.json</code>.</p>
   </section>
 
   <section class="stop">
@@ -450,51 +503,62 @@
     <dl class="specs">
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-negative-split-myth/">Negative splits</a></dt><dd>2.5% of 31,912 Boston 2014 finishers ran a negative split; about 94% slowed, median +14%.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-pacing-decay/">The wall</a></dt><dd>Pace inflects at about 30 km; 27% of finishers slowed by more than 25% late in the race.</dd></div>
-      <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-heat-tax/">Heat</a></dt><dd>About one minute slower per &deg;F of race-day heat at Boston.</dd></div>
+      <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-heat-tax/">Heat</a></dt><dd>About one minute slower per &deg;F of race-day heat at Boston (the July card; the heat tool is the newer model).</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-majors-course-difficulty/">Courses</a></dt><dd>Boston +101 s and New York +78 s against Berlin, from a simulated field with planted penalties. The card labels them as simulated; they are not measurements of the courses.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/marathon-shoe-revolution-decomposition/">Super-shoes</a></dt><dd>About 67 seconds of the modern elite gain is footwear.</dd></div>
       <div class="spec"><dt><a href="https://lyhjeremy.github.io/boston-marathon-qualifying-fairness/">BQ standards</a></dt><dd>Across 22 age and sex brackets there is no average gender gap, but women's brackets vary three to four times more in difficulty.</dd></div>
     </dl>
-    <p style="margin-top:22px">
-      Adding knowledge means writing a new card and rerunning
-      <code>python -m src.ingest</code>; nothing gets retrained.
-    </p>
   </section>
 
   <section class="stop stop--warn">
     <p class="eyebrow">Limitations</p>
     <h2>What the numbers don't show</h2>
     <p>
-      Seven questions is a small gold set, and I wrote all seven to be answerable
-      from the cards. On questions like those the grounded coach is clearly more
-      faithful than the bare model, but seven is too few for a precise
-      measurement, and the set says nothing about questions the cards don't cover.
+      The numeric score is only as good as the models behind it. The heat model did not beat a flat
+      no-weather guess on its own 2015&ndash;2019 holdout, and the pace model's late-race intervals ran
+      narrow on 2024. A system that matches them perfectly is consistent, and that does not make it
+      correct. In the recorded runs the coach passed both caveats on.
     </p>
     <p>
-      The judge is also an LLM, from the same model family that wrote the
-      answers. Bare faithfulness measures agreement with the retrieved passages,
-      so a correct claim the cards don't contain still counts against the bare
-      model.
+      The judge is the same model as the three systems. The bare model's faithfulness is judged against
+      the passages the RAG coach retrieved, so a correct claim the cards don't contain counts against it.
+      That figure fell from 0.76 in July to 0.33 here: the judge prompt now scores one answer at a
+      time and counts numbers as claims, so the two runs are not comparable.
     </p>
     <p>
-      The course card's numbers are simulated. It gives Boston +101 s and New York +78 s against
-      Berlin, from a study that ran on a simulated field with course penalties planted in code, so the
-      figures show how well a method recovered a planted answer and say nothing about Boston. The card
-      states this in its title and next to every time figure, so each retrieved chunk
-      carries the label. Faithfulness would not catch a wrong figure here: it only checks that the
-      answer matches the card.
+      I wrote all 43 questions, and the numeric ones hand the system every input it needs. Real runners
+      leave things out, which is how the one failed answer happened. Each system answered each question
+      once, so run-to-run variation is not measured.
+    </p>
+    <p>
+      The number check is rule-based. Its rounding allowance (2.5% of the source value) lets through some
+      arithmetic done in the model's head: in one recorded run the coach gave an adjusted-finish range of
+      "205 to 219 minutes" that no tool computed, and the check passed it. It also flags correct
+      paraphrases such as "1 in 6". I changed its rules twice after the run began, to count the tool
+      descriptions and digits in result field names (the "95" in <code>lo95_min</code>) as sources, and
+      to skip bold list numbers. Every answer was rescored with the final rules; under the first version
+      it fired on 11 coach answers and 29 RAG answers.
+    </p>
+    <p>
+      The retrieval comparison uses 43 questions and relevance labels I wrote. The course card's figures
+      are simulated, and the card says so next to each one.
+    </p>
+  </section>
+
+  <section class="stop">
+    <p class="eyebrow">July 2026, superseded</p>
+    <h2>The first evaluation: grounded against bare</h2>
+    <p>
+      In July the coach was scored on seven strategy questions: faithfulness 0.98 grounded against
+      0.76 bare, answer relevance 0.95, context precision 0.78, citation validity 1.00. Those seven
+      questions are s01 to s07 in the new set.
     </p>
     <p class="vsrc">
-      2026-10-28: the simulated-data label was added to the card after the published evaluation. The
-      numbers are unchanged; the scores and the explorer above use the unlabeled text.
-    </p>
-    <p>
-      Retrieval is plain dense similarity with a single query. A question that
-      spans heat, fueling and pacing would do better with multi-query retrieval,
-      and the 0.78 context precision suggests reranking would help. The sibling
-      <a href="https://lyhjeremy.github.io/wine-sommelier-rag/">wine sommelier RAG</a>
-      uses hybrid BM25 plus a cross-encoder for that reason. Several cards come from
-      single-race Boston analyses, so their caveats travel with them.
+      2026-10-28: superseded by the three-system run above, which uses a different judge prompt (one answer
+      at a time, judged against that system's own context) and a pinned model, so the two sets of scores
+      are not directly comparable. The July figures stay in <code>eval/results.csv</code>. Also 2026-10-28:
+      the simulated-data label was added to the course card after the July evaluation; the October run
+      used the labeled card.
     </p>
   </section>
 
@@ -502,12 +566,12 @@
     <p class="eyebrow">Stack</p>
     <h2>What it runs on</h2>
     <dl class="specs">
-      <div class="spec"><dt>Retrieval</dt><dd>sentence-transformers <code>all-MiniLM-L6-v2</code>, Chroma (cosine), top-5</dd></div>
-      <div class="spec"><dt>Generation</dt><dd>Claude via the Claude CLI by default, or the Anthropic API</dd></div>
-      <div class="spec"><dt>Frameworks</dt><dd>Hand-rolled chain plus a LangChain LCEL version (<code>langchain-core</code>)</dd></div>
-      <div class="spec"><dt>Evaluation</dt><dd>LLM judge for faithfulness, relevance and context precision; deterministic citation check</dd></div>
-      <div class="spec"><dt>Interface</dt><dd>CLI: <code>ask</code> for one question, <code>chat</code> for a session</dd></div>
-      <div class="spec"><dt>Downstream</dt><dd>The same findings feed the <code>adjust</code> node of the <a href="https://lyhjeremy.github.io/marathon-training-agent/">marathon training agent</a></dd></div>
+      <div class="spec"><dt>Retrieval</dt><dd>sentence-transformers <code>all-MiniLM-L6-v2</code>, Chroma (cosine); BM25, RRF and a cross-encoder available by flag</dd></div>
+      <div class="spec"><dt>Tools</dt><dd>Boston finish-time and wall-risk model, Boston heat model, pace table, card search, calculator</dd></div>
+      <div class="spec"><dt>Agent</dt><dd>Hand-written JSON action loop over the Claude CLI; optional native tool use through the Anthropic API</dd></div>
+      <div class="spec"><dt>MCP</dt><dd>Official <code>mcp</code> Python SDK, stdio transport</dd></div>
+      <div class="spec"><dt>Evaluation</dt><dd>Frozen 43-question gold set; numeric scoring in code, LLM judge, citation and unsourced-number checks</dd></div>
+      <div class="spec"><dt>Also</dt><dd>The July RAG chain by hand and in LangChain LCEL (<code>--engine lc</code>)</dd></div>
     </dl>
   </section>
 
@@ -525,7 +589,7 @@
 
   <footer>
     <p>
-      Marathon strategy RAG ·
+      Marathon strategy coach ·
       <a href="../">Project page</a> ·
       <a href="https://github.com/lyhjeremy/marathon-strategy-rag/blob/main/writeup.md">Long-form notes</a> ·
       <a href="https://github.com/lyhjeremy/marathon-strategy-rag">Source</a> ·
@@ -537,58 +601,121 @@
 
 <script>
 (function () {
-  /* sortable results table */
-  var t = document.getElementById("evt"), body = t.tBodies[0], ths = [].slice.call(t.tHead.rows[0].cells);
-  ths.forEach(function (th) {
-    var b = th.querySelector("button"); if (!b) return;
-    b.addEventListener("click", function () {
-      var k = +b.dataset.k, cur = th.getAttribute("aria-sort");
-      var dir = cur === "descending" ? "ascending" : (cur === "ascending" ? "descending" : (k === 0 ? "ascending" : "descending"));
-      ths.forEach(function (x) { x.removeAttribute("aria-sort"); });
-      th.setAttribute("aria-sort", dir);
-      var rows = [].slice.call(body.rows);
-      rows.sort(function (a, c) {
-        var x = parseFloat(a.cells[k].textContent), y = parseFloat(c.cells[k].textContent);
-        return dir === "ascending" ? x - y : y - x;
-      });
-      rows.forEach(function (r) { body.appendChild(r); });
-    });
-  });
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function f2(x) { return x == null ? "n/a" : (+x).toFixed(2); }
+  function pct(x) { return x == null ? "n/a" : (x > 0 && x < 0.1 ? (x * 100).toFixed(1) : Math.round(x * 100)) + "%"; }
+  var SYS = ["bare", "rag", "coach"], NAME = { bare: "Bare model", rag: "RAG coach", coach: "Tool coach" };
+  var COL = { bare: "var(--muted)", rag: "var(--accent2)", coach: "var(--accent)" };
 
-  /* retrieval explorer: eval/retrieval_demo.json */
-  var CP = [0.8, 0.8, 1.0, 0.4, 0.85, 0.6, 1.0]; /* context_precision, eval/results.csv */
-  var qs = document.getElementById("rx-qs"), list = document.getElementById("rx-list"), kIn = document.getElementById("rx-k"), out = document.getElementById("rx-out");
-  var D = null, qi = 3;
-  function esc(s) { return s.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
-  function draw() {
-    var k = +kIn.value; document.getElementById("rx-ko").textContent = k;
-    var q = D.questions[qi], order = q.sims.map(function (s, i) { return i; }).sort(function (a, b) { return q.sims[b] - q.sims[a]; }).slice(0, 8);
-    document.getElementById("rx-q").textContent = "“" + q.q + "”";
-    [].slice.call(qs.children).forEach(function (b, i) { b.setAttribute("aria-pressed", i === qi ? "true" : "false"); });
-    var html = "", cards = {};
-    order.forEach(function (ci, r) {
-      var c = D.chunks[ci], s = q.sims[ci], snip = c.text.slice(c.title.length + 2, c.title.length + 200).replace(/\*\*/g, "");
-      if (r < k) cards[c.title] = (cards[c.title] || 0) + 1;
-      html += '<li class="' + (r >= k ? "out" : "") + (r === k ? " cut" : "") + '"><span class="rk">' + (r + 1) + '</span><span class="cd">' + esc(c.title) + '</span>'
-        + '<span class="sm">' + s.toFixed(3) + '<i style="width:' + Math.max(4, s * 100).toFixed(0) + '%"></i></span>'
-        + '<p class="tx">' + esc(snip) + '…</p></li>';
+  function chart(D) {
+    var fam = D.summary.numeric_by_family, S = D.summary.systems;
+    var groups = Object.keys(fam).map(function (k) { return { name: k, v: fam[k] }; });
+    groups.push({ name: "all numeric", v: { bare: S.bare.numeric_accuracy, rag: S.rag.numeric_accuracy, coach: S.coach.numeric_accuracy } });
+    var counts = {};
+    D.questions.forEach(function (q) {
+      if (q.type !== "numeric") return;
+      var k = { n: "predict_finish", h: "heat_effect", p: "pace_table", c: "chained", k: "card arithmetic" }[q.id[0]];
+      [k, "all numeric"].forEach(function (g) {
+        counts[g] = counts[g] || { q: 0 };
+        counts[g].q += 1;
+        SYS.forEach(function (s) { if (q[s]) { counts[g][s] = counts[g][s] || [0, 0]; counts[g][s][0] += q[s].ok; counts[g][s][1] += q[s].n; } });
+      });
     });
-    list.innerHTML = html;
-    var parts = Object.keys(cards).map(function (n) { return n + (cards[n] > 1 ? " ×" + cards[n] : ""); });
-    out.textContent = "At k = " + k + " the model gets: " + parts.join("; ") + ". Judge's context precision for this question at k = 5: " + CP[qi].toFixed(2) + ".";
+    var box0 = document.getElementById("cx-svg"), W = Math.max(330, Math.min(720, box0.clientWidth || 720)), L = W < 500 ? 112 : 150, R = 46, bh = 11, gap = 3, gh = 3 * (bh + gap) + 16, H = groups.length * gh + 30;
+    var x = function (v) { return L + v * (W - L - R); };
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="group" aria-label="Numeric accuracy by question family and system">';
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (t) {
+      s += '<line x1="' + x(t) + '" x2="' + x(t) + '" y1="4" y2="' + (H - 22) + '" stroke="var(--rule)" stroke-width="1"/>'
+        + '<text x="' + x(t) + '" y="' + (H - 6) + '" font-size="12" fill="var(--muted)" text-anchor="middle" font-family="var(--mono)">' + (t * 100) + '%</text>';
+    });
+    groups.forEach(function (g, i) {
+      var y0 = 6 + i * gh, c = counts[g.name] || {};
+      var label = g.name + ": " + SYS.map(function (k) { return NAME[k] + " " + pct(g.v[k]) + (c[k] ? " (" + c[k][0] + " of " + c[k][1] + ")" : ""); }).join(", ");
+      s += '<g class="grp" tabindex="0" role="img" aria-label="' + esc(label) + '" data-l="' + esc(label + (c.q ? "; " + c.q + " questions" : "")) + '">'
+        + '<rect class="hit" x="2" y="' + (y0 - 3) + '" width="' + (W - 4) + '" height="' + (gh - 8) + '" fill="transparent"/>'
+        + '<text x="' + (L - 10) + '" y="' + (y0 + 1.5 * (bh + gap) + 4) + '" font-size="13" text-anchor="end" fill="var(--ink)" font-family="var(--sans)">' + esc(g.name) + '</text>';
+      SYS.forEach(function (k, j) {
+        var v = g.v[k] || 0, y = y0 + j * (bh + gap);
+        s += '<rect x="' + L + '" y="' + y + '" width="' + Math.max(1, x(v) - L).toFixed(1) + '" height="' + bh + '" fill="' + COL[k] + '"/>'
+          + '<text x="' + (x(v) + 5).toFixed(1) + '" y="' + (y + bh - 1) + '" font-size="11.5" fill="var(--ink2)" font-family="var(--mono)">' + pct(g.v[k]) + '</text>';
+      });
+      s += '</g>';
+    });
+    s += '</svg>';
+    var box = document.getElementById("cx-svg"), out = document.getElementById("cx-out");
+    box.innerHTML = s;
+    [].forEach.call(box.querySelectorAll("g.grp"), function (g) {
+      var show = function () { out.textContent = g.getAttribute("data-l"); };
+      g.addEventListener("focus", show); g.addEventListener("mouseenter", show);
+    });
+    out.textContent = "Focus or hover a group to see the counts.";
   }
-  fetch("../eval/retrieval_demo.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
-    D = d;
-    d.questions.forEach(function (q, i) {
-      var b = document.createElement("button"); b.type = "button"; b.textContent = (i < 9 ? "0" : "") + (i + 1);
-      b.setAttribute("aria-label", "Question " + (i + 1) + ": " + q.q);
-      b.addEventListener("click", function () { qi = i; draw(); });
+
+  function metrics(D) {
+    var S = D.summary.systems;
+    var rows = [
+      ["Numeric targets within tolerance", "numeric_accuracy", pct],
+      ["Numeric questions fully right", "numeric_questions_all_correct", pct],
+      ["Missing or unreadable FINAL values", "final_line_missing", String],
+      ["Faithfulness (judge)", "faithfulness", f2],
+      ["Faithfulness, strategy questions", "faithfulness_strategy", f2],
+      ["Faithfulness, numeric questions", "faithfulness_numeric", f2],
+      ["Answer relevance (judge)", "answer_relevance", f2],
+      ["Context precision (judge)", "context_precision", f2],
+      ["Citation validity (code)", "citation_validity", f2],
+      ["Answers with an unsourced number", "unsourced_fire_rate", pct],
+      ["Share of all numbers unsourced", "unsourced_numbers_share", pct],
+      ["Model calls per answer", "mean_llm_calls", function (x) { return (+x).toFixed(1); }],
+      ["Tool calls per answer", "mean_tool_steps", function (x) { return (+x).toFixed(1); }],
+      ["Median seconds per answer", "median_latency_s", function (x) { return (+x).toFixed(1); }]
+    ];
+    document.querySelector("#mt tbody").innerHTML = rows.map(function (r) {
+      return "<tr><td class=\"q\">" + esc(r[0]) + "</td>" + SYS.map(function (k) {
+        var v = S[k][r[1]];
+        return '<td class="num">' + (v == null ? "n/a" : esc(r[2](v))) + "</td>";
+      }).join("") + "</tr>";
+    }).join("");
+  }
+
+  function retrieval(D) {
+    var M = D.retrieval.modes;
+    document.querySelector("#rt tbody").innerHTML = Object.keys(M).map(function (k) {
+      var m = M[k], ci = m.mrr_diff_ci95 ? (m.mrr_diff_vs_dense >= 0 ? "+" : "") + m.mrr_diff_vs_dense.toFixed(3) + " [" + m.mrr_diff_ci95[0].toFixed(3) + ", " + m.mrr_diff_ci95[1].toFixed(3) + "]" : "baseline";
+      return '<tr><td class="q">' + esc(k) + '</td><td class="num">' + f2(m.hit1) + '</td><td class="num">' + f2(m.recall3) + '</td><td class="num">' + m.mrr.toFixed(3) + '</td><td class="num">' + esc(ci) + '</td><td class="num">' + m.ms_per_query.toFixed(0) + "</td></tr>";
+    }).join("");
+  }
+
+  function traces(D) {
+    var T = D.traces, qs = document.getElementById("tx-qs"), list = document.getElementById("tx-list"), out = document.getElementById("tx-out"), ti = 0;
+    function show() {
+      var t = T[ti];
+      [].slice.call(qs.children).forEach(function (b, i) { b.setAttribute("aria-pressed", i === ti ? "true" : "false"); });
+      document.getElementById("tx-q").textContent = "“" + t.question + "”";
+      var html = t.steps.map(function (s, i) {
+        return '<li><span class="st">' + (i + 1) + '</span><span class="tl">' + esc(s.label) + " " + esc(s.tool) + " <code>" + esc(JSON.stringify(s.args)) + "</code></span>"
+          + "<pre>" + esc(JSON.stringify(s.result, null, 1)) + "</pre></li>";
+      }).join("");
+      html += '<li class="fin"><span class="st">' + (t.steps.length + 1) + '</span><span class="tl">final answer</span><div class="ans">' + esc(t.answer).replace(/\n/g, "<br>") + "</div></li>";
+      list.innerHTML = html;
+      var sc = function (n) { return n ? n.filter(function (x) { return x.ok; }).length + " of " + n.length : null; };
+      var bits = ["Recorded " + t.date + ", " + t.model + ", " + t.llm_calls + " model calls, " + t.latency_s.toFixed(1) + " s.",
+        "Unsourced numbers flagged: " + (t.unsourced.length ? t.unsourced.join(", ") : "none") + "."];
+      if (t.numeric) bits.push("Values within tolerance: tool coach " + sc(t.numeric) + ", RAG " + sc(t.others.rag.numeric) + ", bare " + sc(t.others.bare.numeric) + ".");
+      out.textContent = bits.join(" ");
+    }
+    T.forEach(function (t, i) {
+      var b = document.createElement("button"); b.type = "button"; b.textContent = t.id;
+      b.setAttribute("aria-label", "Recorded run " + t.id + ": " + t.question);
+      b.addEventListener("click", function () { ti = i; show(); });
       qs.appendChild(b);
     });
-    kIn.addEventListener("input", draw);
-    draw();
+    show();
+  }
+
+  fetch("../eval/web.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (D) {
+    chart(D); metrics(D); retrieval(D); traces(D);
   }).catch(function () {
-    list.innerHTML = '<li><span class="pend">The retrieval file did not load. It is at eval/retrieval_demo.json in the repo.</span></li>';
+    ["cx-svg", "tx-list"].forEach(function (id) { document.getElementById(id).innerHTML = "<p class=\"vsrc\">The results file did not load. It is at eval/web.json in the repo.</p>"; });
   });
 })();
 </script>

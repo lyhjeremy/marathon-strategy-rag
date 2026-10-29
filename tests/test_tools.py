@@ -65,3 +65,7 @@ def test_parse_final_and_citations():
     assert got == {"finish_min": 213.5, "wall_risk_pct": 31.0, "pace_sec_per_km": 299.0}
     assert citation_validity("a [1] b [T2] c [7]", 5, 2) == pytest.approx(2 / 3)
     assert citation_validity("no refs", 5) is None
+
+
+def test_bold_list_numbers_are_ignored():
+    assert check("**3. Drink to thirst.** Do it.\n4) Sip.", "q", [])["unsourced"] == []

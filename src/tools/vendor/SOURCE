@@ -1,0 +1,3 @@
+Vendored 2026-10-28 by scripts/vendor_models.py.
+pace_model: github.com/lyhjeremy/marathon-pacing-decay MODEL_READY commit fc0f059e0c3aa4c676960a056d879cf64d93f512 (checkout HEAD 4b44a84717be); files: pace_model.py, model/pace_model.json
+heat_model: github.com/lyhjeremy/marathon-heat-tax MODEL_READY commit 592d160a782c6d913be29b036aa135042e398885 (checkout HEAD 6dac44671ff3); files: heat_model.py, model/heat_model.json

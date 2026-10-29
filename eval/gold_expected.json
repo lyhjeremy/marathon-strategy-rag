@@ -1,0 +1,629 @@
+{
+ "model_sources": {
+  "pace_model": "/Users/jeremylee/My Drive/6. Data Projects/Project 22 Marathon Strategy RAG/marathon-strategy-rag/src/tools/vendor/pace_model.py",
+  "heat_model": "/Users/jeremylee/My Drive/6. Data Projects/Project 22 Marathon Strategy RAG/marathon-strategy-rag/src/tools/vendor/heat_model.py"
+ },
+ "items": {
+  "n01": {
+   "id": "n01",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "10": 47.5,
+       "21": 102
+      }
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 213.54,
+     "tol": 4.818
+    },
+    {
+     "key": "wall_risk_pct",
+     "unit": "percent",
+     "expected": 16.45,
+     "tol": 5.0
+    }
+   ]
+  },
+  "n02": {
+   "id": "n02",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "5": 25.166666666666668,
+       "10": 50.083333333333336,
+       "15": 75.33333333333333,
+       "20": 100.66666666666667
+      },
+      "gender": "F",
+      "age": 45
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 218.42,
+     "tol": 5.163
+    },
+    {
+     "key": "finish_lo80_min",
+     "unit": "minutes",
+     "expected": 210.88,
+     "tol": 5.163
+    },
+    {
+     "key": "finish_hi80_min",
+     "unit": "minutes",
+     "expected": 231.53,
+     "tol": 5.163
+    }
+   ]
+  },
+  "n03": {
+   "id": "n03",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "21": 98.5,
+       "30": 141.0
+      },
+      "gender": "M",
+      "age": 32
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 200.83,
+     "tol": 2.13
+    }
+   ]
+  },
+  "n04": {
+   "id": "n04",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "21": 118.0,
+       "30": 164.0,
+       "35": 185.0
+      }
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 211.54,
+     "tol": 1.188
+    },
+    {
+     "key": "wall_risk_pct",
+     "unit": "percent",
+     "expected": 0.0,
+     "tol": 5.0
+    }
+   ]
+  },
+  "n05": {
+   "id": "n05",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "5": 22.0,
+       "10": 44.5
+      }
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 202.05,
+     "tol": 6.975
+    },
+    {
+     "key": "wall_risk_pct",
+     "unit": "percent",
+     "expected": 17.73,
+     "tol": 5.0
+    }
+   ]
+  },
+  "n06": {
+   "id": "n06",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "10": 58.0,
+       "21": 123.0
+      },
+      "gender": "M",
+      "age": 60
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 261.29,
+     "tol": 7.455
+    }
+   ]
+  },
+  "n07": {
+   "id": "n07",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "20": 115.0,
+       "25": 145.5
+      }
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 258.52,
+     "tol": 5.185
+    },
+    {
+     "key": "wall_risk_pct",
+     "unit": "percent",
+     "expected": 19.37,
+     "tol": 5.0
+    }
+   ]
+  },
+  "n08": {
+   "id": "n08",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "35": 175.0,
+       "40": 202.0
+      },
+      "gender": "F",
+      "age": 28
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 213.61,
+     "tol": 1.0
+    }
+   ]
+  },
+  "h01": {
+   "id": "h01",
+   "calls": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 210,
+      "temp_f": 75,
+      "dewpoint_f": 60
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "slowdown_min",
+     "unit": "minutes",
+     "expected": 16.93,
+     "tol": 3.258
+    }
+   ]
+  },
+  "h02": {
+   "id": "h02",
+   "calls": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 255,
+      "temp_f": 68,
+      "dewpoint_f": 55,
+      "headwind_mph": 10
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "slowdown_min",
+     "unit": "minutes",
+     "expected": 17.84,
+     "tol": 2.837
+    }
+   ]
+  },
+  "h03": {
+   "id": "h03",
+   "calls": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 175,
+      "temp_f": 80,
+      "dewpoint_f": 65
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "slowdown_min",
+     "unit": "minutes",
+     "expected": 19.16,
+     "tol": 2.18
+    },
+    {
+     "key": "slowdown_lo_min",
+     "unit": "minutes",
+     "expected": 14.01,
+     "tol": 2.18
+    },
+    {
+     "key": "slowdown_hi_min",
+     "unit": "minutes",
+     "expected": 22.73,
+     "tol": 2.18
+    }
+   ]
+  },
+  "h04": {
+   "id": "h04",
+   "calls": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 225,
+      "temp_f": 58,
+      "dewpoint_f": 40
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "slowdown_min",
+     "unit": "minutes",
+     "expected": 2.82,
+     "tol": 0.5
+    }
+   ]
+  },
+  "h05": {
+   "id": "h05",
+   "calls": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 300,
+      "temp_f": 85,
+      "dewpoint_f": 70
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "slowdown_min",
+     "unit": "minutes",
+     "expected": 43.08,
+     "tol": 8.575
+    }
+   ]
+  },
+  "h06": {
+   "id": "h06",
+   "calls": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 190,
+      "temp_f": 72,
+      "dewpoint_f": 62,
+      "headwind_mph": 15
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "slowdown_min",
+     "unit": "minutes",
+     "expected": 14.58,
+     "tol": 2.518
+    },
+    {
+     "key": "adjusted_finish_min",
+     "unit": "minutes",
+     "expected": 204.58,
+     "tol": 2.518
+    }
+   ]
+  },
+  "p01": {
+   "id": "p01",
+   "calls": [
+    {
+     "tool": "pace_table",
+     "args": {
+      "goal_time": "3:30",
+      "strategy": "even"
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "pace_sec_per_km",
+     "unit": "seconds per km",
+     "expected": 298.6,
+     "tol": 2.0
+    },
+    {
+     "key": "half_split_min",
+     "unit": "minutes",
+     "expected": 105.0,
+     "tol": 0.5
+    }
+   ]
+  },
+  "p02": {
+   "id": "p02",
+   "calls": [
+    {
+     "tool": "pace_table",
+     "args": {
+      "goal_time": "4:00",
+      "strategy": "fade"
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "first_half_min",
+     "unit": "minutes",
+     "expected": 112.15,
+     "tol": 0.5
+    },
+    {
+     "key": "second_half_min",
+     "unit": "minutes",
+     "expected": 127.85,
+     "tol": 0.5
+    }
+   ]
+  },
+  "p03": {
+   "id": "p03",
+   "calls": [
+    {
+     "tool": "pace_table",
+     "args": {
+      "goal_time": "2:59:59",
+      "strategy": "even"
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "split_30k_min",
+     "unit": "minutes",
+     "expected": 127.97,
+     "tol": 0.5
+    }
+   ]
+  },
+  "p04": {
+   "id": "p04",
+   "calls": [
+    {
+     "tool": "pace_table",
+     "args": {
+      "goal_time": "4:30",
+      "strategy": "fade"
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "pace_sec_per_km",
+     "unit": "seconds per km",
+     "expected": 345.9,
+     "tol": 2.0
+    }
+   ]
+  },
+  "p05": {
+   "id": "p05",
+   "calls": [
+    {
+     "tool": "pace_table",
+     "args": {
+      "goal_time": "3:45",
+      "strategy": "even"
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "pace_sec_per_mile",
+     "unit": "seconds per mile",
+     "expected": 514.9,
+     "tol": 2.0
+    }
+   ]
+  },
+  "c01": {
+   "id": "c01",
+   "calls": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 200,
+      "temp_f": 76,
+      "dewpoint_f": 64
+     }
+    },
+    {
+     "tool": "pace_table",
+     "args": {
+      "goal_time": 216.13,
+      "strategy": "even"
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "adjusted_finish_min",
+     "unit": "minutes",
+     "expected": 216.13,
+     "tol": 3.7
+    },
+    {
+     "key": "pace_sec_per_km",
+     "unit": "seconds per km",
+     "expected": 307.3,
+     "tol": 5.261
+    }
+   ]
+  },
+  "c02": {
+   "id": "c02",
+   "calls": [
+    {
+     "tool": "predict_finish",
+     "args": {
+      "splits": {
+       "10": 52.0,
+       "21": 110.0
+      }
+     }
+    }
+   ],
+   "targets": [
+    {
+     "key": "finish_min",
+     "unit": "minutes",
+     "expected": 227.74,
+     "tol": 5.23
+    },
+    {
+     "key": "pace_sec_per_km",
+     "unit": "seconds per km",
+     "expected": 334.845,
+     "tol": 14.874
+    }
+   ]
+  },
+  "k01": {
+   "id": "k01",
+   "calls": [],
+   "targets": [
+    {
+     "key": "carbs_lo_g_per_day",
+     "unit": "grams",
+     "expected": 520.0,
+     "tol": 5.2
+    },
+    {
+     "key": "carbs_hi_g_per_day",
+     "unit": "grams",
+     "expected": 780.0,
+     "tol": 7.8
+    }
+   ]
+  },
+  "k02": {
+   "id": "k02",
+   "calls": [],
+   "targets": [
+    {
+     "key": "carbs_total_lo_g",
+     "unit": "grams",
+     "expected": 120.0,
+     "tol": 1.2
+    },
+    {
+     "key": "carbs_total_hi_g",
+     "unit": "grams",
+     "expected": 240.0,
+     "tol": 2.4
+    }
+   ]
+  },
+  "k03": {
+   "id": "k03",
+   "calls": [],
+   "targets": [
+    {
+     "key": "shoe_saving_min",
+     "unit": "minutes",
+     "expected": 2.025,
+     "tol": 0.5
+    }
+   ]
+  },
+  "k04": {
+   "id": "k04",
+   "calls": [],
+   "targets": [
+    {
+     "key": "slowdown_min",
+     "unit": "minutes",
+     "expected": 17.0,
+     "tol": 0.5
+    }
+   ]
+  },
+  "k05": {
+   "id": "k05",
+   "calls": [],
+   "targets": [
+    {
+     "key": "taper_lo_km",
+     "unit": "km per week",
+     "expected": 32.0,
+     "tol": 0.5
+    },
+    {
+     "key": "taper_hi_km",
+     "unit": "km per week",
+     "expected": 48.0,
+     "tol": 0.5
+    }
+   ]
+  }
+ }
+}

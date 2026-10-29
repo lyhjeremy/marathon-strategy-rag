@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Marathon strategy RAG: a marathon coach that cites its sources</title>
-<meta name="description" content="A retrieval-augmented marathon coach: local MiniLM embeddings and Chroma over 14 knowledge cards, Claude for generation, every fact cited. Faithfulness 0.98 grounded against 0.76 without retrieval.">
+<title>Marathon strategy coach: retrieval plus tools, with a frozen eval</title>
+<meta name="description" content="A marathon coach that cites 14 knowledge cards and calls a Boston finish-time model, a heat model and a pace table as tools. On 42 frozen numeric targets: tool coach 100%, RAG 50%, bare model 33%. Also an MCP server.">
 <link rel="stylesheet" href="assets/family.css">
 <style>
   * { box-sizing: border-box; border-radius: 0; }
@@ -28,14 +28,14 @@
   @media (min-width: 720px) { .bib > div + div { border-left: 2px dashed var(--edge); } }
   @media (max-width: 719px) { .bib > div + div { border-top: 2px dashed var(--edge); } }
   .bib .lab { font: 600 12px/1.4 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
-  .bib .big { font: 700 clamp(56px, 9vw, 96px)/1 var(--font-display); }
+  .bib .big { font: 700 clamp(48px, 6.4vw, 80px)/1 var(--font-display); white-space: nowrap; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .bib .big .from { color: var(--ink-2); }
   .bib .big .to { color: var(--signal-2); }
   .bib p { margin: 6px 0 0; font: 400 15px/1.5 var(--font-body); color: var(--ink-2); }
   .bib ul { margin: 8px 0 0; padding: 0; list-style: none; font: 400 15.5px/1.5 var(--font-body); }
   .bib li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px dotted var(--rule); }
-  .bib li b { font: 700 22px/1 var(--font-display); }
+  .bib li b { font: 700 20px/1 var(--font-display); white-space: nowrap; }
   h2 { font: 700 clamp(28px, 4vw, 42px)/1 var(--font-display); text-transform: uppercase; margin: 62px 0 12px; }
   p { max-width: 62ch; }
   .qa { border: 1px solid var(--edge); margin-top: 18px; font-family: var(--font-body); font-size: 16px; }
@@ -70,46 +70,49 @@
     <text x="40" y="162" fill="var(--ink-2)" font-family="IBM Plex Mono, monospace" font-size="13">START</text>
   </svg>
 
-  <p class="kick">Retrieval-augmented generation · Python · Claude</p>
-  <h1>A marathon coach that cites its sources</h1>
-  <p class="lede">Ask a race-strategy question in plain English. The coach retrieves passages from 14
-  knowledge cards, answers only from them, and cites each fact as <code>[n]</code>. Six cards summarize my
-  own published analyses of Boston and elite marathon data.</p>
+  <p class="kick">Tool calls · retrieval · MCP · Python · Claude</p>
+  <h1>A marathon coach that runs the numbers</h1>
+  <p class="lede">Ask a race-strategy question in plain English. The coach searches 14 knowledge cards and
+  calls tools: a finish-time and wall-risk model fitted on Boston splits, a heat model fitted on Boston
+  results against race-day weather, and a pace table. It cites each card as <code>[n]</code> and each tool
+  result as <code>[T1]</code>, and a check in code flags any number with no source. Updated October 2026.</p>
   <p class="byline">By Jeremy Lee · 14 marathons, 2:48 PB</p>
 
   <div class="bib">
     <div>
-      <div class="lab">Faithfulness, bare model to grounded</div>
-      <div class="big"><span class="from">0.76</span> <span aria-hidden="true">&rarr;</span><span class="sr"> to </span> <span class="to">0.98</span></div>
-      <p>Same model, same seven questions, scored by an LLM judge in <code>src/eval.py</code>.</p>
+      <div class="lab">Numeric answers within tolerance, 42 frozen targets</div>
+      <div class="big"><span class="from">50%</span> <span aria-hidden="true">&rarr;</span><span class="sr"> to </span> <span class="to">100%</span></div>
+      <p>RAG coach to tool coach, same model (claude-sonnet-5-5). The bare model got 33%. Expected values come from the same models the coach calls, so this measures faithful tool use.</p>
     </div>
     <div>
-      <div class="lab">Grounded coach, mean of seven</div>
+      <div class="lab">Bare / RAG / tool coach, 43 questions</div>
       <ul>
-        <li><span>Citation validity (checked in code)</span><b>1.00</b></li>
-        <li><span>Answer relevance</span><b>0.95</b></li>
-        <li><span>Context precision</span><b>0.78</b></li>
+        <li><span>Answers with an unsourced number</span><b>100% / 65% / 7%</b></li>
+        <li><span>Faithfulness (LLM judge)</span><b>0.33 / 0.88 / 0.90</b></li>
+        <li><span>Median seconds per answer</span><b>6.6 / 7.4 / 7.2</b></li>
       </ul>
     </div>
   </div>
 
   <h2>What an answer looks like</h2>
   <div class="qa">
-    <div class="t"><span class="who">Runner</span><span>Should I try to negative-split my first marathon?</span></div>
-    <div class="t"><span class="who">Coach</span><span>Probably not as a goal. In 31,912 Boston finishers only 2.5% ran a negative split, and about 94% slowed, median +14% <span class="cite">[1]</span>. Aim for an even effort: hold back slightly through halfway so you aren't one of the 27% who slowed by more than 25% late in the race <span class="cite">[2]</span>.</span></div>
+    <div class="t"><span class="who">Runner</span><span>I went through halfway in 1:42 and 10 km in 47:30. What finish should I expect, and how likely am I to hit the wall?</span></div>
+    <div class="t"><span class="who">Tool</span><span><code>predict_finish({"10": 47.5, "21": 102})</code> returned a median of 213.54 min, an 80% range of 207.48 to 226.75, wall risk 0.1645.</span></div>
+    <div class="t"><span class="who">Coach</span><span>Expect to finish around 213.5 minutes (about 3:33-3:34) <span class="cite">[T1]</span>. The 80% range is 207.48 to 226.75 minutes <span class="cite">[T1]</span>. Your chance of hitting the wall (35-40 km pace more than 25% slower than your 10-20 km pace) is about 16% <span class="cite">[T1]</span>. How far to trust this: the model was fitted on Boston splits and has no weather input. On the 2024 holdout, its 80% interval at 35 km covered only 74% of runners, so the ranges are somewhat too narrow <span class="cite">[T1]</span>.</span></div>
   </div>
-  <p class="cap">Illustrative answer assembled from the negative-split and hitting-the-wall cards, showing the citation format. Not a logged transcript.</p>
+  <p class="cap">Excerpt from a recorded run, question n01 of the evaluation, 28 October 2026 (claude-sonnet-5-5). Full trace on the <a href="overview/">write-up page</a> and in <code>eval/runs/run_2026-10.jsonl</code>.</p>
 
   <h2>How it works</h2>
   <ol class="steps">
-    <li>Each card is cut into about 120-word chunks with a 30-word overlap and embedded locally with <code>all-MiniLM-L6-v2</code>.</li>
-    <li>Chunks go into Chroma (cosine distance) with their card, title and source as metadata.</li>
-    <li>A question is embedded and the five nearest chunks come back with their sources.</li>
-    <li>Claude answers from those passages only and cites each fact. The CLI is the default backend; <code>ANTHROPIC_API_KEY</code> switches to the API.</li>
+    <li>The model replies with one JSON action per turn: call a tool, or answer.</li>
+    <li>The loop runs the tool (finish-time model, heat model, pace table, card search or calculator) and feeds the result back as <code>[T1]</code>, <code>[T2]</code>.</li>
+    <li>Bad JSON gets one repair retry; after six tool calls the model must answer.</li>
+    <li>A check in code looks for every number in the answer among the question, the tool results and the cited cards.</li>
   </ol>
-  <p style="margin-top:18px">The chain is written twice: by hand in <code>coach.py</code>, and as a LangChain LCEL
-  pipeline in <code>chain_lc.py</code>. Context precision of 0.78 is the weak spot; retrieval is dense-only with
-  no reranker. The <a href="overview/">full writeup</a> has the per-question results and the limitations.</p>
+  <p style="margin-top:18px">The same four domain tools run as an MCP server for Claude Desktop and Claude Code. Hybrid
+  BM25 search and a cross-encoder reranker were tested and made no measurable difference on 14 cards, so retrieval stays dense.
+  The <a href="overview/">full writeup</a> has the comparison, three recorded runs step by step, and the limitations, including
+  that the heat model did not beat a flat no-weather guess on its own holdout.</p>
 
   <div class="btnrow">
     <a class="btn" href="https://github.com/lyhjeremy/marathon-strategy-rag">Code on GitHub</a>
@@ -118,7 +121,7 @@
 </main>
 
 <footer class="wrap">
-  Jeremy Lee · Python, sentence-transformers, Chroma, LangChain, Claude · <a href="overview/">Full writeup</a> ·
+  Jeremy Lee · Python, sentence-transformers, Chroma, MCP, Claude · <a href="overview/">Full writeup</a> ·
   MIT License · Educational tool, not coaching or medical advice.
 </footer>
 </body>

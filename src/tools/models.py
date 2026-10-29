@@ -27,6 +27,18 @@ SIBLINGS = {
 }
 
 
+# What the models' own holdout checks found, passed along with every result so the
+# coach does not present either model as more certain than it is.
+PACE_CAVEAT = (
+    "Fitted on Boston splits; has no weather input. On the 2024 holdout its 80% "
+    "interval at 35 km covered 74% of runners, so late-race intervals run narrow.")
+HEAT_CAVEAT = (
+    "Fitted on Boston results vs. race-day temperature (baseline 55F or cooler). Dew "
+    "point is accepted but not used: it did not beat dry-bulb temperature in "
+    "cross-validation. On its 2015-2019 holdout the model did not beat a flat "
+    "no-weather guess (2.26% vs 2.15% error), so treat the slowdown as a rough guide.")
+
+
 class ModelUnavailable(RuntimeError):
     pass
 
@@ -61,6 +73,7 @@ def predict_finish(splits: dict, gender: str | None = None, age: int | None = No
     if not clean:
         raise ValueError("splits must contain at least one km mark")
     out = dict(load("pace_model").predict_finish(clean, gender=gender, age=age))
+    out["caveat"] = PACE_CAVEAT
     return out
 
 
@@ -72,6 +85,7 @@ def heat_effect(finish_min: float, temp_f: float, dewpoint_f: float | None = Non
         None if headwind_mph is None else float(headwind_mph)))
     # Convenience field so the coach never has to add numbers itself.
     out["adjusted_finish_min"] = round(float(finish_min) + float(out["expected_slowdown_min"]), 2)
+    out["caveat"] = HEAT_CAVEAT
     return out
 
 
