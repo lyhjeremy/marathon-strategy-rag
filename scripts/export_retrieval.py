@@ -18,7 +18,7 @@ import numpy as np
 
 from src.config import EMBED_MODEL, KNOWLEDGE_DIR, ROOT
 from src.embedder import embed_documents, embed_query
-from src.eval import GOLD
+from src.eval_v2 import GOLD
 from src.ingest import _chunk, _parse_card
 
 

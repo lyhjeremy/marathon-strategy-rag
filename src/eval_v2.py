@@ -14,7 +14,7 @@ that answer's faithfulness against the same knowledge base — the gap between t
 two is the value RAG adds. Answers and judgements come from Claude; the judge is
 asked for strict JSON so scoring is automatic.
 
-Run:  python -m src.eval        # writes eval/results.csv + eval/faithfulness.png
+Run:  python -m src.eval_v2     # writes eval/results.csv + eval/faithfulness.png
 """
 
 from __future__ import annotations
