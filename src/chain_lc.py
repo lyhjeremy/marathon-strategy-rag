@@ -6,7 +6,7 @@ and model become composable pieces:
 
     {context: retrieve|format, query: passthrough} | prompt | llm
 
-Same knowledge base, same grounded/cited system prompt, same answers — it just
+Same knowledge base, same grounded/cited system prompt, same answers; it just
 demonstrates the framework most RAG systems in production are built on. Select it
 from the CLI with ``--engine lc``.
 """

@@ -1,0 +1,9 @@
+{
+ "frozen_at_commit": "eb413bf63d1ab4a8c582b1188ab51f81292a66fd",
+ "date": "2026-10-28",
+ "sha256": "dcbf9ef212c98add40ae01216174d7b6ff4c9d2e35e1d2a4e0ea6e391fa7a7de",
+ "questions": 43,
+ "numeric_questions": 26,
+ "numeric_targets": 42,
+ "note": "Frozen before any system (retriever, RAG, bare model or tool coach) was run on these questions. src/eval.py refuses to run if gold.jsonl no longer matches this hash."
+}

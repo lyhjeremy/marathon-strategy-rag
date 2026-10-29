@@ -1,16 +1,20 @@
-"""Does grounding actually make the coach more trustworthy? Measure it.
+"""The July 2026 evaluation (7 questions, RAG vs bare model), kept for the record.
+Superseded on 2026-10-28 by src/eval.py, which runs a frozen 43-question gold set
+through three systems. Its results stay in eval/results.csv and eval/faithfulness.png.
+
+Does grounding actually make the coach more trustworthy? Measure it.
 
 This is a compact, RAGAS-style evaluation of the RAG coach, using an LLM as the
 judge. For a set of gold questions it scores:
 
-* **faithfulness**   — are the answer's claims supported by the retrieved passages?
-* **answer relevance** — does the answer actually address the question?
-* **context precision** — are the retrieved passages relevant to the question?
-* **citation validity** (deterministic) — do the `[n]` markers point at real
+* **faithfulness**: are the answer's claims supported by the retrieved passages?
+* **answer relevance**: does the answer actually address the question?
+* **context precision**: are the retrieved passages relevant to the question?
+* **citation validity** (deterministic): do the `[n]` markers point at real
   retrieved passages, not invented indices?
 
 It also runs each question through a **bare LLM with no retrieval** and scores
-that answer's faithfulness against the same knowledge base — the gap between the
+that answer's faithfulness against the same knowledge base: the gap between the
 two is the value RAG adds. Answers and judgements come from Claude; the judge is
 asked for strict JSON so scoring is automatic.
 
@@ -112,7 +116,7 @@ def evaluate():
             )
         )
         if verdict is None:
-            print(f"  (judge returned no JSON for: {q[:40]}… — skipped)")
+            print(f"  (judge returned no JSON for: {q[:40]}...: skipped)")
             continue
 
         rows.append({
@@ -123,7 +127,7 @@ def evaluate():
             "context_precision": float(verdict.get("context_precision", 0)),
             "citation_validity": _citation_validity(grounded.text, len(grounded.sources)),
         })
-        print(f"  scored: {q[:50]}…")
+        print(f"  scored: {q[:50]}...")
 
     return rows
 
@@ -160,12 +164,12 @@ def _write_figure(m):
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
     except Exception:
-        print("(matplotlib not installed — skipping figure)")
+        print("(matplotlib not installed: skipping figure)")
         return
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4.4), gridspec_kw={"width_ratios": [1, 1.5]})
 
-    # Panel A — the value of grounding
+    # Panel A: the value of grounding
     fa = [m["ungrounded_faithfulness"], m["grounded_faithfulness"]]
     bars = ax1.bar(["no RAG", "grounded RAG"], fa, color=["#B4B0A8", "#2A9D8F"], width=0.6)
     for b, v in zip(bars, fa):
@@ -175,7 +179,7 @@ def _write_figure(m):
     ax1.set_ylabel("score")
     ax1.spines[["top", "right"]].set_visible(False)
 
-    # Panel B — the grounded coach scorecard
+    # Panel B: the grounded coach scorecard
     labels = ["faithfulness", "answer\nrelevance", "context\nprecision", "citation\nvalidity"]
     vals = [m["grounded_faithfulness"], m["answer_relevance"],
             m["context_precision"], m["citation_validity"]]
@@ -183,7 +187,7 @@ def _write_figure(m):
     for b, v in zip(bars, vals):
         ax2.text(b.get_x() + b.get_width() / 2, v + 0.02, f"{v:.2f}", ha="center", fontsize=10)
     ax2.set_ylim(0, 1.05)
-    ax2.set_title("Grounded coach — RAGAS-style scorecard", fontsize=11)
+    ax2.set_title("Grounded coach: RAGAS-style scorecard", fontsize=11)
     ax2.spines[["top", "right"]].set_visible(False)
 
     fig.suptitle("Retrieval grounding, evaluated with an LLM judge", fontsize=13, fontweight="bold")
@@ -197,7 +201,7 @@ def _write_figure(m):
 def main():
     rows = evaluate()
     if not rows:
-        print("No questions scored — check the LLM backend.")
+        print("No questions scored: check the LLM backend.")
         return
     m = _means(rows)
     _print_table(m)

@@ -1,0 +1,121 @@
+{
+ "date": "2026-10-28",
+ "server": "marathon-coach",
+ "startup_s": 0.42,
+ "tools": [
+  "retrieve_cards",
+  "predict_finish",
+  "heat_effect",
+  "pace_table"
+ ],
+ "calls": [
+  {
+   "tool": "pace_table",
+   "args": {
+    "goal_time": "3:45",
+    "strategy": "even"
+   },
+   "is_error": false,
+   "seconds": 0.0,
+   "result": {
+    "goal_min": 225.0,
+    "goal": "3:45:00",
+    "strategy": "even",
+    "fade_pct": 0.0,
+    "fade_source": {
+     "card": "even-pacing-strategy",
+     "quote": "Holding a steady effort and pace throughout"
+    },
+    "first_half_min": 112.5,
+    "second_half_min": 112.5,
+    "first_half": "1:52:30",
+    "second_half": "1:52:30",
+    "pace_first_half_sec_per_km": 319.9,
+    "pace_second_half_sec_per_km": 319.9,
+    "pace_first_half_per_km": "5:20",
+    "pace_second_half_per_km": "5:20",
+    "pace_first_half_per_mile": "8:35",
+    "pace_second_half_per_mile": "8:35",
+    "pace_first_half_sec_per_mile": 514.9,
+    "pace_second_half_sec_per_mile": 514.9,
+    "splits": [
+     {
+      "km": 5,
+      "elapsed_min": 26.66,
+      "elapsed": "0:26:40"
+     },
+     {
+      "km": 10,
+      "elapsed_min": 53.32,
+      "elapsed": "0:53:19"
+     },
+     {
+      "km": 15,
+      "elapsed_min": 79.99,
+      "elapsed": "1:19:59"
+     },
+     {
+      "km": 20,
+      "elapsed_min": 106.65,
+      "elapsed": "1:46:39"
+     },
+     {
+      "km": 21.098,
+      "elapsed_min": 112.5,
+      "elapsed": "1:52:30"
+     },
+     {
+      "km": 25,
+      "elapsed_min": 133.31,
+      "elapsed": "2:13:19"
+     },
+     {
+      "km": 30,
+      "elapsed_min": 159.97,
+      "elapsed": "2:39:58"
+     },
+     {
+      "km": 35,
+      "elapsed_min": 186.63,
+      "elapsed": "3:06:38"
+     },
+     {
+      "km": 40,
+      "elapsed_min": 213.3,
+      "elapsed": "3:33:18"
+     },
+     {
+      "km": 42.195,
+      "elapsed_min": 225.0,
+      "elapsed": "3:45:00"
+     }
+    ]
+   }
+  },
+  {
+   "tool": "retrieve_cards",
+   "args": {
+    "query": "how much does heat slow a marathon",
+    "k": 2
+   },
+   "is_error": false,
+   "seconds": 6.82,
+   "result": {
+    "passages": [
+     {
+      "card": "heat-tax",
+      "title": "The Heat Tax: How Temperature Slows Your Marathon",
+      "source": "Jeremy Lee's Boston Marathon weather analysis",
+      "text": "The Heat Tax: How Temperature Slows Your Marathon. strong relationship. - The slope is approximately **1 minute slower per \u00b0F** of midday temperature. - Going from **50\u00b0F to 80\u00b0F** adds roughly **31 minutes** to the median finish time. **Why heat costs so much:** - Your body diverts blood flow to the skin for cooling, leaving less for working muscles. - Core temperature rises, heart rate drifts upward at the same pace, and dehydration compounds the effect. - The penalty grows nonlinearly as temperatures climb into the 70s and 80s \u00b0F."
+     },
+     {
+      "card": "heat-tax",
+      "title": "The Heat Tax: How Temperature Slows Your Marathon",
+      "source": "Jeremy Lee's Boston Marathon weather analysis",
+      "text": "The Heat Tax: How Temperature Slows Your Marathon. Heat is one of the most powerful and predictable forces acting on marathon times, and it is easy to underestimate on race morning. **What 14 years of Boston data reveal (weather-paired):** - Per-year median finish time versus race-day midday temperature correlates at **r=0.86.** A very strong relationship. - The slope is approximately **1 minute slower per \u00b0F** of midday temperature. - Going from **50\u00b0F to 80\u00b0F** adds roughly **31 minutes** to the median finish time."
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,105 @@
+{
+ "date": "2026-10-28",
+ "client": "claude -p (Claude Code CLI) with --mcp-config pointing at src/mcp_server.py",
+ "prompt": "Use the marathon-coach tools: what even pace per mile do I need for a 3:40 marathon, and what's my halfway split? Quote the tool's numbers.",
+ "steps": [
+  {
+   "tool_use": "mcp__marathon-coach__pace_table",
+   "input": {
+    "goal_time": "3:40",
+    "strategy": "even"
+   }
+  },
+  {
+   "tool_result": {
+    "goal_min": 220.0,
+    "goal": "3:40:00",
+    "strategy": "even",
+    "fade_pct": 0.0,
+    "fade_source": {
+     "card": "even-pacing-strategy",
+     "quote": "Holding a steady effort and pace throughout"
+    },
+    "first_half_min": 110.0,
+    "second_half_min": 110.0,
+    "first_half": "1:50:00",
+    "second_half": "1:50:00",
+    "pace_first_half_sec_per_km": 312.8,
+    "pace_second_half_sec_per_km": 312.8,
+    "pace_first_half_per_km": "5:13",
+    "pace_second_half_per_km": "5:13",
+    "pace_first_half_per_mile": "8:23",
+    "pace_second_half_per_mile": "8:23",
+    "pace_first_half_sec_per_mile": 503.5,
+    "pace_second_half_sec_per_mile": 503.5,
+    "splits": [
+     {
+      "km": 5,
+      "elapsed_min": 26.07,
+      "elapsed": "0:26:04"
+     },
+     {
+      "km": 10,
+      "elapsed_min": 52.14,
+      "elapsed": "0:52:08"
+     },
+     {
+      "km": 15,
+      "elapsed_min": 78.21,
+      "elapsed": "1:18:12"
+     },
+     {
+      "km": 20,
+      "elapsed_min": 104.28,
+      "elapsed": "1:44:17"
+     },
+     {
+      "km": 21.098,
+      "elapsed_min": 110.0,
+      "elapsed": "1:50:00"
+     },
+     {
+      "km": 25,
+      "elapsed_min": 130.35,
+      "elapsed": "2:10:21"
+     },
+     {
+      "km": 30,
+      "elapsed_min": 156.42,
+      "elapsed": "2:36:25"
+     },
+     {
+      "km": 35,
+      "elapsed_min": 182.49,
+      "elapsed": "3:02:29"
+     },
+     {
+      "km": 40,
+      "elapsed_min": 208.56,
+      "elapsed": "3:28:33"
+     },
+     {
+      "km": 42.195,
+      "elapsed_min": 220.0,
+      "elapsed": "3:40:00"
+     }
+    ]
+   }
+  }
+ ],
+ "servers": [
+  {
+   "name": "marathon-coach",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "tools_seen": [
+  "mcp__marathon-coach__heat_effect",
+  "mcp__marathon-coach__pace_table",
+  "mcp__marathon-coach__predict_finish",
+  "mcp__marathon-coach__retrieve_cards"
+ ],
+ "model": "claude-sonnet-5-5",
+ "final": "For a 3:40:00 marathon run evenly, the pace_table tool gives:\n\n- **Even pace per mile:** 8:23 (503.5 sec/mile). That's 5:13 per km.\n- **Halfway split:** 1:50:00 (110.0 min), and the second half is also 1:50:00.\n\nThe tool's 5K checkpoints:\n\n| Mark | Elapsed |\n|---|---|\n| 5 km | 0:26:04 |\n| 10 km | 0:52:08 |\n| 15 km | 1:18:12 |\n| 20 km | 1:44:17 |\n| Half (21.098 km) | 1:50:00 |\n| 25 km | 2:10:21 |\n| 30 km | 2:36:25 |\n| 35 km | 3:02:29 |\n| 40 km | 3:28:33 |\n| Finish | 3:40:00 |\n\nI can also run a \"fade\" strategy, which models the typical second-half slowdown, or adjust the time for race-day weather."
+}

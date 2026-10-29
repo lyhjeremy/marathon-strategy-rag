@@ -1,6 +1,11 @@
 # Core RAG stack: all local, no API key required.
-sentence-transformers>=3.0
+sentence-transformers>=3.0     # embeddings and the cross-encoder reranker
 chromadb>=0.5
+rank-bm25>=0.2                  # sparse half of the hybrid retriever
+numpy>=1.24                     # the vendored pacing and heat models
+
+# MCP server (src/mcp_server.py). Python 3.10+.
+mcp>=2.0
 
 # LangChain LCEL implementation of the same chain (src/chain_lc.py, --engine lc).
 langchain-core>=0.3

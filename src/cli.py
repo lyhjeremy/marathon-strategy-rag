@@ -11,7 +11,7 @@ import sys
 
 from .coach import Coach
 
-# Windows consoles/pipes default to cp1252, which can't encode the emoji in our
+# Windows consoles/pipes default to cp1252, which can't encode some characters in our
 # output; force UTF-8 so the CLI prints cleanly on every platform.
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -20,7 +20,7 @@ if hasattr(sys.stdout, "reconfigure"):
 def _print(ans) -> None:
     print("\n" + ans.text.strip() + "\n")
     if ans.sources:
-        print("— Sources —")
+        print("Sources:")
         seen = set()
         for i, p in enumerate(ans.sources, 1):
             key = (p.title, p.source)
@@ -44,7 +44,7 @@ def cmd_ask(args) -> None:
 
 def cmd_chat(args) -> None:
     coach = _make_coach(args)
-    print("🏃 Marathon Coach — ask a race-strategy question (Ctrl-C to quit).")
+    print("Marathon coach: ask a race-strategy question (Ctrl-C to quit).")
     try:
         while True:
             q = input("\nyou › ").strip()
@@ -54,7 +54,7 @@ def cmd_chat(args) -> None:
                 break
             _print(coach.ask(q, k=args.k))
     except (KeyboardInterrupt, EOFError):
-        print("\nRun strong! 🏁")
+        print("\nRun strong.")
 
 
 def main() -> None:

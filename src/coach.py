@@ -9,7 +9,7 @@ from .retriever import Passage, Retriever
 
 SYSTEM = (
     "You are an experienced, evidence-minded marathon coach. Answer the runner's "
-    "question using ONLY the retrieved knowledge passages provided — do not rely "
+    "question using ONLY the retrieved knowledge passages provided; do not rely "
     "on outside facts or invent statistics. Cite the passages you use by their "
     "[n] index. Be direct and practical: give a clear recommendation, the reason "
     "behind it, and a concrete action. If the passages don't cover the question, "
@@ -36,7 +36,7 @@ class Answer:
 def _format_context(passages: list[Passage]) -> str:
     lines = []
     for i, p in enumerate(passages, 1):
-        lines.append(f"[{i}] ({p.title} — source: {p.source})\n{p.text}")
+        lines.append(f"[{i}] ({p.title}; source: {p.source})\n{p.text}")
     return "\n\n".join(lines)
 
 

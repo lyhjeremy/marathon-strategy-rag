@@ -11,17 +11,28 @@ Backend selection (automatic, in priority order):
    without the Claude CLI installed.
 
 Override the choice with ``LLM_BACKEND=cli`` or ``LLM_BACKEND=api``.
+
+The CLI runs isolated: built-in tools off (``--tools ""``), no user or project
+settings or CLAUDE.md (``--setting-sources ""``), the caller's system prompt in
+place of Claude Code's, no saved session, and a neutral working directory. Without
+that, ``claude -p`` could read the knowledge cards off disk, which would make the
+"bare model" baseline meaningless.
 """
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
+import tempfile
+import time
 
 
-DEFAULT_CLI_MODEL = os.environ.get("CLAUDE_MODEL", "")          # "" -> CLI default
-DEFAULT_API_MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-5")
+# One model for every system and the judge. "sonnet" is the CLI alias; the
+# resolved model id is recorded in every response's metadata.
+DEFAULT_CLI_MODEL = os.environ.get("CLAUDE_MODEL", "sonnet")
+DEFAULT_API_MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-5-5")
 
 
 class LLMError(RuntimeError):
@@ -31,7 +42,7 @@ class LLMError(RuntimeError):
 def _which_claude() -> str | None:
     """Locate the Claude CLI. On Windows the npm install ships a ``claude.cmd``
     shim (there is no ``claude.exe``), which ``CreateProcess`` won't find from a
-    bare name — so probe the concrete shims explicitly."""
+    bare name, so probe the concrete shims explicitly."""
     return (
         shutil.which("claude.cmd")
         or shutil.which("claude.exe")
@@ -66,20 +77,27 @@ def _choose_backend() -> str:
 class LLM:
     """Minimal text-completion interface used across the project."""
 
-    def __init__(self, backend: str | None = None, timeout: int = 180):
+    def __init__(self, backend: str | None = None, timeout: int = 240):
         self.backend = backend or _choose_backend()
         self.timeout = timeout
+        self.last_meta: dict = {}
 
     def complete(self, prompt: str, system: str | None = None) -> str:
+        t0 = time.perf_counter()
         if self.backend == "cli":
-            return self._complete_cli(prompt, system)
-        return self._complete_api(prompt, system)
+            text = self._complete_cli(prompt, system)
+        else:
+            text = self._complete_api(prompt, system)
+        self.last_meta["latency_s"] = round(time.perf_counter() - t0, 2)
+        return text
 
     # --- CLI backend (Claude subscription, no API key) -----------------------
     def _complete_cli(self, prompt: str, system: str | None) -> str:
-        cmd = _claude_command() + ["-p"]
-        if system:
-            cmd += ["--append-system-prompt", system]
+        cmd = _claude_command() + [
+            "-p", "--tools", "", "--setting-sources", "",
+            "--no-session-persistence", "--output-format", "json",
+            "--system-prompt", system or "You are a helpful assistant.",
+        ]
         if DEFAULT_CLI_MODEL:
             cmd += ["--model", DEFAULT_CLI_MODEL]
         try:
@@ -94,14 +112,26 @@ class LLM:
                 encoding="utf-8",
                 errors="replace",
                 timeout=self.timeout,
+                cwd=tempfile.gettempdir(),
             )
         except FileNotFoundError as exc:  # claude not on PATH
             raise LLMError("`claude` CLI not found on PATH.") from exc
         except subprocess.TimeoutExpired as exc:
             raise LLMError(f"claude CLI timed out after {self.timeout}s.") from exc
         if result.returncode != 0:
-            raise LLMError(f"claude CLI failed: {result.stderr.strip()}")
-        return result.stdout.strip()
+            raise LLMError(f"claude CLI failed: {result.stderr.strip() or result.stdout[:300]}")
+        try:
+            data = json.loads(result.stdout)
+        except json.JSONDecodeError as exc:
+            raise LLMError(f"claude CLI returned non-JSON output: {result.stdout[:200]}") from exc
+        if data.get("is_error"):
+            raise LLMError(f"claude CLI error: {data.get('result', '')[:300]}")
+        usage = data.get("modelUsage") or {}
+        self.last_meta = {
+            "model": ",".join(sorted(usage)) or DEFAULT_CLI_MODEL,
+            "output_tokens": (data.get("usage") or {}).get("output_tokens"),
+        }
+        return (data.get("result") or "").strip()
 
     # --- API backend (official SDK) ------------------------------------------
     def _complete_api(self, prompt: str, system: str | None) -> str:
@@ -116,6 +146,7 @@ class LLM:
             system=system or "You are a helpful assistant.",
             messages=[{"role": "user", "content": prompt}],
         )
+        self.last_meta = {"model": msg.model, "output_tokens": msg.usage.output_tokens}
         return "".join(block.text for block in msg.content if block.type == "text").strip()
 
 

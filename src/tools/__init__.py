@@ -15,12 +15,16 @@ from __future__ import annotations
 
 import ast
 import operator
+import os
 from functools import lru_cache
 
 from . import models
 from .pace import pace_table
 
-RETRIEVAL_MODE = "hybrid+rerank"
+# Dense search tied BM25, RRF fusion and cross-encoder reranking on this corpus
+# (eval/retrieval_compare.json), so the coach uses the cheapest. Any mode in
+# src.hybrid.MODES can be selected with MSR_RETRIEVAL.
+RETRIEVAL_MODE = os.environ.get("MSR_RETRIEVAL", "dense")
 
 TOOL_SPECS = [
     {
