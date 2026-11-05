@@ -132,6 +132,7 @@ Claude Desktop (`claude_desktop_config.json`):
 ```bash
 python3 -m venv ~/venvs/marathon-strategy-rag
 ~/venvs/marathon-strategy-rag/bin/pip install -r requirements.txt
+source ~/venvs/marathon-strategy-rag/bin/activate   # the commands below assume this
 
 python -m src.ingest                      # index the cards (to ~/data-cache/marathon-strategy-rag)
 python -m src.agent "I went through halfway in 1:42. What finish should I expect?"

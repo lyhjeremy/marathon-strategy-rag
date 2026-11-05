@@ -13,5 +13,8 @@ langchain-core>=0.3
 # Evaluation harness figure (python -m src.eval).
 matplotlib>=3.7
 
+# Tests (python -m pytest -q tests).
+pytest>=8.0
+
 # Optional: only needed if you run the API backend instead of the Claude CLI.
 anthropic>=0.40
