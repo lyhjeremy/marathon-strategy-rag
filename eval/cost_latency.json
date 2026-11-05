@@ -1,0 +1,52 @@
+{
+ "date": "2026-11-04",
+ "machine": "Apple M4, macOS 26.5.2",
+ "sample": [
+  "n01",
+  "n05",
+  "h01",
+  "h05",
+  "p03",
+  "c02",
+  "k04",
+  "s03",
+  "s07",
+  "s11",
+  "s15"
+ ],
+ "n_questions": 11,
+ "mode": "sequential, one answer at a time, no judge calls",
+ "cost_note": "total_cost_usd from claude -p --output-format json: the API-equivalent cost; the runs used a Claude subscription",
+ "systems": {
+  "bare": {
+   "n": 11,
+   "model_calls": 11,
+   "median_s": 7.21,
+   "p95_s": 17.06,
+   "median_cost_usd": 0.00706,
+   "mean_cost_usd": 0.00716,
+   "p95_cost_usd": 0.0114,
+   "total_cost_usd": 0.07876
+  },
+  "rag": {
+   "n": 11,
+   "model_calls": 11,
+   "median_s": 7.18,
+   "p95_s": 15.41,
+   "median_cost_usd": 0.01465,
+   "mean_cost_usd": 0.01388,
+   "p95_cost_usd": 0.01604,
+   "total_cost_usd": 0.15266
+  },
+  "coach": {
+   "n": 11,
+   "model_calls": 26,
+   "median_s": 8.35,
+   "p95_s": 14.63,
+   "median_cost_usd": 0.01652,
+   "mean_cost_usd": 0.01386,
+   "p95_cost_usd": 0.02693,
+   "total_cost_usd": 0.15249
+  }
+ }
+}

@@ -1,0 +1,276 @@
+{
+ "source": "eval/runs/run_2026-10.jsonl",
+ "groups": [
+  {
+   "group": "wall",
+   "label": "Wall risk (n01, n04, n05, n07)",
+   "targets": 4,
+   "misses": {
+    "bare": 4,
+    "rag": 4,
+    "coach": 0
+   },
+   "example": {
+    "id": "n04",
+    "system": "rag",
+    "question": "I'm at 35 km in 3:05:00. Halfway was 1:58:00 and 30 km was 2:44:00. What's my most likely finish, and what is the chance I hit the wall?",
+    "targets": [
+     {
+      "key": "wall_risk_pct",
+      "expected": 0.0,
+      "tol": 5.0,
+      "got": 30.0,
+      "ok": false,
+      "abs_err": 30.0
+     }
+    ],
+    "answer": "**Bottom line:** Your most likely finish is about **3:49 (≈229 min)**, with a realistic range of roughly 3:40 to 3:55. I'd put your chance of hitting the wall at about **30%**. The passages give no formula for this, so both numbers are my judgment, built from your splits and the Boston data.\n\n**Your splits**\n- First half: about 5:36/km.\n- Halfway to 30 km: about 5:10/km.\n- 30 to 35 km: about 4:12/km (21 min for 5 km).\n\nYou have been speeding up, and the last 5 km is far faster than anything before it. Please check that 30 km split. It may be a mat or timing error. If it's real, you may be overspending.\n\n**Projection (7.2 km left)**\n- The Boston data show pace climbing steeply from about 30 km, with a median late-race (35-40 km) slowdown of 15% [1].\n- Your 35 km average is about 5:17/km. Slowing 15% from there gives about 6:05/km, which puts you at about 229 min.\n- If you somehow held your 4:12 pace and still slowed 15%, you'd finish around 220 min. That is the optimistic edge.\n- The slowdown scales with finish time. Sub-3:00 runners stay nearly flat, while 4:30+ runners commonly slow 30% or more [1][2]. You project between those groups, so a 20-30% fade would put you near 3:55.\n\n**Wall risk**\n- In the Boston data, 27% of finishers slowed by more than 25% in the closing kilometers [1]. That is my baseline.\n- I nudged it up to about 30% because of the 30-35 km surge. Overspent pace \"comes due all at once in the 30-42 km segment\" [2].\n- The passages don't give a probability conditioned on splits like yours, so treat 30% as an estimate.\n\n**What to do now**\n1. Drop back to roughly your 21-30 km effort (about 5:10-5:20/km) immediately. Don't chase the fast 30-35 km rhythm. The passage's advice is to treat 30 km as the true start of your race and keep pace in reserve while others fade [3].\n2. Take in carbohydrates at every aid station. Glycogen depletion is a main driver of the wall [2].\n3. Race by effort, not by the watch, as fatigue builds [4].\n\n**Gap:** The passages don't cover in-race recovery tactics, specific carb amounts, or course effects for your race. The course-difficulty figures are simulated, not real results [5], so I didn't use them.\n\nFINAL: finish_min=229; wall_risk_pct=30"
+   }
+  },
+  {
+   "group": "n",
+   "label": "Finish-time projection from splits (n01 to n08)",
+   "targets": 10,
+   "misses": {
+    "bare": 3,
+    "rag": 3,
+    "coach": 0
+   },
+   "example": {
+    "id": "n04",
+    "system": "rag",
+    "question": "I'm at 35 km in 3:05:00. Halfway was 1:58:00 and 30 km was 2:44:00. What's my most likely finish, and what is the chance I hit the wall?",
+    "targets": [
+     {
+      "key": "finish_min",
+      "expected": 211.54,
+      "tol": 1.188,
+      "got": 229.0,
+      "ok": false,
+      "abs_err": 17.46
+     }
+    ],
+    "answer": "**Bottom line:** Your most likely finish is about **3:49 (≈229 min)**, with a realistic range of roughly 3:40 to 3:55. I'd put your chance of hitting the wall at about **30%**. The passages give no formula for this, so both numbers are my judgment, built from your splits and the Boston data.\n\n**Your splits**\n- First half: about 5:36/km.\n- Halfway to 30 km: about 5:10/km.\n- 30 to 35 km: about 4:12/km (21 min for 5 km).\n\nYou have been speeding up, and the last 5 km is far faster than anything before it. Please check that 30 km split. It may be a mat or timing error. If it's real, you may be overspending.\n\n**Projection (7.2 km left)**\n- The Boston data show pace climbing steeply from about 30 km, with a median late-race (35-40 km) slowdown of 15% [1].\n- Your 35 km average is about 5:17/km. Slowing 15% from there gives about 6:05/km, which puts you at about 229 min.\n- If you somehow held your 4:12 pace and still slowed 15%, you'd finish around 220 min. That is the optimistic edge.\n- The slowdown scales with finish time. Sub-3:00 runners stay nearly flat, while 4:30+ runners commonly slow 30% or more [1][2]. You project between those groups, so a 20-30% fade would put you near 3:55.\n\n**Wall risk**\n- In the Boston data, 27% of finishers slowed by more than 25% in the closing kilometers [1]. That is my baseline.\n- I nudged it up to about 30% because of the 30-35 km surge. Overspent pace \"comes due all at once in the 30-42 km segment\" [2].\n- The passages don't give a probability conditioned on splits like yours, so treat 30% as an estimate.\n\n**What to do now**\n1. Drop back to roughly your 21-30 km effort (about 5:10-5:20/km) immediately. Don't chase the fast 30-35 km rhythm. The passage's advice is to treat 30 km as the true start of your race and keep pace in reserve while others fade [3].\n2. Take in carbohydrates at every aid station. Glycogen depletion is a main driver of the wall [2].\n3. Race by effort, not by the watch, as fatigue builds [4].\n\n**Gap:** The passages don't cover in-race recovery tactics, specific carb amounts, or course effects for your race. The course-difficulty figures are simulated, not real results [5], so I didn't use them.\n\nFINAL: finish_min=229; wall_risk_pct=30"
+   }
+  },
+  {
+   "group": "h",
+   "label": "Heat slowdown (h01 to h06)",
+   "targets": 9,
+   "misses": {
+    "bare": 9,
+    "rag": 7,
+    "coach": 0
+   },
+   "example": {
+    "id": "h03",
+    "system": "bare",
+    "question": "For a 2:55 runner at 80°F with a 65°F dew point, how many minutes will the heat cost, and what is the range?",
+    "targets": [
+     {
+      "key": "slowdown_min",
+      "expected": 19.16,
+      "tol": 2.18,
+      "got": 5.3,
+      "ok": false,
+      "abs_err": 13.86
+     },
+     {
+      "key": "slowdown_lo_min",
+      "expected": 14.01,
+      "tol": 2.18,
+      "got": 3.5,
+      "ok": false,
+      "abs_err": 10.51
+     },
+     {
+      "key": "slowdown_hi_min",
+      "expected": 22.73,
+      "tol": 2.18,
+      "got": 7.9,
+      "ok": false,
+      "abs_err": 14.83
+     }
+    ],
+    "answer": "**Estimated cost: about 5 minutes (range roughly 3.5 to 8 minutes).**\n\n- **Combined temp + dew point:** 80 + 65 = 145. Using the common rule of thumb, that band (141-150) means about a 3% slowdown, with adjacent bands at about 2% and 4.5%.\n- **Midpoint:** 3% of 175 minutes is about 5.3 minutes, so you'd finish near 3:00 instead of 2:55.\n- **Range:** 2% is about 3.5 minutes. 4.5% is about 7.9 minutes. Expect the low end if you're acclimatized, it's cloudy or breezy, or you stay well hydrated. Expect the high end with full sun, no wind, or poor heat adaptation.\n\n**Practical advice**\n- Start 10-15 sec/mile slower than goal pace for the first 10K, and don't try to bank time early.\n- Take fluids at every aid station, and pour water on your head, neck, and wrists.\n- Take sodium and carbs as planned, and perhaps a bit more fluid than usual.\n- Set your goal pace at about 6:50-6:55/mile instead of 6:41/mile, and let effort, not pace, guide you.\n\nFINAL: slowdown_min=5.3; slowdown_lo_min=3.5; slowdown_hi_min=7.9"
+   }
+  },
+  {
+   "group": "p",
+   "label": "Pace and split targets (p01 to p05)",
+   "targets": 7,
+   "misses": {
+    "bare": 3,
+    "rag": 3,
+    "coach": 0
+   },
+   "example": {
+    "id": "p04",
+    "system": "rag",
+    "question": "My goal is 4:30, and I want to allow for the typical second-half fade at that level. What pace per kilometer should I run in the first half?",
+    "targets": [
+     {
+      "key": "pace_sec_per_km",
+      "expected": 345.9,
+      "tol": 2.0,
+      "got": 384.0,
+      "ok": false,
+      "abs_err": 38.1
+     }
+    ],
+    "answer": "**Run the first half at about 6:24/km (roughly 384 sec/km), and don't build the fade into your plan.**\n\n**Why not run faster early to \"allow for\" the fade**\n- Going out fast burns glycogen and creates disproportionate fatigue, which you repay with a steep slowdown in the final 10-12 km [2].\n- Banking time early is a trap. Time gained by going out fast is almost always lost, with interest, late in the race [2][4].\n- Even pacing gives the best result for most marathoners, and even splitting is the practical target [2]. A mid-pack or first-time marathoner should treat the urge to push early as a trap [5].\n\n**The numbers**\n- 4:30 over 42.195 km works out to about 6:24/km.\n- Run the first 5-10 km slightly slower than goal pace, to bank fitness, not time [5]. The passages don't give a specific number for \"slightly.\" As my own rule of thumb, 5-8 sec/km slower (about 6:30/km) is reasonable.\n- Hold goal pace after that. Check splits, but race by effort as fatigue builds [1].\n- Aim to reach halfway feeling controlled, with pace still in reserve [1].\n\n**Before you commit to 6:24**\n- Base the goal on recent race results and long-run and tempo paces, not hope. A recent half marathon is a strong predictor [4].\n- Adjust for heat, wind and hills. Don't apply a flat-course goal to a hard course or a hot day [4].\n\n**Action plan**\n1. Check that your recent half or tempo work supports 6:24/km. If it doesn't, set a more realistic goal pace.\n2. Open at about 6:30/km for the first 5-10 km and resist the adrenaline [1][5].\n3. Settle into 6:24/km and treat 30 km as the true start of your race [3].\n4. Train for the back third with long runs that rehearse fatigue, and use a fueling plan that keeps glycogen topped up before depletion sets in [3].\n\n**Gap:** The passages don't quantify a \"typical\" second-half fade at 4:30 level, so I can't give a fade-adjusted split from them. Their advice is to prevent the fade through even pacing, not to plan for it.\n\nFINAL: pace_sec_per_km=384"
+   }
+  },
+  {
+   "group": "c",
+   "label": "Combined heat and pace (c01, c02)",
+   "targets": 4,
+   "misses": {
+    "bare": 4,
+    "rag": 4,
+    "coach": 0
+   },
+   "example": {
+    "id": "c01",
+    "system": "rag",
+    "question": "My goal is 3:20 in cool weather, but the forecast is 76°F with a 64°F dew point. What finish time should I adjust to, and what even pace per kilometer runs that time?",
+    "targets": [
+     {
+      "key": "adjusted_finish_min",
+      "expected": 216.13,
+      "tol": 3.7,
+      "got": 226.0,
+      "ok": false,
+      "abs_err": 9.87
+     },
+     {
+      "key": "pace_sec_per_km",
+      "expected": 307.3,
+      "tol": 5.261,
+      "got": 321.4,
+      "ok": false,
+      "abs_err": 14.1
+     }
+    ],
+    "answer": "**Recommendation: reset your goal to about 3:46 (226 min) and run roughly 5:21/km evenly.**\n\n**The reasoning**\n- Heat slows marathoners predictably. Fourteen years of Boston data show about 1 minute slower per °F of midday temperature, with a very strong relationship (r=0.86) [5][3]. The rule of thumb is to use roughly 1 min/°F above comfortable conditions to reset expectations [2].\n- Your passages don't define \"cool,\" so I assumed a 50°F baseline, the reference point in the Boston data [3]. From 50°F to 76°F is 26°F, so about 26 minutes added: 3:20 (200 min) becomes about 226 min, or 3:46.\n- Pace: 226 min is 13,560 s over 42.195 km, or about 321 s/km (5:21/km). Your original 3:20 goal would be about 284 s/km (4:44/km), so the gap is substantial.\n\n**What to do**\n1. **Drop the cool-weather goal.** A cool-weather PR target is the wrong target in the heat [1]. Set a hot-day pace band rather than a single number [1], for example 5:18–5:25/km.\n2. **Hold back early.** Run the first 5–10 km a touch slower than your adjusted pace, even if it feels easy [4]. Aim to reach halfway controlled with pace in reserve [4].\n3. **Race by effort as fatigue builds**, checking splits but not chasing them [4].\n4. **Cool and hydrate from the start.** Use ice, sponges, and shade, and accept a slower time rather than blowing up [1]. Heat diverts blood to the skin, raises heart rate at the same pace, and compounds dehydration [3].\n\n**Caveats and gaps**\n- The 1 min/°F figure comes from median Boston finishers, so it's a starting estimate for you, not a guarantee. The penalty also grows nonlinearly into the 70s and 80s [3], so 3:46 could be optimistic.\n- If your \"cool\" baseline is warmer than 50°F, the adjustment shrinks accordingly.\n- The passages say nothing about dew point. Your 64°F dew point suggests it will feel muggy, but I can't quantify an extra penalty from these sources. Treat 3:46 as a best-case target and lean toward the slower end of your pace band.\n\nFINAL: adjusted_finish_min=226; pace_sec_per_km=321.4"
+   }
+  },
+  {
+   "group": "k",
+   "label": "Arithmetic on a knowledge card (k01 to k05)",
+   "targets": 8,
+   "misses": {
+    "bare": 5,
+    "rag": 0,
+    "coach": 0
+   },
+   "example": {
+    "id": "k02",
+    "system": "bare",
+    "question": "At the usual per-hour carbohydrate target for marathoners, how many grams of carbs in total should I take over a 4-hour race (low and high end)?",
+    "targets": [
+     {
+      "key": "carbs_total_lo_g",
+      "expected": 120.0,
+      "tol": 1.2,
+      "got": 240.0,
+      "ok": false,
+      "abs_err": 120.0
+     },
+     {
+      "key": "carbs_total_hi_g",
+      "expected": 240.0,
+      "tol": 2.4,
+      "got": 360.0,
+      "ok": false,
+      "abs_err": 120.0
+     }
+    ],
+    "answer": "The usual marathon fueling target is **60-90 g of carbs per hour**.\n\nOver 4 hours:\n- **Low end:** 60 g/hr × 4 hr = **240 g**\n- **High end:** 90 g/hr × 4 hr = **360 g**\n\nPractical tips:\n- Start fueling early (within the first 15-30 minutes) rather than waiting until you feel depleted.\n- Above ~60 g/hr, use a glucose:fructose mix (roughly 2:1 or 1:0.8) so you can absorb more carbs.\n- Train your gut: practice your race-day intake in long runs, building up gradually toward your target.\n- Take fuel in small, regular doses (e.g., a gel every 25-30 minutes plus sports drink) rather than big hits.\n- If you're new to in-race fueling, aim for the lower end (~60 g/hr) and work up.\n\nFINAL: carbs_total_lo_g=240; carbs_total_hi_g=360"
+   }
+  }
+ ],
+ "totals": {
+  "bare": {
+   "misses": 28,
+   "targets": 42
+  },
+  "rag": {
+   "misses": 21,
+   "targets": 42
+  },
+  "coach": {
+   "misses": 0,
+   "targets": 42
+  }
+ },
+ "coach_known_failures": [
+  {
+   "id": "s02",
+   "kind": "asked for an input instead of answering",
+   "question": "How much slower will race-day heat around 80°F make me?",
+   "answer": "To estimate how much 80°F will slow you down, I need your cool-weather (ideal conditions) marathon finish time or goal time. Could you share that? If you also know the dew point and any expected headwind (mph), include those too, since they change the estimate. Once I have your time, I'll run the heat model and give you the expected slowdown in minutes and your adjusted finish time.",
+   "judge": {
+    "faithfulness": 1.0,
+    "answer_relevance": 0.3,
+    "context_precision": 0.0
+   },
+   "tools_called": 0
+  },
+  {
+   "id": "c01",
+   "kind": "range computed in the model's head, passed by the number check",
+   "question": "My goal is 3:20 in cool weather, but the forecast is 76°F with a 64°F dew point. What finish time should I adjust to, and what even pace per kilometer runs that time?",
+   "answer": "Adjust your 3:20 (200 min) goal to about 216 minutes (roughly 3:36), per the heat model: expected slowdown 16.13 min, giving an adjusted finish of 216.13 min [T1]. The model's range for the slowdown is 4.53 to 19.33 min [T1], so the adjusted finish could plausibly be anywhere from about 205 to 219 minutes.\n\nEven pace for 216.13 min over 42.195 km is about 307.33 sec/km, roughly 5:07 per km [T2].\n\nHow much to trust this: the model was fitted on Boston results against dry-bulb temperature with a 55F baseline, and the dew point you gave (64F) was not used, because it did not improve accuracy in cross-validation [T1]. On its 2015-2019 holdout it did not beat a flat no-weather guess (2.26% vs 2.15% error), so treat the slowdown as a rough guide, not a precise prediction [T1]. Humid conditions may well be harder than the model shows.\n\nActions: 1) Start near 5:07/km, or a touch slower, instead of your cool-weather goal pace, and only speed up late if you feel fine. 2) Treat the 216-minute figure as a planning target, and be ready to slow further if the day feels harder than the pace suggests.\n\nFINAL: adjusted_finish_min=216.13; pace_sec_per_km=307.33",
+   "tool_calls": [
+    {
+     "tool": "heat_effect",
+     "args": {
+      "finish_min": 200,
+      "temp_f": 76,
+      "dewpoint_f": 64
+     }
+    },
+    {
+     "tool": "calculator",
+     "args": {
+      "expression": "216.13*60/42.195"
+     }
+    }
+   ],
+   "heat_result": {
+    "expected_slowdown_min": 16.13,
+    "lo_min": 4.53,
+    "hi_min": 19.33,
+    "percentile_used": 22.8,
+    "baseline_temp_f": 55.0,
+    "model_version": "heat-2026.10.1",
+    "adjusted_finish_min": 216.13,
+    "caveat": "Fitted on Boston results vs. race-day temperature (baseline 55F or cooler). Dew point is accepted but not used: it did not beat dry-bulb temperature in cross-validation. On its 2015-2019 holdout the model did not beat a flat no-weather guess (2.26% vs 2.15% error), so treat the slowdown as a rough guide."
+   }
+  }
+ ],
+ "eval_run_latency": {
+  "note": "wall-clock per answer, four answers running at once, 2026-10-28; excludes the judge call",
+  "systems": {
+   "bare": {
+    "n": 43,
+    "median_s": 6.62,
+    "p95_s": 10.1,
+    "max_s": 12.51
+   },
+   "rag": {
+    "n": 43,
+    "median_s": 7.37,
+    "p95_s": 18.74,
+    "max_s": 128.02
+   },
+   "coach": {
+    "n": 43,
+    "median_s": 7.18,
+    "p95_s": 12.47,
+    "max_s": 13.39
+   }
+  }
+ }
+}

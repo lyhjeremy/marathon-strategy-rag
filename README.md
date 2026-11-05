@@ -1,6 +1,8 @@
 # Marathon strategy coach
 
-A marathon coach that retrieves from 14 knowledge cards and calls tools: a finish-time and wall-risk model fitted on Boston splits, a heat model fitted on Boston results against race-day weather, and a pace table. Every number in an answer is supposed to come from a tool result or a cited card, and a check in code flags the ones that don't. The tools are also served over MCP.
+A marathon coach that calls my finish-time and heat models as tools, so a runner's finish time, heat cost and pace come from a fitted model. On 42 numeric targets from a frozen 43-question set it got 42 within tolerance, against 21 for the same model with retrieval and 14 for the model alone, at a median 1.7 cents (API-equivalent) and 8.4 s per question.
+
+It retrieves from 14 knowledge cards and calls a finish-time and wall-risk model fitted on Boston splits, a heat model fitted on Boston results against race-day weather, and a pace table. Every number in an answer is supposed to come from a tool result or a cited card, and a check in code flags the ones that don't. The tools are also served over MCP.
 
 [Live site](https://lyhjeremy.github.io/marathon-strategy-rag/) · [Write-up](https://lyhjeremy.github.io/marathon-strategy-rag/overview/) · [Long-form notes](writeup.md)
 
@@ -32,6 +34,24 @@ The tool coach's 42 of 42 is close to circular: expected values come from the sa
 The unsourced-number check fired on 28 of 43 RAG answers, mostly the model's own arithmetic ("a 1:42 half is about 4:50/km"), and on 3 of 43 tool-coach answers (a "1 in 6" paraphrase of 17.7%, and two uncited "30 km" remarks). One coach answer failed: asked how much 80°F would cost, it asked for the runner's finish time instead of answering (relevance 0.30; faithfulness 1.00, because an answer with no claims has nothing unsupported). Latencies are wall-clock with four answers running at once.
 
 Every answer, trace and score is in `eval/runs/run_2026-10.jsonl`; the aggregates are in `eval/summary.json`.
+
+### Cost, latency and a call-level trace
+
+On 2026-11-04 `scripts/measure_cost.py` reran every fourth gold question (11) through each system, one answer at a time with no judge, on an Apple M4. Cost is `total_cost_usd` from `claude -p --output-format json`, the API-equivalent price (the runs used a Claude subscription), and includes the CLI's prompt caching.
+
+| | Bare | RAG | Tool coach |
+|---|---|---|---|
+| Model calls per answer | 1.0 | 1.0 | 2.4 |
+| Median cost | $0.0071 | $0.0146 | $0.0165 |
+| p95 cost | $0.0114 | $0.0160 | $0.0269 |
+| Median / p95 latency, one at a time (n = 11) | 7.2 / 17.1 s | 7.2 / 15.4 s | 8.4 / 14.6 s |
+| Median / p95 latency, October run, four at a time (n = 43) | 6.6 / 10.1 s | 7.4 / 18.7 s | 7.2 / 12.5 s |
+
+Data: `eval/cost_latency.json`, `eval/cost_latency_calls.csv`, `eval/cost_latency_answers.csv`; October-run percentiles in `eval/error_analysis.json`. The same script saved the coach's run on n01 call by call (raw JSON action, tool, arguments, result, time and cost per call) in `eval/trace_n01.json`; the write-up renders it.
+
+### Error analysis
+
+`scripts/error_analysis.py` groups the baselines' misses from the saved run (`eval/error_analysis.json`). Misses out of the scored values, bare / RAG: heat slowdown 9 / 7 of 9, wall risk 4 / 4 of 4, heat plus pace 4 / 4 of 4, finish time from splits 3 / 3 of 10, pace and split targets 3 / 3 of 7, card arithmetic 5 / 0 of 8. The bare model under-called heat with a temperature-plus-dew-point table; the RAG coach over-called it with the card's minute per degree; both started wall risk from a population rate. The tool coach's known failures are outside the 42 values: s02 (asked for a finish time instead of answering), the uncomputed c01 range, and 3 answers with an unsourced number.
 
 ### The gold set
 
