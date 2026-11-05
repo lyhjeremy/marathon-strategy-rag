@@ -1,5 +1,7 @@
 # Marathon strategy coach
 
+[![tests](https://github.com/lyhjeremy/marathon-strategy-rag/actions/workflows/tests.yml/badge.svg)](https://github.com/lyhjeremy/marathon-strategy-rag/actions/workflows/tests.yml)
+
 A marathon coach that calls my finish-time and heat models as tools, so a runner's finish time, heat cost and pace come from a fitted model. On 42 numeric targets from a frozen 43-question set it got 42 within tolerance, against 21 for the same model with retrieval and 14 for the model alone, at a median 1.7 cents (API-equivalent) and 8.4 s per question.
 
 It retrieves from 14 knowledge cards and calls a finish-time and wall-risk model fitted on Boston splits, a heat model fitted on Boston results against race-day weather, and a pace table. Every number in an answer is supposed to come from a tool result or a cited card, and a check in code flags the ones that don't. The tools are also served over MCP.
