@@ -101,8 +101,8 @@ def main() -> None:
            "guard_heldout": {k: v for k, v in held.items() if k != "items"},
            "replays": reps}
     text = json.dumps(out, indent=1, ensure_ascii=False)
-    home = str(Path.home())
-    text = text.replace(home, "~")  # a recorded tool error carries a local path
+    # A recorded tool error carries a local path; publish it without the machine's layout.
+    text = text.replace(str(Path.home() / "data-cache"), "<data-cache>").replace(str(Path.home()), "~")
     (EVAL / "web_trials.json").write_text(text)
     labeling_sheet()
     print("wrote eval/web_trials.json", len(json.dumps(out)) // 1024, "KB")

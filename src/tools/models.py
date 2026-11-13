@@ -94,7 +94,10 @@ def source_info() -> dict:
     for name in SIBLINGS:
         try:
             mod = load(name)
-            info[name] = mod.__msr_path__
+            path = Path(mod.__msr_path__)
+            root = VENDOR.parents[2]
+            # Repo-relative when vendored, so saved results carry no machine paths.
+            info[name] = str(path.relative_to(root)) if path.is_relative_to(root) else path.name
         except ModelUnavailable as exc:
             info[name] = f"unavailable: {exc}"
     return info

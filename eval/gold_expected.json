@@ -1,7 +1,7 @@
 {
  "model_sources": {
-  "pace_model": "/Users/jeremylee/My Drive/6. Data Projects/Project 22 Marathon Strategy RAG/marathon-strategy-rag/src/tools/vendor/pace_model.py",
-  "heat_model": "/Users/jeremylee/My Drive/6. Data Projects/Project 22 Marathon Strategy RAG/marathon-strategy-rag/src/tools/vendor/heat_model.py"
+  "pace_model": "src/tools/vendor/pace_model.py",
+  "heat_model": "src/tools/vendor/heat_model.py"
  },
  "items": {
   "n01": {
