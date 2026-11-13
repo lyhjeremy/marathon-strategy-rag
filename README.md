@@ -152,12 +152,14 @@ Claude Desktop (`claude_desktop_config.json`):
 {
   "mcpServers": {
     "marathon-coach": {
-      "command": "/Users/you/venvs/marathon-strategy-rag/bin/python",
+      "command": "~/venvs/marathon-strategy-rag/bin/python",
       "args": ["/path/to/marathon-strategy-rag/src/mcp_server.py"]
     }
   }
 }
 ```
+
+If your client does not expand `~`, write the full path to your home folder.
 
 `python -m scripts.mcp_smoke` starts the server, lists the tools and calls two of them (`eval/mcp_smoke.json`). `eval/mcp_roundtrip.json` records a real round trip in which Claude Code, given the server through `--mcp-config`, called `pace_table` for a 3:40 goal and quoted 8:23 per mile and a 1:50:00 half.
 
