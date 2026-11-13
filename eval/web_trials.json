@@ -1007,7 +1007,7 @@
      },
      "tool_s": 0.541,
      "result": {
-      "error": "KeyError: '/Users/jeremylee/data-cache/marathon-strategy-rag/chroma'"
+      "error": "KeyError: '~/data-cache/marathon-strategy-rag/chroma'"
      }
     },
     {

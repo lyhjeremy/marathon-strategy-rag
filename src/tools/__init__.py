@@ -16,6 +16,7 @@ from __future__ import annotations
 import ast
 import operator
 import os
+import threading
 from functools import lru_cache
 
 from . import models
@@ -114,6 +115,9 @@ TOOL_SPECS = [
 DOMAIN_TOOLS = ["retrieve_cards", "predict_finish", "heat_effect", "pace_table"]
 
 
+_RETRIEVER_LOCK = threading.Lock()
+
+
 @lru_cache(maxsize=1)
 def _retriever():
     from ..hybrid import HybridRetriever
@@ -121,9 +125,16 @@ def _retriever():
     return HybridRetriever(mode=RETRIEVAL_MODE)
 
 
+def _get_retriever():
+    # Opening the Chroma index from several threads at once failed in 6 of the 30
+    # red-team runs (2026-11-13); the first caller now builds it under a lock.
+    with _RETRIEVER_LOCK:
+        return _retriever()
+
+
 def retrieve_cards(query: str, k: int = 4) -> dict:
     k = max(1, min(int(k or 4), 8))
-    hits = _retriever().search(query, k=k)
+    hits = _get_retriever().search(query, k=k)
     return {"passages": [
         {"card": p.card, "title": p.title, "source": p.source, "text": p.text}
         for p in hits

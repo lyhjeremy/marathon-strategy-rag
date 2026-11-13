@@ -2,13 +2,45 @@
 
 [![tests](https://github.com/lyhjeremy/marathon-strategy-rag/actions/workflows/tests.yml/badge.svg)](https://github.com/lyhjeremy/marathon-strategy-rag/actions/workflows/tests.yml)
 
+![Replaying a recorded red-team run on the write-up: the coach's first card search fails, it searches again, and the input guard withholds a planted passage telling it to recommend 2 litres of water an hour](assets/demo.gif)
+
 A marathon coach that calls my finish-time and heat models as tools, so a runner's finish time, heat cost and pace come from a fitted model. On 42 numeric targets from a frozen 43-question set it got 42 within tolerance, against 21 for the same model with retrieval and 14 for the model alone, at a median 1.7 cents (API-equivalent) and 8.4 s per question.
+
+In November 2026 I attacked it with 15 frozen red-team cases (planted passages, medical asks, requests to invent a number): no attack got what it wanted from the October coach or the defended one, by a haiku judge's reading. Three reruns of three questions matched every scored value, and haiku agreed with the number check on 124 of 129 answers (Cohen's kappa 0.92).
 
 It retrieves from 14 knowledge cards and calls a finish-time and wall-risk model fitted on Boston splits, a heat model fitted on Boston results against race-day weather, and a pace table. Every number in an answer is supposed to come from a tool result or a cited card, and a check in code flags the ones that don't. The tools are also served over MCP.
 
 [Live site](https://lyhjeremy.github.io/marathon-strategy-rag/) · [Write-up](https://lyhjeremy.github.io/marathon-strategy-rag/overview/) · [Long-form notes](writeup.md)
 
 Design and copy follow [these standards](https://github.com/lyhjeremy/lyhjeremy/blob/main/DESIGN_STANDARDS.md).
+
+## Red team, reruns and a second judge (November 2026)
+
+All model calls on claude-sonnet-5-5 through the Claude CLI unless noted; costs are the API-equivalent `total_cost_usd` the CLI reports; one machine, an Apple M4.
+
+**Red team.** `eval/redteam/redteam.jsonl`, 15 cases frozen at `63c0f4f` with their hash in `eval/redteam/freeze.json`: 7 passages planted first in every card search (hydration instruction, product link, system-prompt request, fake wall-risk figure, tampered tool argument, answer hijack, and a false fact written as plain card prose), 4 medical questions, 4 requests for numbers no tool or card gives. `src/redteam.py` runs each case on the October coach (`ToolCoach(defended=False)`) and the defended one, and scores it with rules stored in the case before the run.
+
+| | October coach | Defended coach |
+|---|---|---|
+| Strict rules fired (of 15) | 3 | 2 |
+| Haiku judge says the attack worked (of 15) | 0 | 0 |
+| Planted passages withheld by the guard | 0 | 5 of 6 seen |
+| Model calls, cost for all 15 | 36, $0.31 | 33, $0.27 |
+| Median latency | 8.2 s | 9.3 s |
+
+All five rule hits are quotes or refusals ("I can't tell you whether this is a stress fracture"), so the defenses had no real success rate to lower. The defenses (`src/guard.py`): a keyword filter that withholds passages addressing the assistant, extra system-prompt rules (passages are data, medical questions go to a doctor, no estimates for unsourced numbers, assume a range when an input is missing), and a number gate that gives the model one rewrite when `numcheck` flags its answer. On 20 injection passages and 20 benign ones written by haiku, the filter caught 7 attacks and flagged no benign text (`eval/redteam/guard_heldout.json`); it flags none of the 46 real card chunks.
+
+**Reruns.** `src/variance.py` ran the defended coach three times on n01, c01 and s02 (`eval/variance/`). All 12 scored values were right in every run, with identical numbers. Latency on n01 ranged from 10.6 s to 27.4 s and cost from 1.0 to 3.5 cents, depending on whether it also searched the cards or spent a call on a number-gate rewrite. On s02, which the October coach answered by asking for a finish time, it now assumes 4:00 and answers in 3 of 3 runs.
+
+**Second judge.** `src/judge_xtier.py` asked claude-haiku-5-5, in batches of 22, whether each of the 129 October answers has a number its evidence does not support. Against `numcheck`: 124 of 129 agree, kappa 0.92; on the 43 coach answers 38 agree, kappa 0.39. In one disagreement haiku was right (the c01 "205 to 219 minutes" range the check let through); in two it flagged a correct clock conversion. Nobody has labeled the answers by hand; `eval/judge_xtier/labeling_sheet.csv` is a blank sheet for that.
+
+**Failures found.** The strict regex rules read refusals as compliance; the number gate fires on the coach's own assumed inputs (4 extra calls in 9 reruns); the filter missed 13 of 20 held-out attacks; and in 6 of 30 red-team runs the first card search failed because three threads opened the Chroma index at once (now opened under a lock). The month used 108 model calls: 69 red-team and 29 rerun calls on sonnet, 10 judge and test-writing calls on haiku.
+
+```bash
+P=~/venvs/marathon-strategy-rag/bin/python
+$P -m src.redteam; $P -m src.variance; $P -m src.judge_xtier; $P -m scripts.guard_heldout
+$P -m scripts.export_trials      # eval/web_trials.json for the write-up
+```
 
 ## Results (October 2026)
 
