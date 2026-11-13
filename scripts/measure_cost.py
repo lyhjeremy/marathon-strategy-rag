@@ -90,7 +90,7 @@ def main() -> None:
             n0 = len(CALLS)
             t0 = time.perf_counter()
             if system == "coach" and g["id"] == "n01":
-                res = ToolCoach(llm=llm_mod.LLM()).run(question_text(g))
+                res = ToolCoach(llm=llm_mod.LLM(), defended=False).run(question_text(g))
                 rec = {"answer": res.answer, "steps": res.steps, "latency_s": res.latency_s}
             else:
                 rec = runner.run_one(g, system, expected.get(g["id"]))

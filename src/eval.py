@@ -192,7 +192,7 @@ class Runner:
             rec["citation_validity"] = citation_validity(answer, len(passages))
             rec["passages"] = [p.card for p in passages]
         else:
-            res = ToolCoach(llm=LLM()).run(q)
+            res = ToolCoach(llm=LLM(), defended=False).run(q)  # the October config
             answer = res.answer
             rec.update(latency_s=res.latency_s, llm_calls=res.llm_calls, steps=len(res.steps),
                        model=res.model, repairs=res.repairs, parse_failed=res.parse_failed,

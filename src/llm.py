@@ -77,9 +77,12 @@ def _choose_backend() -> str:
 class LLM:
     """Minimal text-completion interface used across the project."""
 
-    def __init__(self, backend: str | None = None, timeout: int = 240):
+    def __init__(self, backend: str | None = None, timeout: int = 240,
+                 model: str | None = None):
         self.backend = backend or _choose_backend()
         self.timeout = timeout
+        # Per-instance model (a CLI alias such as "haiku"), used by the cross-tier judge.
+        self.model = model
         self.last_meta: dict = {}
 
     def complete(self, prompt: str, system: str | None = None) -> str:
@@ -98,8 +101,8 @@ class LLM:
             "--no-session-persistence", "--output-format", "json",
             "--system-prompt", system or "You are a helpful assistant.",
         ]
-        if DEFAULT_CLI_MODEL:
-            cmd += ["--model", DEFAULT_CLI_MODEL]
+        if self.model or DEFAULT_CLI_MODEL:
+            cmd += ["--model", self.model or DEFAULT_CLI_MODEL]
         try:
             # Prompt is piped via stdin so long RAG contexts never hit argv limits.
             result = subprocess.run(
@@ -127,9 +130,15 @@ class LLM:
         if data.get("is_error"):
             raise LLMError(f"claude CLI error: {data.get('result', '')[:300]}")
         usage = data.get("modelUsage") or {}
+        u = data.get("usage") or {}
         self.last_meta = {
-            "model": ",".join(sorted(usage)) or DEFAULT_CLI_MODEL,
-            "output_tokens": (data.get("usage") or {}).get("output_tokens"),
+            "model": ",".join(sorted(usage)) or self.model or DEFAULT_CLI_MODEL,
+            "output_tokens": u.get("output_tokens"),
+            "input_tokens": u.get("input_tokens"),
+            "cache_read_input_tokens": u.get("cache_read_input_tokens"),
+            # API-equivalent cost and CLI-reported time; the runs use a subscription.
+            "cost_usd": data.get("total_cost_usd"),
+            "duration_ms": data.get("duration_ms"),
         }
         return (data.get("result") or "").strip()
 
@@ -141,7 +150,7 @@ class LLM:
             raise LLMError("pip install anthropic to use the API backend.") from exc
         client = anthropic.Anthropic()
         msg = client.messages.create(
-            model=DEFAULT_API_MODEL,
+            model=self.model or DEFAULT_API_MODEL,
             max_tokens=1500,
             system=system or "You are a helpful assistant.",
             messages=[{"role": "user", "content": prompt}],

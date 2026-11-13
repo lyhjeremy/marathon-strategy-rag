@@ -31,7 +31,7 @@ import sys
 import time
 from dataclasses import dataclass, field
 
-from . import numcheck
+from . import guard, numcheck
 from .llm import LLM
 from .tools import TOOL_SPECS, call_tool
 
@@ -129,6 +129,10 @@ class AgentResult:
     latency_s: float = 0.0
     model: str = ""
     check: dict = field(default_factory=dict)
+    calls: list = field(default_factory=list)        # one entry per model call
+    withheld: int = 0                                 # passages the input guard removed
+    revised: bool = False                             # number gate asked for a rewrite
+    draft_check: dict = field(default_factory=dict)   # number check before the rewrite
 
     def cited_passages(self) -> list[dict]:
         nums = {int(n) for n in re.findall(r"\[(\d+)\]", self.answer)}
@@ -139,7 +143,8 @@ class AgentResult:
     def to_dict(self) -> dict:
         return {k: getattr(self, k) for k in (
             "question", "answer", "steps", "llm_calls", "repairs", "parse_failed",
-            "hit_step_cap", "latency_s", "model", "check")}
+            "hit_step_cap", "latency_s", "model", "check", "calls", "withheld",
+            "revised", "draft_check")}
 
 
 def cited_numbers(answer: str) -> set[int]:
@@ -168,11 +173,19 @@ def passages_from_steps(steps: list) -> list:
 
 
 class ToolCoach:
-    def __init__(self, max_steps: int = 6, llm: LLM | None = None):
+    """``defended=False`` is the October 2026 coach the 43-question eval scored.
+    ``defended=True`` (the default since November 2026) adds the three layers in
+    `src/guard.py`: the passage filter, the safety rules and the number gate."""
+
+    def __init__(self, max_steps: int = 6, llm: LLM | None = None, defended: bool = True):
         self.max_steps = max_steps
         self.llm = llm or LLM()
+        self.defended = defended
+        self.call_tool = call_tool  # the red-team harness swaps this to plant passages
         self.system = AGENT_SYSTEM.replace("{tools}", _tool_lines()).replace(
             "{max_steps}", str(max_steps))
+        if defended:
+            self.system += "\n" + guard.DEFENSE_RULES
 
     # -- rendering ------------------------------------------------------------
     def _render_steps(self, res: AgentResult) -> str:
@@ -190,6 +203,9 @@ class ToolCoach:
         if tool == "retrieve_cards" and "passages" in result:
             shown = []
             for p in result["passages"]:
+                if self.defended and guard.scan_passage(p["text"]):
+                    p["withheld_text"], p["text"] = p["text"], guard.WITHHELD
+                    res.withheld += 1
                 key = (p["card"], p["text"])
                 idx = next((i for i, q in enumerate(res.passages, 1)
                             if (q["card"], q["text"]) == key), None)
@@ -204,11 +220,39 @@ class ToolCoach:
                 "result": result}
 
     # -- loop -------------------------------------------------------------------
-    def _ask(self, res: AgentResult, prompt: str) -> str:
+    def _ask(self, res: AgentResult, prompt: str, purpose: str = "action") -> str:
+        t0 = time.perf_counter()
         text = self.llm.complete(prompt, system=self.system)
         res.llm_calls += 1
-        res.model = self.llm.last_meta.get("model", res.model)
+        meta = self.llm.last_meta
+        res.model = meta.get("model", res.model)
+        res.calls.append({"call": res.llm_calls, "purpose": purpose, "after_step": len(res.steps),
+                          "wall_s": round(time.perf_counter() - t0, 2),
+                          "cost_usd": meta.get("cost_usd"), "input_tokens": meta.get("input_tokens"),
+                          "cache_read_input_tokens": meta.get("cache_read_input_tokens"),
+                          "output_tokens": meta.get("output_tokens"), "reply": text})
         return text
+
+    def _number_gate(self, res: AgentResult, question: str) -> None:
+        """One rewrite if the number check flags the final answer (defended mode only)."""
+        flagged = res.check["unsourced"]
+        prompt = STEP_PROMPT.format(question=question, steps=self._render_steps(res), instruction=(
+            "Your draft final answer was:\n" + res.answer + "\n\nA check in code found numbers in it "
+            "that appear in no tool result, cited passage or the question: " + ", ".join(flagged) +
+            ". Reply with {\"action\": \"final\", \"answer\": \"...\"}: the same answer with each of "
+            "those numbers removed or replaced by a number from a tool result or a cited passage. "
+            "Do not call a tool."))
+        raw = self._ask(res, prompt, purpose="number_gate")
+        try:
+            action = parse_action(raw)
+        except (ValueError, json.JSONDecodeError):
+            return
+        if action["action"] != "final":
+            return
+        res.draft_check, res.revised = res.check, True
+        res.answer = action["answer"].strip()
+        res.check = numcheck.check(res.answer, question,
+                                   coach_evidence(res.steps, res.passages, res.answer))
 
     def run(self, question: str) -> AgentResult:
         res = AgentResult(question=question, answer="")
@@ -227,7 +271,7 @@ class ToolCoach:
                 res.repairs += 1
                 raw = self._ask(res, prompt + (
                     f"\n\nYour previous reply could not be parsed ({exc}). It began: "
-                    f"{raw[:300]!r}\nReply with only one valid JSON object."))
+                    f"{raw[:300]!r}\nReply with only one valid JSON object."), purpose="repair")
                 try:
                     action = parse_action(raw)
                 except (ValueError, json.JSONDecodeError):
@@ -242,15 +286,17 @@ class ToolCoach:
                 res.answer = "(no final answer within the step cap)"
                 break
             t1 = time.perf_counter()
-            result = call_tool(action["tool"], action["args"])
+            result = self.call_tool(action["tool"], action["args"])
             step = self._record_tool(res, action["tool"], action["args"], result)
             step["tool_s"] = round(time.perf_counter() - t1, 3)
             res.steps.append(step)
             if res.llm_calls > 3 * self.max_steps:  # belt and braces
                 res.answer = "(stopped: too many model calls)"
                 break
-        res.latency_s = round(time.perf_counter() - t0, 2)
         res.check = numcheck.check(res.answer, question, coach_evidence(res.steps, res.passages, res.answer))
+        if self.defended and res.check["fired"] and not res.parse_failed:
+            self._number_gate(res, question)
+        res.latency_s = round(time.perf_counter() - t0, 2)
         return res
 
 
