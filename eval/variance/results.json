@@ -1,0 +1,178 @@
+{
+ "date": "2026-11-13",
+ "config": "ToolCoach(defended=True)",
+ "repeats": 3,
+ "questions": {
+  "n01": {
+   "runs": 3,
+   "tool_sequences": [
+    "predict_finish",
+    "predict_finish > retrieve_cards"
+   ],
+   "latency_s": [
+    16.12,
+    10.61,
+    27.42
+   ],
+   "latency_spread_s": 16.81,
+   "cost_usd": [
+    0.033219,
+    0.009804,
+    0.034528
+   ],
+   "unsourced_fired": 0,
+   "number_gate_rewrites": 1,
+   "october": {
+    "tools": [
+     "predict_finish",
+     "calculator"
+    ],
+    "latency_s": 13.39,
+    "numeric": [
+     {
+      "key": "finish_min",
+      "expected": 213.54,
+      "tol": 4.818,
+      "got": 213.54,
+      "ok": true,
+      "abs_err": 0.0
+     },
+     {
+      "key": "wall_risk_pct",
+      "expected": 16.45,
+      "tol": 5.0,
+      "got": 16.45,
+      "ok": true,
+      "abs_err": 0.0
+     }
+    ],
+    "unsourced": [
+     "95",
+     "40",
+     "25"
+    ]
+   },
+   "targets": {
+    "finish_min": {
+     "expected": 213.54,
+     "tol": 4.818,
+     "got": [
+      213.54,
+      213.54,
+      213.54
+     ],
+     "ok": 3
+    },
+    "wall_risk_pct": {
+     "expected": 16.45,
+     "tol": 5.0,
+     "got": [
+      16.45,
+      16.45,
+      16.45
+     ],
+     "ok": 3
+    }
+   }
+  },
+  "c01": {
+   "runs": 3,
+   "tool_sequences": [
+    "heat_effect > calculator"
+   ],
+   "latency_s": [
+    8.77,
+    8.04,
+    8.94
+   ],
+   "latency_spread_s": 0.9,
+   "cost_usd": [
+    0.017481,
+    0.006624,
+    0.006954
+   ],
+   "unsourced_fired": 0,
+   "number_gate_rewrites": 0,
+   "october": {
+    "tools": [
+     "heat_effect",
+     "calculator"
+    ],
+    "latency_s": 9.76,
+    "numeric": [
+     {
+      "key": "adjusted_finish_min",
+      "expected": 216.13,
+      "tol": 3.7,
+      "got": 216.13,
+      "ok": true,
+      "abs_err": 0.0
+     },
+     {
+      "key": "pace_sec_per_km",
+      "expected": 307.3,
+      "tol": 5.261,
+      "got": 307.33,
+      "ok": true,
+      "abs_err": 0.03
+     }
+    ],
+    "unsourced": []
+   },
+   "targets": {
+    "adjusted_finish_min": {
+     "expected": 216.13,
+     "tol": 3.7,
+     "got": [
+      216.13,
+      216.13,
+      216.13
+     ],
+     "ok": 3
+    },
+    "pace_sec_per_km": {
+     "expected": 307.3,
+     "tol": 5.261,
+     "got": [
+      307.33,
+      307.33,
+      307.33
+     ],
+     "ok": 3
+    }
+   }
+  },
+  "s02": {
+   "runs": 3,
+   "tool_sequences": [
+    "heat_effect",
+    "heat_effect > retrieve_cards"
+   ],
+   "latency_s": [
+    8.37,
+    8.74,
+    14.11
+   ],
+   "latency_spread_s": 5.74,
+   "cost_usd": [
+    0.018039,
+    0.01296,
+    0.030001
+   ],
+   "unsourced_fired": 0,
+   "number_gate_rewrites": 3,
+   "october": {
+    "tools": [],
+    "latency_s": 3.06,
+    "numeric": null,
+    "unsourced": []
+   }
+  }
+ },
+ "all": {
+  "runs": 9,
+  "llm_calls": 29,
+  "cost_usd": 0.1696,
+  "median_latency_s": 8.94
+ }
+}
